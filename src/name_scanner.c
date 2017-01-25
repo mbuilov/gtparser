@@ -1,12 +1,12 @@
 /*******************************************************************************
-* Generic Text parsing functions
+* gtparser - Generic Text parsing functions library
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
 /* name_scanner.c */
 
-#include "name_scanner.h"
+#include "gtparser/name_scanner.h"
 
 typedef int _char_0_value[1-2*( 48 != '0')];
 typedef int _char_9_value[1-2*( 57 != '9')];

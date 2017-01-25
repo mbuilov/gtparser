@@ -1,13 +1,13 @@
 /*******************************************************************************
-* Generic Text parsing functions
+* gtparser - Generic Text parsing functions library
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
 /* int_scanner.c */
 
-#include "name_scanner.h"
-#include "int_scanner.h"
+#include "gtparser/name_scanner.h"
+#include "gtparser/int_scanner.h"
 
 /* s points to [0-9] */
 GTPARSER_EXPORTS const char *_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/)

@@ -2,14 +2,14 @@
 #define PARSER_BASE_H_INCLUDED
 
 /*******************************************************************************
-* Generic Text parsing functions
+* gtparser - Generic Text parsing functions library
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
 /* parser_base.h */
 
-#include "gtparser.h"
+#include "gtparser/gtparser.h"
 
 #ifndef GTPARSER_TAB_SIZE
 #define GTPARSER_TAB_SIZE 4 /* needed to correctly specify parsing error column in error messages */

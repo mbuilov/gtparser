@@ -2,17 +2,14 @@
 #define PARSER_ERR_H_INCLUDED
 
 /*******************************************************************************
-* Generic Text parsing functions
+* gtparser - Generic Text parsing functions library
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
 /* parser_err.h */
 
-/* declaration for exported functions, such as __declspec(dllexport)/__declspec(dllimport) or __attribute__((visibility("default"))) */
-#ifndef GTPARSER_EXPORTS
-#define GTPARSER_EXPORTS
-#endif
+#include "gtparser/gtparser.h"
 
 #ifdef __cplusplus
 extern "C" {

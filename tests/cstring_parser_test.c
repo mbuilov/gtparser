@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Generic Text parsing functions tests
+* gtparser tests
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under GPL version 3 or any later version, see COPYING
 *******************************************************************************/
@@ -8,8 +8,8 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "cstring_parser.h"
-#include "parser_base.h"
+#include "gtparser/cstring_parser.h"
+#include "gtparser/parser_base.h"
 
 static int test1(void)
 {

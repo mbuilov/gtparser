@@ -2,15 +2,15 @@
 #define NAME_PARSER_H_INCLUDED
 
 /*******************************************************************************
-* Generic Text parsing functions
+* gtparser - Generic Text parsing functions library
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
 /* name_parser.h */
 
-#include "parser_base.h"
-#include "name_scanner.h"
+#include "gtparser/parser_base.h"
+#include "gtparser/name_scanner.h"
 
 #ifdef __cplusplus
 extern "C" {

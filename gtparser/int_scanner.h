@@ -2,14 +2,14 @@
 #define INT_SCANNER_H_INCLUDED
 
 /*******************************************************************************
-* Generic Text parsing functions
+* gtparser - Generic Text parsing functions library
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
 /* int_scanner.h */
 
-#include "gtparser.h"
+#include "gtparser/gtparser.h"
 
 #ifndef INT64_TYPE
 #define INT64_TYPE long long

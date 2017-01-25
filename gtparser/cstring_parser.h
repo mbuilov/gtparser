@@ -2,14 +2,14 @@
 #define CSTRING_PARSER_H_INCLUDED
 
 /*******************************************************************************
-* Generic Text parsing functions
+* gtparser - Generic Text parsing functions library
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
 /* cstring_parser.h */
 
-#include "gtparser.h"
+#include "gtparser/gtparser.h"
 
 struct src_iter;
 

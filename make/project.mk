@@ -120,7 +120,7 @@ PRODUCT_NAMES_H := vers.h
 # version info for a dll
 VENDOR_NAME           := Michael M. Builov
 VENDOR_URL            := https://github.com/mbuilov/gtparser
-PRODUCT_NAME          := Generic Text parsing functions
+PRODUCT_NAME          := Generic Text parsing functions library
 VENDOR_COPYRIGHT      := Copyright (C) 2008-2017 $(VENDOR_NAME), $(VENDOR_URL)
 PRODUCT_VERSION_MAJOR := 1
 PRODUCT_VERSION_MINOR := 0

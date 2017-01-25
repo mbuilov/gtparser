@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Generic Text parsing functions
+* gtparser - Generic Text parsing functions library
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
@@ -8,7 +8,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "parser_err.h"
+
+#include "gtparser/parser_err.h"
 
 #define __MAX_OF__(a,b) ((a)>(b)?(a):(b))
 #define pe_reserve1 sizeof("parse error at (4294967295:4294967295):") /* note: take into account teminating '\0' in string constant */

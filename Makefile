@@ -6,7 +6,7 @@ distclean:
 	$(call RM,$(CLOBBER_DIRS))
 else
 
-TO_MAKE := parser_base.mk parser_err.mk basic_scanner.mk cstring_parser.mk gtparser.mk
+TO_MAKE := src
 
 ifneq ($(filter WINXX,$(OS)),)
 TO_MAKE += version
@@ -22,18 +22,18 @@ include $(MTOP)/parallel.mk
 install: all
 uninstall:
 
-#ifeq (LINUX,$(OS))
-#
-#PREFIX          ?= /usr
-#EXEC_PREFIX     ?= $(PREFIX)
-#LIBDIR          ?= $(EXEC_PREFIX)/lib
-#PKG_CONFIG_DIR  ?= $(LIBDIR)/pkgconfig
-#INSTALL         ?= install
-#LDCONFIG        ?= /sbin/ldconfig
-#
-#install: install_libmemstack
-#uninstall: uninstall_libmemstack
-#
-#endif # LINUX
+ifeq (LINUX,$(OS))
+
+PREFIX          ?= /usr
+EXEC_PREFIX     ?= $(PREFIX)
+LIBDIR          ?= $(EXEC_PREFIX)/lib
+PKG_CONFIG_DIR  ?= $(LIBDIR)/pkgconfig
+INSTALL         ?= install
+LDCONFIG        ?= /sbin/ldconfig
+
+install: install_libgtparser
+uninstall: uninstall_libgtparser
+
+endif # LINUX
 
 endif # !distclean

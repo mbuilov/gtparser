@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Generic Text parsing functions tests
+* gtparser tests
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under GPL version 3 or any later version, see COPYING
 *******************************************************************************/
@@ -7,8 +7,8 @@
 /* basic_scanner_test.c */
 
 #include <stdio.h>
-#include "name_scanner.h"
-#include "int_scanner.h"
+#include "gtparser/name_scanner.h"
+#include "gtparser/int_scanner.h"
 
 static int check_first_name_chars(int t)
 {
