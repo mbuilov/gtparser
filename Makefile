@@ -19,4 +19,21 @@ endif
 
 include $(MTOP)/parallel.mk
 
+install: all
+uninstall:
+
+#ifeq (LINUX,$(OS))
+#
+#PREFIX          ?= /usr
+#EXEC_PREFIX     ?= $(PREFIX)
+#LIBDIR          ?= $(EXEC_PREFIX)/lib
+#PKG_CONFIG_DIR  ?= $(LIBDIR)/pkgconfig
+#INSTALL         ?= install
+#LDCONFIG        ?= /sbin/ldconfig
+#
+#install: install_libmemstack
+#uninstall: uninstall_libmemstack
+#
+#endif # LINUX
+
 endif # !distclean
