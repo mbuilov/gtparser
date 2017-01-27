@@ -70,11 +70,14 @@ uninstall_libgtparser:
 
 else ifeq (WINXX,$(OS))
 
-$(DESTDIR)$(PREFIX)/include/gtparser: | $(DESTDIR)$(LIBDIR)
-$(DESTDIR)$(PREFIX)/include/gtparser $(DESTDIR)$(LIBDIR):
-	$(call MKDIR,$@)
+DST_INC_DIR := $(subst $(space),\$(space),$(DESTDIR)$(PREFIX)/include/gtparser)
+DST_LIB_DIR := $(subst $(space),\$(space),$(DESTDIR)$(LIBDIR))
 
-install_libgtparser: | $(DESTDIR)$(PREFIX)/include/gtparser $(DESTDIR)$(LIBDIR)
+$(DST_INC_DIR): | $(DST_LIB_DIR)
+$(DST_INC_DIR) $(DST_LIB_DIR):
+	$(call MKDIR,"$(subst \ , ,$@)")
+
+install_libgtparser: | $(DST_INC_DIR) $(DST_LIB_DIR)
 	$(foreach f,$(HEADERS),$(call CP,$(TOP)/gtparser/$f,"$(DESTDIR)$(PREFIX)/include/gtparser")$(newline))
 	$(call CP,$(LIB_DIR)/$(LIB)$(LIB_SUFFIX),"$(DESTDIR)$(LIBDIR)")
 	$(call CP,$(IMP_DIR)/$(DLL)$(IMP_SUFFIX),"$(DESTDIR)$(LIBDIR)")

@@ -17,11 +17,6 @@ check tests: all
 TO_MAKE += tests
 endif
 
-include $(MTOP)/parallel.mk
-
-install: all
-uninstall:
-
 ifeq (LINUX,$(OS))
 
 PREFIX          ?= /usr/local
@@ -46,5 +41,7 @@ endif # WINXX
 
 install: install_libgtparser
 uninstall: uninstall_libgtparser
+
+include $(MTOP)/parallel.mk
 
 endif # !distclean
