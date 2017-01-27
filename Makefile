@@ -24,16 +24,20 @@ uninstall:
 
 ifeq (LINUX,$(OS))
 
-PREFIX          ?= /usr
+PREFIX          ?= /usr/local
 EXEC_PREFIX     ?= $(PREFIX)
 LIBDIR          ?= $(EXEC_PREFIX)/lib
 PKG_CONFIG_DIR  ?= $(LIBDIR)/pkgconfig
 INSTALL         ?= install
 LDCONFIG        ?= /sbin/ldconfig
 
+else ifeq (WINXX,$(OS))
+
+LIBDIR ?= $(PREFIX)\lib
+
+endif # WINXX
+
 install: install_libgtparser
 uninstall: uninstall_libgtparser
-
-endif # LINUX
 
 endif # !distclean
