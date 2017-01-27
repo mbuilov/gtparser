@@ -6,9 +6,7 @@
 
 /* parser_err.c */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "gtparser/gtparser_config.h"
 #include "gtparser/parser_err.h"
 
 #define __MAX_OF__(a,b) ((a)>(b)?(a):(b))
@@ -38,13 +36,13 @@ GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_bu
 	if (buf != err_buf) {
 		char *err_buf_tail = err_buf;
 		if (buf != err_buf + PE_RESERVE && filename) {
-			size_t filename_len = strlen(filename);
+			size_t filename_len = GTPARSER_STRLEN(filename);
 			if (filename_len > filename_reserve) {
 				/* trim head of filename */
 				filename += filename_len - filename_reserve;
 				filename_len = filename_reserve;
 			}
-			memcpy(err_buf, filename, filename_len);
+			GTPARSER_MEMCPY(err_buf, filename, filename_len);
 			err_buf[filename_len++] = ':';
 			err_buf[filename_len++] = ' ';
 			err_buf_tail = err_buf + filename_len;
@@ -52,18 +50,18 @@ GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_bu
 		{
 			/* buf has at least one byte free before err_buf_end - guaranteed by parser_err_reserve() */
 			int printed =
-				!line ? sprintf(err_buf_tail, "parse error at char %u:", column & 4294967295u) :
-				!column ? sprintf(err_buf_tail, "parse error at line %u:", line & 4294967295u) :
-				sprintf(err_buf_tail, "parse error at (%u:%u):", line & 4294967295u, column & 4294967295u);
+				!line ? GTPARSER_SPRINTF(err_buf_tail, "parse error at char %u:", column & 4294967295u) :
+				!column ? GTPARSER_SPRINTF(err_buf_tail, "parse error at line %u:", line & 4294967295u) :
+				GTPARSER_SPRINTF(err_buf_tail, "parse error at (%u:%u):", line & 4294967295u, column & 4294967295u);
 			err_buf_tail[printed++] = ' '; /* eat one byte reserved by '\0' in PE_RESERVE */
 			if (err != buf) {
 				char *dst = err_buf_tail + printed; /* (dst < err_buf + err_buf_size) because (err_buf_size > PE_RESERVE) */
 				size_t free = (size_t)(err_buf + err_buf_size - dst) - 1/*for terminating '\0'*/; /* >= 0 */
 				if (free) {
-					size_t len = strlen(err);
+					size_t len = GTPARSER_STRLEN(err);
 					if (len > free)
 						len = free; /* trim tail of error message */
-					memcpy(dst, err, len);
+					GTPARSER_MEMCPY(dst, err, len);
 					dst[len] = '\0';
 				}
 				err = err_buf;
@@ -73,7 +71,7 @@ GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_bu
 				   ^err_buf  ^err_buf_tail   ^err  */
 				size_t gap = (size_t)(err - printed - err_buf_tail);
 				if (gap)
-					memmove(err_buf + gap, err_buf, (size_t)(err_buf_tail + printed - err_buf)); /* move forward */
+					GTPARSER_MEMMOVE(err_buf + gap, err_buf, (size_t)(err_buf_tail + printed - err_buf)); /* move forward */
 				err = err_buf + gap;
 			}
 		}
@@ -85,11 +83,11 @@ GTPARSER_EXPORTS char *_parser_err_print_string(const char *string, size_t strin
 {
 	if (string_len > (unsigned)(end - buf))
 		string_len = (unsigned)(end - buf); /* trim string tail */
-	memcpy(buf, string, string_len);
+	GTPARSER_MEMCPY(buf, string, string_len);
 	return buf + string_len;
 }
 
 GTPARSER_EXPORTS char *parser_err_print_string(const char *string, char *buf, const char *const end)
 {
-	return _parser_err_print_string(string, strlen(string), buf, end);
+	return _parser_err_print_string(string, GTPARSER_STRLEN(string), buf, end);
 }

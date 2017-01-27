@@ -6,17 +6,14 @@
 
 /* cstring_parser.c */
 
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-
+#include "gtparser/gtparser_config.h"
 #include "gtparser/cstring_parser.h"
 #include "gtparser/parser_base.h"
 #include "gtparser/name_scanner.h"
 
 #ifndef ASSERT
 #ifdef _DEBUG
-#define ASSERT(cond) assert(cond)
+#define ASSERT(cond) GTPARSER_ASSERT(cond)
 #else
 #define ASSERT(cond) ((void)0)
 #endif
@@ -208,5 +205,5 @@ GTPARSER_EXPORTS void copy_cstring(char dst[]/*out*/, const char *begin, const c
 		ASSERT(c); /* zero character inside string is not allowed */
 		*dst++ = c;
 	}
-	memcpy(dst, begin, (size_t)(end - begin));
+	GTPARSER_MEMCPY(dst, begin, (size_t)(end - begin));
 }
