@@ -8,36 +8,17 @@ INCLUDE := ..
 SOVER   := 1
 DLL_DEFINES := GTPARSER_EXPORTS=$(DLL_EXPORTS_DEFINE)
 
-ifeq (LINUX,$(OS))
-
-include $(MTOP)/LINUX/pc.mk
-include $(MTOP)/LINUX/la.mk
-
-define PC_DESC
-Generic Text parsing functions library
-endef
-
-define PC_COMMENT
-Author:  $(VENDOR_NAME)
-License: LGPL version 2.1 or any later version
-endef
-
-PC_CFLAGS := -I$${includedir}/gtparser
-
-$(call PKGCONFIG_RULE,$(DLL),$(SOVER),$(PC_DESC),$(PC_COMMENT),$(VENDOR_URL))
-$(call LIBTOOL_LA_RULE,$(DLL),$(SOVER),$(LIB))
-
-endif # LINUX
-
 $(DEFINE_TARGETS)
 
-ifeq (LINUX,$(OS))
+# installation
 
-install_libgtparser uninstall_libgtparser: all
-install_libgtparser uninstall_libgtparser: LIB     := $(LIB)
-install_libgtparser uninstall_libgtparser: DLL     := $(DLL)
-install_libgtparser uninstall_libgtparser: SOVER   := $(SOVER)
-install_libgtparser uninstall_libgtparser: HEADERS := \
+install_libgtparser: $(call FORM_TRG,LIB) $(call FORM_TRG,DLL)
+
+install_libgtparser uninstall_libgtparser: LIB   := $(LIB)
+install_libgtparser uninstall_libgtparser: DLL   := $(DLL)
+install_libgtparser uninstall_libgtparser: SOVER := $(SOVER)
+
+install_libgtparser: HEADERS := \
   gtparser.h \
   char_func.h \
   cstring_parser.h \
@@ -48,16 +29,33 @@ install_libgtparser uninstall_libgtparser: HEADERS := \
   parser_base.h \
   parser_err.h
 
+ifeq (LINUX,$(OS))
+
+include $(MTOP)/LINUX/pc.mk
+include $(MTOP)/LINUX/la.mk
+
+PC_DESC := Generic Text parsing functions library
+
+define PC_COMMENT
+Author:  $(VENDOR_NAME)
+License: LGPL version 2.1 or any later version
+endef
+
+install_libgtparser: PC_TEXT := $(call PKGCONFIG_DEF_TEMPLATE,$(DLL),$(SOVER),$(PC_DESC),$(PC_COMMENT),$(VENDOR_URL))
+install_libgtparser: LA_TEXT := $(call LIBTOOL_LA_TEMPLATE,$(DLL),$(SOVER),$(LIB))
+
 install_libgtparser:
 	$(INSTALL) -d '$(DESTDIR)$(PREFIX)/include/gtparser'
 	$(INSTALL) -m 644 $(addprefix $(TOP)/gtparser/,$(HEADERS)) '$(DESTDIR)$(PREFIX)/include/gtparser'
 	$(INSTALL) -d '$(DESTDIR)$(LIBDIR)'
 	$(INSTALL) -m 644 $(LIB_DIR)/lib$(LIB).a '$(DESTDIR)$(LIBDIR)'
-	$(INSTALL) -m 755 $(LIB_DIR)/lib$(DLL).la '$(DESTDIR)$(LIBDIR)'
 	$(INSTALL) -m 755 $(LIB_DIR)/lib$(DLL).so.$(SOVER) '$(DESTDIR)$(LIBDIR)'
 	ln -sf$(if $(VERBOSE),v) lib$(DLL).so.$(SOVER) '$(DESTDIR)$(LIBDIR)/lib$(DLL).so'
+	$(call ECHO,$(LA_TEXT)) > '$(DESTDIR)$(LIBDIR)/lib$(DLL).la'
+	chmod$(if $(VERBOSE), -v) 755 '$(DESTDIR)$(LIBDIR)/lib$(DLL).la'
 	$(INSTALL) -d '$(DESTDIR)$(PKG_CONFIG_DIR)'
-	$(INSTALL) -m 644 $(LIB_DIR)/lib$(DLL).pc '$(DESTDIR)$(PKG_CONFIG_DIR)'
+	$(call ECHO,$(PC_TEXT)) > '$(DESTDIR)$(PKG_CONFIG_DIR)/lib$(DLL).pc'
+	chmod$(if $(VERBOSE), -v) 644 '$(DESTDIR)$(PKG_CONFIG_DIR)/lib$(DLL).pc'
 	$(LDCONFIG) -n$(if $(VERBOSE),v) '$(DESTDIR)$(LIBDIR)'
 
 uninstall_libgtparser:
@@ -70,6 +68,26 @@ uninstall_libgtparser:
   '$(DESTDIR)$(PKG_CONFIG_DIR)/lib$(DLL).pc'
 	$(LDCONFIG) -n$(if $(VERBOSE),v) '$(DESTDIR)$(LIBDIR)'
 
-.PHONY: install_libgtparser uninstall_libgtparser
+else ifeq (WINXX,$(OS))
 
-endif # LINUX
+install_libgtparser: $(if $(PREFIX),,$(error PREFIX - installation directory not defined))
+
+$(DESTDIR)$(PREFIX)/include/gtparser: | $(DESTDIR)$(LIBDIR)
+$(DESTDIR)$(PREFIX)/include/gtparser $(DESTDIR)$(LIBDIR):
+	$(call MKDIR,$@)
+
+install_libgtparser: | $(DESTDIR)$(PREFIX)/include/gtparser $(DESTDIR)$(LIBDIR)
+	$(foreach f,$(HEADERS),$(call CP,$(TOP)/gtparser/$f,"$(DESTDIR)$(PREFIX)/include/gtparser")$(newline))
+	$(call CP,$(LIB_DIR)/$(LIB).$(LIB_SUFFIX),"$(DESTDIR)$(LIBDIR)")
+	$(call CP,$(IMP_DIR)/$(DLL).$(IMP_SUFFIX),"$(DESTDIR)$(LIBDIR)")
+	$(call CP,$(IMP_DIR)/$(DLL).$(DLL_SUFFIX),"$(DESTDIR)$(LIBDIR)")
+
+uninstall_libgtparser:
+	$(call DEL_DIR,"$(DESTDIR)$(PREFIX)/include/gtparser")
+	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(LIB).$(LIB_SUFFIX)")
+	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(DLL).$(IMP_SUFFIX)")
+	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(DLL).$(DLL_SUFFIX)")
+
+endif # WINXX
+
+.PHONY: install_libgtparser uninstall_libgtparser
