@@ -49,7 +49,7 @@ install_libgtparser:
 	$(INSTALL) -m 644 $(addprefix $(TOP)/gtparser/,$(HEADERS)) '$(DESTDIR)$(PREFIX)/include/gtparser'
 	$(INSTALL) -d '$(DESTDIR)$(LIBDIR)'
 	$(INSTALL) -m 644 $(LIB_DIR)/lib$(LIB).a '$(DESTDIR)$(LIBDIR)'
-	$(INSTALL) -m 755 $(LIB_DIR)/lib$(DLL).so.$(SOVER) '$(DESTDIR)$(LIBDIR)'
+	$(INSTALL) -m 755 $(LIB_DIR)/lib$(DLL).so '$(DESTDIR)$(LIBDIR)/lib$(DLL).so.$(SOVER)'
 	ln -sf$(if $(VERBOSE),v) lib$(DLL).so.$(SOVER) '$(DESTDIR)$(LIBDIR)/lib$(DLL).so'
 	$(call ECHO,$(LA_TEXT)) > '$(DESTDIR)$(LIBDIR)/lib$(DLL).la'
 	chmod$(if $(VERBOSE), -v) 755 '$(DESTDIR)$(LIBDIR)/lib$(DLL).la'
@@ -70,23 +70,21 @@ uninstall_libgtparser:
 
 else ifeq (WINXX,$(OS))
 
-install_libgtparser: $(if $(PREFIX),,$(error PREFIX - installation directory not defined))
-
 $(DESTDIR)$(PREFIX)/include/gtparser: | $(DESTDIR)$(LIBDIR)
 $(DESTDIR)$(PREFIX)/include/gtparser $(DESTDIR)$(LIBDIR):
 	$(call MKDIR,$@)
 
 install_libgtparser: | $(DESTDIR)$(PREFIX)/include/gtparser $(DESTDIR)$(LIBDIR)
 	$(foreach f,$(HEADERS),$(call CP,$(TOP)/gtparser/$f,"$(DESTDIR)$(PREFIX)/include/gtparser")$(newline))
-	$(call CP,$(LIB_DIR)/$(LIB).$(LIB_SUFFIX),"$(DESTDIR)$(LIBDIR)")
-	$(call CP,$(IMP_DIR)/$(DLL).$(IMP_SUFFIX),"$(DESTDIR)$(LIBDIR)")
-	$(call CP,$(IMP_DIR)/$(DLL).$(DLL_SUFFIX),"$(DESTDIR)$(LIBDIR)")
+	$(call CP,$(LIB_DIR)/$(LIB)$(LIB_SUFFIX),"$(DESTDIR)$(LIBDIR)")
+	$(call CP,$(IMP_DIR)/$(DLL)$(IMP_SUFFIX),"$(DESTDIR)$(LIBDIR)")
+	$(call CP,$(DLL_DIR)/$(DLL)$(DLL_SUFFIX),"$(DESTDIR)$(LIBDIR)")
 
 uninstall_libgtparser:
 	$(call DEL_DIR,"$(DESTDIR)$(PREFIX)/include/gtparser")
-	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(LIB).$(LIB_SUFFIX)")
-	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(DLL).$(IMP_SUFFIX)")
-	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(DLL).$(DLL_SUFFIX)")
+	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(LIB)$(LIB_SUFFIX)")
+	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(DLL)$(IMP_SUFFIX)")
+	$(call DEL,"$(DESTDIR)$(LIBDIR)/$(DLL)$(DLL_SUFFIX)")
 
 endif # WINXX
 
