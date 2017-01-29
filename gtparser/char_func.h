@@ -45,11 +45,13 @@ static inline unsigned digit_value(char c)
 	return x;
 }
 
+/* returns non-zero if c is a decimal digit */
 static inline int is_digit(char c)
 {
 	return digit_value(c) <= 9;
 }
 
+/* name may be continued by a letter, digit or '_' */
 static inline int _is_next_name(char c)
 {
 	return _is_first_name(c) || is_digit(c);
