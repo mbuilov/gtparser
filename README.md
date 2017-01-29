@@ -18,6 +18,7 @@ Parameters:
 - ```c```  - char to check
 
 **Returns:** non-zero if ```c``` is in range [_a-zA-Z].
+
 *Declared in:* ```gtparser/char_func.h```
 
 #### Check if given char is a decimal digit and get its value
@@ -28,6 +29,7 @@ Parameters:
 - ```c```  - char to check
 
 **Returns:** value <= ```9``` if ```c``` is in range [0-9].
+
 *Declared in:* ```gtparser/char_func.h```
 
 #### Check if given char is a decimal digit
@@ -38,6 +40,7 @@ Parameters:
 - ```c```  - char to check
 
 **Returns:** non-zero if ```c``` is in range [0-9].
+
 *Declared in:* ```gtparser/char_func.h```
 
 #### Check if given char may continue an identifier name
@@ -48,6 +51,7 @@ Parameters:
 - ```c```  - char to check
 
 **Returns:** non-zero if ```c``` is in range [_a-zA-Z0-9].
+
 *Declared in:* ```gtparser/char_func.h```
 
 #### Check if given char is a hexadecimal digit and get its value
@@ -58,6 +62,7 @@ Parameters:
 - ```c```  - char to check
 
 **Returns:** value <= ```15``` if ```c``` is in range [a-fA-F0-9].
+
 *Declared in:* ```gtparser/char_func.h```
 
 
