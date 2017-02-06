@@ -18,6 +18,7 @@ Small library of generic text parsing functions enough to parse simple configs
 7. [is_next_name (table lookup-based)](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version)
 8. [hex_char_value (table lookup-based)](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version)
 9. [_scan_name](#scan-chars-of-a-name)
+10. [_scan_uint](#scan-unsigned-integer)
 
 
 #### Check if given char may start an identifier name
@@ -122,9 +123,28 @@ Parameters:
 - ```s```  - points to first char of a name in a buffer (char in range ```[_a-zA-Z]```)
 - ```end``` - points one char beyond the buffer containing a name
 
+_Note_: ```s``` < ```end```
+
 **Returns:** pointer beyond the last char of scanned name (pointer to char not in range ```[_a-zA-Z0-9]```) or ```end```.
 
 *Declared in:* [```gtparser/name_scanner.h```](/gtparser/name_scanner.h)
+
+#### Scan unsigned integer
+```
+const char *_scan_uint(const char *s, const char *const end, unsigned *number);
+```
+Parameters:
+- ```s```  - points to first char of unsigned integer printed in a buffer (char in range ```[0-9]```)
+- ```end``` - points one char beyond the buffer containing printed unsigned integer
+- ```number``` - (_output_) scanned unsigned integer value
+
+_Note_: ```s``` < ```end```
+
+**Returns:** pointer beyond the last char of scanned unsigned integer (pointer to char not in range ```[0-9]```) or ```end```.
+
+**_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
+
+*Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
 
 
 ### Installing
