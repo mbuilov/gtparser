@@ -65,7 +65,7 @@ Parameters:
 
 *Declared in:* ```gtparser/char_func.h```
 
-_Note_: table lookup-based ```is_next_name()```(#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version) may be slightly faster than this header-only inline ```_is_next_name()```.
+_Note_: table lookup-based ```[is_next_name()](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version)``` may be slightly faster than this header-only inline ```_is_next_name()```.
 
 #### Check if given char is a hexadecimal digit and get its value
 ```
