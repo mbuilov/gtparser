@@ -163,7 +163,7 @@ _Note_: ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long lo
 
 **Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not in range ```[0-9]```) or ```end```.
 
-**_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
+**_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns ```NULL```.
 
 *Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
 
@@ -199,7 +199,7 @@ _Note_: ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long lo
 
 **Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not in range ```[0-9a-fA-F]```) or ```end```.
 
-**_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
+**_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns ```NULL```.
 
 *Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
 
