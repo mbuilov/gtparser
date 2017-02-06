@@ -20,8 +20,8 @@ Small library of generic text parsing functions enough to parse simple configs
 9. [_scan_name](#scan-chars-of-a-name)
 10. [_scan_uint](#scan-unsigned-decimal-integer)
 11. [_scan_uint64](#scan-unsigned-decimal-64-bit-integer)
-12. [_scan_hex](#scan-unsigned-hexdecimal-integer)
-13. [_scan_hex64](#scan-unsigned-hexdecimal-64-bit-integer)
+12. [_scan_hex](#scan-unsigned-hexadecimal-integer)
+13. [_scan_hex64](#scan-unsigned-hexadecimal-64-bit-integer)
 
 #### Check if given char may start an identifier name
 ```
