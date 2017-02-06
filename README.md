@@ -111,7 +111,7 @@ Parameters:
 
 **Returns:** value <= ```15``` if ```c``` is in range ```[a-fA-F0-9]```.
 
-*Declared in:* [```gtparser/name_scanner.h```](blob/master/gtparser/char_func.h)
+*Declared in:* [```gtparser/name_scanner.h```](/gtparser/char_func.h)
 
 
 ### Installing
