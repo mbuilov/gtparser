@@ -19,6 +19,7 @@ Small library of generic text parsing functions enough to parse simple configs
 8. [hex_char_value (table lookup-based)](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version)
 9. [_scan_name](#scan-chars-of-a-name)
 10. [_scan_uint](#scan-unsigned-integer)
+11. [_scan_uint64](#scan-unsigned-64-bit-integer)
 
 
 #### Check if given char may start an identifier name
@@ -137,6 +138,23 @@ Parameters:
 - ```s```  - points to first char of unsigned integer printed in a buffer (char in range ```[0-9]```)
 - ```end``` - points one char beyond the buffer containing printed unsigned integer
 - ```number``` - (_output_) scanned unsigned integer value
+
+_Note_: ```s``` < ```end```
+
+**Returns:** pointer beyond the last char of scanned unsigned integer (pointer to char not in range ```[0-9]```) or ```end```.
+
+**_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
+
+*Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
+
+#### Scan unsigned 64-bit integer
+```
+const char *_scan_uint64(const char *s, const char *const end, unsigned INT64_TYPE *number);
+```
+Parameters:
+- ```s```  - points to first char of unsigned 64-bit integer printed in a buffer (char in range ```[0-9]```)
+- ```end``` - points one char beyond the buffer containing printed unsigned 64-bit integer
+- ```number``` - (_output_) scanned unsigned 64-bit integer value
 
 _Note_: ```s``` < ```end```
 
