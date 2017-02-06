@@ -65,7 +65,7 @@ Parameters:
 
 *Declared in:* ```gtparser/char_func.h```
 
-_Note_: table lookup-based ```[is_next_name()](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version)``` may be slightly faster than this header-only inline ```_is_next_name()```.
+_Note_: table lookup-based [```is_next_name()```](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version) may be slightly faster than this header-only inline ```_is_next_name()```.
 
 #### Check if given char is a hexadecimal digit and get its value
 ```
@@ -78,7 +78,7 @@ Parameters:
 
 *Declared in:* ```gtparser/char_func.h```
 
-_Note_: table lookup-based ```hex_char_value()```(#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version) may be slightly faster than this header-only inline ```_hex_char_value()```.
+_Note_: table lookup-based [```hex_char_value()```](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version) may be slightly faster than this header-only inline ```_hex_char_value()```.
 
 #### Check if given char may start an identifier name (table lookup-based version)
 ```
@@ -111,7 +111,7 @@ Parameters:
 
 **Returns:** value <= ```15``` if ```c``` is in range ```[a-fA-F0-9]```.
 
-*Declared in:* ```gtparser/name_scanner.h```
+*Declared in:* [```gtparser/name_scanner.h```](blob/master/gtparser/char_func.h)
 
 
 ### Installing
