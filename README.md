@@ -30,7 +30,7 @@ Parameters:
 
 *Declared in:* ```gtparser/char_func.h```
 
-_Note_: table lookup-based is_first_name() may be slightly faster than this header-only inline _is_first_name().
+_Note_: table lookup-based ```is_first_name()``` may be slightly faster than this header-only inline ```_is_first_name()```.
 
 #### Check if given char is a decimal digit and get its value
 ```
@@ -65,7 +65,7 @@ Parameters:
 
 *Declared in:* ```gtparser/char_func.h```
 
-_Note_: table lookup-based is_next_name() may be slightly faster than this header-only inline _is_next_name().
+_Note_: table lookup-based ```is_next_name()``` may be slightly faster than this header-only inline ```_is_next_name()```.
 
 #### Check if given char is a hexadecimal digit and get its value
 ```
@@ -78,7 +78,7 @@ Parameters:
 
 *Declared in:* ```gtparser/char_func.h```
 
-_Note_: table lookup-based hex_char_value() may be slightly faster than this header-only inline _hex_char_value().
+_Note_: table lookup-based ```hex_char_value()``` may be slightly faster than this header-only inline ```_hex_char_value()```.
 
 #### Check if given char may start an identifier name (table lookup-based version)
 ```
