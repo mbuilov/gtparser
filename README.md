@@ -17,6 +17,7 @@ Small library of generic text parsing functions enough to parse simple configs
 6. [is_first_name (table lookup-based)](#check-if-given-char-may-start-an-identifier-name-table-lookup-based-version)
 7. [is_next_name (table lookup-based)](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version)
 8. [hex_char_value (table lookup-based)](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version)
+9. [_scan_name](#scan-chars-of-a-name)
 
 
 #### Check if given char may start an identifier name
@@ -113,6 +114,18 @@ Parameters:
 
 *Declared in:* [```gtparser/name_scanner.h```](/gtparser/name_scanner.h)
 
+#### Scan chars of a name
+```
+const char *_scan_name(const char *s, const char *const end);
+```
+Parameters:
+- ```s```  - points to first char of a name in a buffer (char in range ```[_a-zA-Z]```)
+- ```end``` - points one char beyond the buffer containing a name
+
+**Returns:** pointer beyond the last char of scanned name (pointer to char not in range ```[_a-zA-Z0-9]```) or ```end```.
+
+*Declared in:* [```gtparser/name_scanner.h```](/gtparser/name_scanner.h)
+
 
 ### Installing
 
@@ -155,6 +168,7 @@ Parameters:
     _Note_: make command should be the same as for building, except the target should be _```install```_ or _```uninstall```_.
 
     4.1 On Linux (_example_):
+
     possibly as root, do
     ```
     $ make MTOP=/home/user/clean-build OS=LINUX CPU=x86_64 TARGET=GTPARSER install
