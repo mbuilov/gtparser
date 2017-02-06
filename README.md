@@ -18,9 +18,10 @@ Small library of generic text parsing functions enough to parse simple configs
 7. [is_next_name (table lookup-based)](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version)
 8. [hex_char_value (table lookup-based)](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version)
 9. [_scan_name](#scan-chars-of-a-name)
-10. [_scan_uint](#scan-unsigned-integer)
-11. [_scan_uint64](#scan-unsigned-64-bit-integer)
-
+10. [_scan_uint](#scan-unsigned-decimal-integer)
+11. [_scan_uint64](#scan-unsigned-decimal-64-bit-integer)
+12. [_scan_hex](#scan-unsigned-hexdecimal-integer)
+13. [_scan_hex64](#scan-unsigned-hexdecimal-64-bit-integer)
 
 #### Check if given char may start an identifier name
 ```
@@ -130,35 +131,73 @@ _Note_: ```s``` < ```end```
 
 *Declared in:* [```gtparser/name_scanner.h```](/gtparser/name_scanner.h)
 
-#### Scan unsigned integer
+#### Scan unsigned decimal integer
 ```
 const char *_scan_uint(const char *s, const char *const end, unsigned *number);
 ```
 Parameters:
-- ```s```  - points to first char of unsigned integer printed in a buffer (char in range ```[0-9]```)
-- ```end``` - points one char beyond the buffer containing printed unsigned integer
+- ```s```  - points to first char of unsigned decimal integer printed in a buffer (char in range ```[0-9]```)
+- ```end``` - points one char beyond the buffer containing printed unsigned decimal integer
 - ```number``` - (_output_) scanned unsigned integer value
 
 _Note_: ```s``` < ```end```
 
-**Returns:** pointer beyond the last char of scanned unsigned integer (pointer to char not in range ```[0-9]```) or ```end```.
+**Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not in range ```[0-9]```) or ```end```.
 
 **_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
 
 *Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
 
-#### Scan unsigned 64-bit integer
+#### Scan unsigned decimal 64-bit integer
 ```
 const char *_scan_uint64(const char *s, const char *const end, unsigned INT64_TYPE *number);
 ```
 Parameters:
-- ```s```  - points to first char of unsigned 64-bit integer printed in a buffer (char in range ```[0-9]```)
-- ```end``` - points one char beyond the buffer containing printed unsigned 64-bit integer
+- ```s```  - points to first char of unsigned decimal 64-bit integer printed in a buffer (char in range ```[0-9]```)
+- ```end``` - points one char beyond the buffer containing printed unsigned decimal 64-bit integer
 - ```number``` - (_output_) scanned unsigned 64-bit integer value
 
 _Note_: ```s``` < ```end```
 
-**Returns:** pointer beyond the last char of scanned unsigned integer (pointer to char not in range ```[0-9]```) or ```end```.
+_Note_: ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
+
+**Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not in range ```[0-9]```) or ```end```.
+
+**_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
+
+*Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
+
+#### Scan unsigned hexadecimal integer
+```
+const char *_scan_hex(const char *s, const char *const end, unsigned *number);
+```
+Parameters:
+- ```s```  - points to first char of unsigned hexadecimal integer printed in a buffer (char in range ```[0-9a-fA-F]```)
+- ```end``` - points one char beyond the buffer containing printed unsigned hexadecimal integer
+- ```number``` - (_output_) scanned unsigned integer value
+
+_Note_: ```s``` < ```end```
+
+**Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not in range ```[0-9a-fA-F]```) or ```end```.
+
+**_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
+
+*Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
+
+#### Scan unsigned hexadecimal 64-bit integer
+```
+const char *_scan_hex64(const char *s, const char *const end, unsigned INT64_TYPE *number);
+```
+Parameters:
+- ```s```  - points to first char of unsigned hexadecimal 64-bit integer printed in a buffer (char in range ```[0-9a-fA-F]```)
+- ```end``` - points one char beyond the buffer containing printed unsigned hexadecimal 64-bit integer
+- ```number``` - (_output_) scanned unsigned 64-bit integer value
+
+_Note_: ```s``` < ```end```
+
+_Note_: ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
+
+**Returns:** pointer beyond the last char of scanned unsigned hexadecimal 64-bit integer (pointer to char not in range ```[0-9a-fA-F]```) or ```end```.
 
 **_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
 
