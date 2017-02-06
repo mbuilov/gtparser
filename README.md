@@ -153,8 +153,8 @@ _Note_: ```s``` < ```end```
 const char *_scan_uint64(const char *s, const char *const end, unsigned INT64_TYPE *number);
 ```
 Parameters:
-- ```s```  - points to first char of unsigned decimal 64-bit integer printed in a buffer (char in range ```[0-9]```)
-- ```end``` - points one char beyond the buffer containing printed unsigned decimal 64-bit integer
+- ```s```  - points to first char of unsigned decimal integer printed in a buffer (char in range ```[0-9]```)
+- ```end``` - points one char beyond the buffer containing printed unsigned decimal integer
 - ```number``` - (_output_) scanned unsigned 64-bit integer value
 
 _Note_: ```s``` < ```end```
@@ -189,15 +189,15 @@ _Note_: ```s``` < ```end```
 const char *_scan_hex64(const char *s, const char *const end, unsigned INT64_TYPE *number);
 ```
 Parameters:
-- ```s```  - points to first char of unsigned hexadecimal 64-bit integer printed in a buffer (char in range ```[0-9a-fA-F]```)
-- ```end``` - points one char beyond the buffer containing printed unsigned hexadecimal 64-bit integer
+- ```s```  - points to first char of unsigned hexadecimal integer printed in a buffer (char in range ```[0-9a-fA-F]```)
+- ```end``` - points one char beyond the buffer containing printed unsigned hexadecimal integer
 - ```number``` - (_output_) scanned unsigned 64-bit integer value
 
 _Note_: ```s``` < ```end```
 
 _Note_: ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
 
-**Returns:** pointer beyond the last char of scanned unsigned hexadecimal 64-bit integer (pointer to char not in range ```[0-9a-fA-F]```) or ```end```.
+**Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not in range ```[0-9a-fA-F]```) or ```end```.
 
 **_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
 
