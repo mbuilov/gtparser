@@ -49,11 +49,15 @@ static inline struct src_iter *_src_iter_init(struct src_iter *it, const char *i
 /* allow 64-bit size type */
 #define src_iter_init(it, input, size) ((void)(_src_iter_init(it, input)->end += (size)))
 
+/* input:  it points to checked char */
+/* output: it points to unchecked char, may be to eof */
 static inline void _src_iter_step(const char **current)
 {
 	(*current)++;
 }
 
+/* input:  it points to checked char */
+/* output: it points to unchecked char, may be to eof */
 static inline void src_iter_step(struct src_iter *it)
 {
 	_src_iter_step(&it->current);
@@ -135,25 +139,25 @@ static inline void src_iter_check(struct src_iter *it)
 	_src_iter_check(&it->line, &it->back_column, it->current, GTPARSER_TAB_SIZE);
 }
 
-/* current char the it points to (it must not point to eof) */
+/* get current char the it points to (it must not point to eof) */
 static inline char _src_iter_current(const char *current)
 {
 	return *current;
 }
 
-/* current char the it points to (it must not point to eof) */
+/* get current char the it points to (it must not point to eof) */
 static inline char src_iter_current(const struct src_iter *it)
 {
 	return _src_iter_current(it->current);
 }
 
-/* current char the it points to, '\0' if it points to eof */
+/* get current char the it points to, '\0' if it points to eof */
 static inline char _src_iter_current_eof(const char *current, const char *end)
 {
 	return _src_iter_eof(current, end) ? '\0' : *current;
 }
 
-/* current char the it points to, '\0' if it points to eof */
+/* get current char the it points to, '\0' if it points to eof */
 static inline char src_iter_current_eof(const struct src_iter *it)
 {
 	return _src_iter_current_eof(it->current, it->end);
@@ -246,12 +250,12 @@ GTPARSER_EXPORTS void _skip_rest_of_line(struct src_iter *it);
 
 /* input:  it points to unchecked char or to eof */
 /* output: if returns != '\0', it points to non-space and non-eof */
-/* returns current char */
+/* returns current char or '\0' on eof */
 GTPARSER_EXPORTS char read_non_space_skip_comments(struct src_iter *it, char comment/*'#'*/);
 
 /* input:  it points to unchecked char or to eof */
 /* output: if returns != '\0', it points to '\n' or to non-space and non-eof */
-/* returns current char */
+/* returns current char or '\0' on eof */
 GTPARSER_EXPORTS char read_non_space_stop_eol(struct src_iter *it);
 
 #ifdef __cplusplus
