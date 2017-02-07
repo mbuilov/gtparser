@@ -170,7 +170,7 @@ Parameters:
 - ```end``` - points one char beyond the buffer containing printed unsigned decimal integer
 - ```number``` - (_output_) scanned unsigned integer value
 
-_Note_: ```s``` < ```end```�
+_Note_: ```s``` < ```end```
 
 **Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not in range ```[0-9]```) or ```end```.
 
@@ -187,9 +187,9 @@ Parameters:
 - ```end``` - points one char beyond the buffer containing printed unsigned decimal integer
 - ```number``` - (_output_) scanned unsigned 64-bit integer value
 
-_Note_: ```s``` < ```end```
-
-_Note_: ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
+_Notes_:
+* ```s``` < ```end```
+* ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
 
 **Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not in range ```[0-9]```) or ```end```.
 
@@ -223,9 +223,9 @@ Parameters:
 - ```end``` - points one char beyond the buffer containing printed unsigned hexadecimal integer
 - ```number``` - (_output_) scanned unsigned 64-bit integer value
 
-_Note_: ```s``` < ```end```
-
-_Note_: ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
+_Notes_:
+* ```s``` < ```end```
+* ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
 
 **Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not in range ```[0-9a-fA-F]```) or ```end```.
 
@@ -278,9 +278,9 @@ Parameters:
 
 Iterator column number incremented by ```1```.
 
-_Note_: assume current char was checked for ```<TAB>``` (horizontal tabulate character ```'\t'```) or ```<EOL>``` (end-of-line indicator character ```'\n'```)
-
-_Note_: iterator must not point to ```<EOF>``` (end-of-file indicator)
+_Notes_:
+* assume current char was checked for ```<TAB>``` (horizontal tabulate character ```'\t'```) or ```<EOL>``` (end-of-line indicator character ```'\n'```)
+* iterator must not point to ```<EOF>``` (end-of-file indicator)
 
 *Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
@@ -315,9 +315,9 @@ Parameters:
 
 Iterator column number incremented by ```1```.
 
-_Note_: assume current char was checked for ```<TAB>``` or ```<EOL>```
-
-_Note_: iterator must not point to ```<EOF>```
+_Notes_:
+* assume current char was checked for ```<TAB>``` or ```<EOL>```
+* iterator must not point to ```<EOF>```
 
 *Example of simple parsing loop:*
 ```
@@ -340,9 +340,9 @@ Parameters:
 
 Iterator column number incremented by ```1``` to ```GTPARSER_TAB_SIZE```, depending on current column number value.
 
-_Note_: iterator must point to ```<TAB>``` character
-
-_Note_: horizontal tabulate width equals to ```GTPARSER_TAB_SIZE``` spaces, ```4``` by default.
+_Notes_:
+* iterator must point to ```<TAB>``` character
+* horizontal tabulate width equals to ```GTPARSER_TAB_SIZE``` spaces, ```4``` by default.
 
 *Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
@@ -535,9 +535,9 @@ Skip current character, then next characters until new line.
 
 On return, iterator points to beginning of next line or to ```<EOF>```.
 
-_Note_: this function is usable to skip one-line comment
-
-_Note_: before the call, iterator must not point to ```<EOF>``` (assume iterator points to char indicating start of a comment)
+_Notes_:
+* this function is usable to skip one-line comment
+* before the call, iterator must not point to ```<EOF>``` (assume iterator points to char indicating start of a comment)
 
 *Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
@@ -560,11 +560,10 @@ Parameters:
 
 **Returns:** current non-space char or ```0```, if non-space char was not found and iterator points to ```<EOF>```
 
-_Note_: Checks all characters, starting from current one by ```is_space()``` function
-
-_Note_: Skips one-line comments by ```_skip_comment()``` fuction
-
-_Note_: Iterator may point to ```<EOF>```
+_Notes_:
+* checks all characters, starting from current one by ```is_space()``` function
+* skips one-line comments by ```_skip_comment()``` fuction
+* iterator may point to ```<EOF>```
 
 #### Read first non-space character or &lt;EOL&gt;
 ```
