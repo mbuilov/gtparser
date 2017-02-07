@@ -51,6 +51,7 @@ Small library of generic text parsing functions enough to parse simple configs
 3. [read_non_space_skip_comments](#read-first-non-space-character-skipping-comments)
 4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol-skipping-comments)
 
+********************************************************************************
 
 #### Check if given char is a decimal digit and get its value
 ```
@@ -245,7 +246,7 @@ _Note_: this fast and simple function is usable to skip all space characters, li
 
 *Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
---------------------------------------------------------------------------
+================================================================
 
 #### Initialize source text iterator structure
 ```
@@ -521,7 +522,7 @@ _Note_: ```save_pos``` may be obtained either by ```src_iter_save_pos()``` or ``
 
 *Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
---------------------------------------------------------------------------
+================================================================
 
 #### Skip characters until end of line
 ```
