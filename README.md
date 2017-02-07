@@ -49,7 +49,7 @@ Small library of generic text parsing functions enough to parse simple configs
 1. [_skip_rest_of_line](#skip-characters-until-end-of-line)
 2. [_skip_comment](#skip-one-line-comment)
 3. [read_non_space_skip_comments](#read-first-non-space-character-skipping-comments)
-4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol-skipping-comments)
+4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol)
 
 ********************************************************************************
 
@@ -566,7 +566,7 @@ _Note_: Skips one-line comments by ```_skip_comment()``` fuction
 
 _Note_: Iterator may point to ```<EOF>```
 
-#### Read first non-space character or &lt;EOL&gt; skipping comments
+#### Read first non-space character or &lt;EOL&gt;
 ```
 char read_non_space_stop_eol(struct src_iter *it);
 ```
