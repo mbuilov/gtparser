@@ -518,7 +518,7 @@ Parameters:
 - ```it```       - text iterator structure
 - ```save_pos``` - saved iterator state
 
-_Note_: ```save_pos``` may be obtained either by ```src_iter_save_pos()``` or ```src_iter_return_save_pos()```
+_Note_: ```save_pos``` may be obtained either by [```src_iter_save_pos()```](#save-iterator-state) or [```src_iter_return_save_pos()```](#return-iterator-state)
 
 *Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
@@ -561,8 +561,8 @@ Parameters:
 **Returns:** current non-space char or ```0```, if non-space char was not found and iterator points to ```<EOF>```
 
 _Notes_:
-* checks all characters, starting from current one by ```is_space()``` function
-* skips one-line comments by ```_skip_comment()``` fuction
+* checks all characters, starting from current one by [```is_space()```](#check-if-char-is-a-space) function
+* skips one-line comments by [```_skip_comment()```](#skip-one-line-comment) fuction
 * iterator may point to ```<EOF>```
 
 #### Read first non-space character or &lt;EOL&gt;
