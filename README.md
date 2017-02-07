@@ -7,11 +7,11 @@ Small library of generic text parsing functions enough to parse simple configs
 - [Installing](#installing)
 
 
-### Available functions
+### Generic text functions
 
-1. [_is_first_name](#check-if-given-char-may-start-an-identifier-name)
-2. [digit_value](#check-if-given-char-is-a-decimal-digit-and-get-its-value)
-3. [is_digit](#check-if-given-char-is-a-decimal-digit)
+1. [digit_value](#check-if-given-char-is-a-decimal-digit-and-get-its-value)
+2. [is_digit](#check-if-given-char-is-a-decimal-digit)
+3. [_is_first_name](#check-if-given-char-may-start-an-identifier-name)
 4. [_is_next_name](#check-if-given-char-may-continue-an-identifier-name)
 5. [_hex_char_value](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value)
 6. [is_first_name (table lookup-based)](#check-if-given-char-may-start-an-identifier-name-table-lookup-based-version)
@@ -23,18 +23,29 @@ Small library of generic text parsing functions enough to parse simple configs
 12. [_scan_hex](#scan-unsigned-hexadecimal-integer)
 13. [_scan_hex64](#scan-unsigned-hexadecimal-64-bit-integer)
 
-#### Check if given char may start an identifier name
-```
-int _is_first_name(char c);
-```
-Parameters:
-- ```c```  - char to check
+### Text iterator api
 
-**Returns:** non-zero if ```c``` is in range ```[_a-zA-Z]```.
+1. [src_iter_init]
+1. [src_iter_step]
+1. [src_iter_eof]
+1. [src_iter_next]
+1. [src_iter_process_tab]
+1. [src_iter_check_tab]
+1. [src_iter_inc_line]
+1. [src_iter_check]
+1. [src_iter_current]
+1. [src_iter_current_eof]
+1. [src_iter_get_column]
+1. [src_iter_get_pos]
+1. [src_iter_return_pos]
+1. [src_iter_save_pos]
+1. [src_iter_return_save_pos]
+1. [src_iter_restore_pos]
+1. [is_space]
+1. [_skip_rest_of_line]
+1. [_skip_comment]
+1. [read_non_space_skip_comments]
 
-*Declared in:* [```gtparser/char_func.h```](/gtparser/char_func.h)
-
-_Note_: table lookup-based [```is_first_name()```](#check-if-given-char-may-start-an-identifier-name-table-lookup-based-version) may be slightly faster than this header-only inline ```_is_first_name()```.
 
 #### Check if given char is a decimal digit and get its value
 ```
@@ -57,6 +68,19 @@ Parameters:
 **Returns:** non-zero if ```c``` is in range ```[0-9]```.
 
 *Declared in:* [```gtparser/char_func.h```](/gtparser/char_func.h)
+
+#### Check if given char may start an identifier name
+```
+int _is_first_name(char c);
+```
+Parameters:
+- ```c```  - char to check
+
+**Returns:** non-zero if ```c``` is in range ```[_a-zA-Z]```.
+
+*Declared in:* [```gtparser/char_func.h```](/gtparser/char_func.h)
+
+_Note_: table lookup-based [```is_first_name()```](#check-if-given-char-may-start-an-identifier-name-table-lookup-based-version) may be slightly faster than this header-only inline ```_is_first_name()```.
 
 #### Check if given char may continue an identifier name
 ```
@@ -202,6 +226,340 @@ _Note_: ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long lo
 **_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns ```NULL```.
 
 *Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
+
+
+#### Initialize source text iterator structure
+```
+void src_iter_init(struct src_iter *it, const char *input, size_t size);
+```
+Parameters:
+- ```it```    - iterator structure to initialize
+- ```input``` - text buffer to parse
+- ```size```  - text buffer size
+
+_Note_: Iterator line and column numbers are set to 1
+
+*Example:*
+```
+extern const char *input;
+extern size_t size;
+struct src_iter it;
+src_iter_init(&it, input, size);
+```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Step over current character
+```
+void src_iter_step(struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+Iterator column number incremented by 1.
+
+_Note_: assume current char was checked for ```<TAB>``` (horizontal tabulate character '\t') or ```<EOL>``` (end-of-line indicator character '\n')
+_Note_: iterator must not point to ```<EOF>``` (end-of-file indicator)
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Check if iterator points to <EOF>
+```
+int src_iter_eof(const struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+**Returns:** non-zero if iterator points to ```<EOF>```, zero - if not
+
+*Example of simple parsing loop:*
+```
+extern struct src_iter *it;
+while (!src_iter_eof(it)) {
+	/* process current character */
+	src_iter_step(it);
+}
+```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Move iterator to next character and check it for <EOF>
+```
+int src_iter_next(struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+**Returns:** non-zero if current character is _**not**_ ```<EOF>```, may continue parsing
+
+Iterator column number incremented by 1.
+
+_Note_: assume current char was checked for ```<TAB>``` or new line
+_Note_: iterator must not point to ```<EOF>```
+
+*Example of simple parsing loop:*
+```
+extern struct src_iter *it;
+if (!src_iter_eof(it)) {
+	do {
+		/* process current character */
+	} while (src_iter_next(it));
+}
+```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Account encountered <TAB> character
+```
+void src_iter_process_tab(struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+Iterator column number incremented by ```1``` to ```GTPARSER_TAB_SIZE```, depending on current column number value.
+
+_Note_: iterator must point to ```<TAB>``` character
+_Note_: horizontal tabulate width equals to ```GTPARSER_TAB_SIZE``` spaces, 4 by default.
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Check if current character is the <TAB>
+```
+void src_iter_check_tab(struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+Check if current character is the ```<TAB>``` and account it if it is.
+
+_Note_: iterator must not point to ```<EOF>```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Account encountered newline
+```
+void src_iter_inc_line(struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+Increment iterator line number, set column number to zero.
+
+_Note_: iterator must point to ```<EOL>```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Check if current character is the <TAB> or <EOL>
+```
+void src_iter_check(struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+Check if current character is the ```<TAB>``` or ```<EOL>```, then account it appropriately.
+
+_Note_: iterator must not point to ```<EOF>```
+
+*Example of simple parsing loop:*
+```
+extern struct src_iter *it;
+if (!src_iter_eof(it)) {
+	do {
+		/* process current character */
+		/* account <TAB> or new line */
+		src_iter_check(it);
+	} while (src_iter_next(it));
+}
+```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Get current character
+```
+char src_iter_current(const struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+**Returns:** current character iterator points to
+
+_Note_: iterator must not point to ```<EOF>```
+
+*Example of simple parsing loop:*
+```
+extern struct src_iter *it;
+if (!src_iter_eof(it)) {
+	do {
+		/* get current character to process */
+		char c = src_iter_current(it);
+		/* process current character */
+		/* account <TAB> or new line */
+		src_iter_check(it);
+	} while (src_iter_next(it));
+}
+```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Get current character or 0 as <EOF> indicator
+```
+char src_iter_current_eof(const struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+**Returns:** non-zero current character if iterator points to non-```<EOF>```, else returns ```0```
+
+_Note_: this function may be usable for parsing texts where characters with zero value are not expected
+
+*Example of simple parsing loop:*
+```
+extern struct src_iter *it;
+for (;;) {
+	/* get current character to process */
+	char c = src_iter_current_eof(it);
+	if (!c)
+		break; /* iterator points to <EOF> */
+	/* process current character */
+	/* account <TAB> or new line */
+	src_iter_check(it);
+}
+```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Get current column number
+```
+unsigned src_iter_get_column(const struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+**Returns:** current iterator column number
+
+_Note_: column number may overflow for large texts
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Get iterator text position (line and column numbers)
+```
+void src_iter_get_pos(const struct src_iter *it, struct src_pos *pos);
+```
+Parameters:
+- ```it``` - text iterator structure
+- ```pos``` - (_output_) current iterator text position
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Return iterator text position (line and column numbers)
+```
+struct src_pos src_iter_return_pos(const struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+**Returns:** current iterator text position
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Save iterator state
+```
+void src_iter_save_pos(const struct src_iter *it, struct src_save_pos *save_pos);
+```
+Parameters:
+- ```it```       - text iterator structure
+- ```save_pos``` - (_output_) current iterator state
+
+```save_pos``` may be used to restore iterator state - unparse characters processed after ```save_pos``` was taken.
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Return iterator state
+```
+struct src_save_pos src_iter_return_save_pos(const struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+**Returns:** current iterator state
+
+returned state value may be used to restore iterator state - unparse characters processed after state was taken.
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Restore iterator state
+```
+void src_iter_restore_pos(struct src_iter *it, const struct src_save_pos *save_pos);
+```
+Parameters:
+- ```it```       - text iterator structure
+- ```save_pos``` - saved iterator state
+
+_Note_: ```save_pos``` may be obtained either by ```src_iter_save_pos()``` or ```src_iter_return_save_pos()```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Check if char is a _space_
+```
+int is_space(char c);
+```
+Parameters:
+- ```c``` - checked char
+
+**Returns:** non-zero if ```c``` is a _space_ - character with value in ascii range ```[0..32]```
+
+_Note_: this fast and simple function is usable to skip all space characters, like tabulations, new lines, form feeds, bells and so on.
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Skip characters until end of line
+```
+void _skip_rest_of_line(struct src_iter *it);
+```
+Parameters:
+- ```it``` - text iterator structure
+
+Skip current character, then all next characters until new line.
+On return, iterator points to beginning of next line or to ```<EOF>```.
+
+_Note_: this function is usable to skip one-line comment
+_Note_: before the call, iterator must not point to ```<EOF>``` (assume iterator points to char indicating a comment)
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Skip one-line comment
+```
+void _skip_comment(struct src_iter *it);
+```
+
+Just another name of [```_skip_rest_of_line()```](#skip-characters-until-end-of-line) function.
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+
+#### Read first non-space character skipping comments
+```
+char read_non_space_skip_comments(struct src_iter *it, char comment);
+```
+Parameters:
+- ```it```      - text iterator structure
+- ```comment``` - char indicating one-line comment
+
+**Returns:** current non-space char or ```0```, if non-space char was not found and iterator points to ```<EOF>```
+
+_Note_: Checks all characters, starting from current one by ```is_space()``` function
+_Note_: Skips one-line comments by ```_skip_comment()``` fuction
+_Note_: Iterator may point to ```<EOF>```
+
+#### Read first non-space character or <EOL> skipping comments
+```
+char read_non_space_stop_eol(struct src_iter *it);
+```
+Parameters:
+- ```it```      - text iterator structure
+
+**Returns:** current non-space char or ```<EOL>``` or ```0```, if non-space char or ```<EOL>``` was not found and iterator points to ```<EOF>```
+
+*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
 
 ### Installing
