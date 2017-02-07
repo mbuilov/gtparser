@@ -537,7 +537,7 @@ On return, iterator points to beginning of next line or to ```<EOF>```.
 
 _Note_: this function is usable to skip one-line comment
 
-_Note_: before the call, iterator must not point to ```<EOF>``` (assume iterator points to char indicating a comment)
+_Note_: before the call, iterator must not point to ```<EOF>``` (assume iterator points to char indicating start of a comment)
 
 *Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
@@ -556,7 +556,7 @@ char read_non_space_skip_comments(struct src_iter *it, char comment);
 ```
 Parameters:
 - ```it```      - text iterator structure
-- ```comment``` - char indicating one-line comment
+- ```comment``` - char indicating start of one-line comment
 
 **Returns:** current non-space char or ```0```, if non-space char was not found and iterator points to ```<EOF>```
 
