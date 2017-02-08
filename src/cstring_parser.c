@@ -11,14 +11,6 @@
 #include "gtparser/parser_base.h"
 #include "gtparser/name_scanner.h"
 
-#ifndef ASSERT
-#ifdef _DEBUG
-#define ASSERT(cond) GTPARSER_ASSERT(cond)
-#else
-#define ASSERT(cond) ((void)0)
-#endif
-#endif
-
 static enum PARSE_CSTRING_ERR _parse_cstring(unsigned *line, const char **current,
 	unsigned *back_column, size_t *removed, const char *const end)
 {
@@ -205,5 +197,5 @@ GTPARSER_EXPORTS void copy_cstring(char dst[]/*out*/, const char *begin, const c
 		ASSERT(c); /* zero character inside string is not allowed */
 		*dst++ = c;
 	}
-	GTPARSER_MEMCPY(dst, begin, (size_t)(end - begin));
+	MEMCPY(dst, begin, (size_t)(end - begin));
 }

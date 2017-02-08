@@ -17,12 +17,14 @@
 
 #ifdef _DEBUG
 #include <assert.h>
+#define ASSERT(cond) assert(cond)
+#else
+#define ASSERT(cond) ((void)0)
 #endif
 
-#define GTPARSER_STRLEN(str)         strlen(str)
-#define GTPARSER_MEMMOVE(dst,src,sz) memmove(dst,src,sz)
-#define GTPARSER_MEMCPY(dst,src,sz)  memcpy(dst,src,sz)
-#define GTPARSER_ASSERT(cond)        assert(cond)
-#define GTPARSER_SPRINTF             sprintf
+#define STRLEN(str)         strlen(str)
+#define MEMMOVE(dst,src,sz) memmove(dst,src,sz)
+#define MEMCPY(dst,src,sz)  memcpy(dst,src,sz)
+#define SPRINTF             sprintf
 
 #endif /* GTPARSER_CONFIG_H_INCLUDED */
