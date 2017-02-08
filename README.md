@@ -51,6 +51,11 @@ Small library of generic text parsing functions enough to parse simple configs
 3. [read_non_space_skip_comments](#read-first-non-space-character-skipping-comments)
 4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol)
 
+### Helpers to form error message
+
+1. [parser_err_reserve](#reserve-a-space-in-error-buffer-for-error-message-location-info)
+1. [parser_err_prepend_at](#prepend-error-message-location-info-to-error-message)
+
 ---------------------------------------------------
 
 #### Check if given char is a decimal digit and get its value
@@ -577,6 +582,65 @@ Parameters:
 **Returns:** current non-space char or `<EOL>` or `0`, if non-space char or `<EOL>` was not found and iterator points to `<EOF>`
 
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
+
+================================================================
+
+#### Reserve a space in error buffer for error message location info
+```C
+char *parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve);
+```
+Parameters:
+- `err_buf`          - buffer where to compose error message
+- `err_buf_size`     - buffer size
+- `filename_reserve` - how much space to reserve in `err_buf` for file name passed to [`parser_err_prepend_at()`](#prepend-error-message-location-info-to-error-message)
+
+**Returns:** pointer to a space inside `err_buf` to print error message details to, or returns `err_buf`, if `err_buf_size` is too small
+
+_Note_: if `err_buf_size` is big enough, then [`parser_err_prepend_at()`](#prepend-error-message-location-info-to-error-message) will prepend resulting error message with something like `"filename: parse error at (4294967295:4294967295):"`
+
+*Example:* - see [`parser_err_prepend_at()`](#prepend-error-message-location-info-to-error-message)
+
+*Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
+
+#### Prepend error message location info to error message
+```C
+const char *parser_err_prepend_at(
+	char err_buf,
+	size_t err_buf_size,
+	size_t filename_reserve/*0?*/,
+	const char *filename/*NULL?*/,
+	const char *err,
+	unsigned line/*0?*/,
+	unsigned column/*0?*/);
+```
+Parameters:
+- `err_buf`          - buffer where to compose error message
+- `err_buf_size`     - buffer size
+- `filename_reserve` - how much space to reserve in `err_buf` for file name
+- `filename`         - '\0'-terminated source file name where an error was encountered, may be `NULL`
+- `err`              - '\0'-terminated error message
+- `line`             - source line number where a parsing error was encountered, if zero, then only column number is printed
+- `column`           - source column number where a parsing error was encountered, if zero, then only line number is printed
+
+**Returns:** pointer to composed error message with prepended location info in `err_buf` or `err`, if `err_buf_size` is too small
+
+_Note_: if error message was printed to `err_buf` (i.e. `err` is the value returned by [`parser_err_reserve()`](#reserve-a-space-in-error-buffer-for-error-message-location-info)), then `err_buf`, `err_buf_size` and `filename_reserve` must be the same that were passed to [`parser_err_reserve()`](#reserve-a-space-in-error-buffer-for-error-message-location-info)
+
+*Example:*
+```C
+extern char err_buf[];
+extern size_t err_buf_size;
+extern size_t filename_reserve;
+char *err = parser_err_reserve(err_buf, err_buf_size, filename_reserve);
+size_t err_space = (size_t)(err_buf + err_buf_size - err);
+...
+snprintf(err, err_space, "some error message");
+...
+extern const char *filename;
+extern unsigned line;
+extern unsigned column;
+const char *err_msg = parser_err_prepend_at(err_buf, err_buf_size, filename_reserve, filename, err, line, column);
+```
 
 ---------------------------------------------------
 
