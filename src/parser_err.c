@@ -10,9 +10,10 @@
 #include "gtparser/parser_err.h"
 
 #define __MAX_OF__(a,b) ((a)>(b)?(a):(b))
-#define pe_reserve1 sizeof("parse error at (4294967295:4294967295):") /* note: take into account teminating '\0' in string constant */
-#define pe_reserve2 sizeof("parse error at line 4294967295:")         /* note: take into account teminating '\0' in string constant */
-#define pe_reserve3 sizeof("parse error at char 4294967295:")         /* note: take into account teminating '\0' in string constant */
+#define parse_error_at "parse error at "
+#define pe_reserve1 sizeof(parse_error_at "(4294967295:4294967295):") /* note: take into account terminating '\0' in string constant */
+#define pe_reserve2 sizeof(parse_error_at "line 4294967295:")         /* note: take into account terminating '\0' in string constant */
+#define pe_reserve3 sizeof(parse_error_at "char 4294967295:")         /* note: take into account terminating '\0' in string constant */
 #define PE_RESERVE (__MAX_OF__(pe_reserve1, __MAX_OF__(pe_reserve2, pe_reserve3)))
 
 GTPARSER_EXPORTS char *parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/)
@@ -50,9 +51,9 @@ GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_bu
 		{
 			/* buf has at least one byte free before err_buf_end - guaranteed by parser_err_reserve() */
 			int printed =
-				!line ? SPRINTF(err_buf_tail, "parse error at char %u:", column & 4294967295u) :
-				!column ? SPRINTF(err_buf_tail, "parse error at line %u:", line & 4294967295u) :
-				SPRINTF(err_buf_tail, "parse error at (%u:%u):", line & 4294967295u, column & 4294967295u);
+				!line   ? SPRINTF(err_buf_tail, parse_error_at "char %u:", column & 4294967295u) :
+				!column ? SPRINTF(err_buf_tail, parse_error_at "line %u:", line & 4294967295u) :
+				          SPRINTF(err_buf_tail, parse_error_at "(%u:%u):", line & 4294967295u, column & 4294967295u);
 			err_buf_tail[printed++] = ' '; /* eat one byte reserved by '\0' in PE_RESERVE */
 			if (err != buf) {
 				char *dst = err_buf_tail + printed; /* (dst < err_buf + err_buf_size) because (err_buf_size > PE_RESERVE) */
