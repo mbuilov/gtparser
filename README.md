@@ -8,7 +8,6 @@ Small library of generic text parsing functions enough to parse simple configs
 - [Handy functions for use with text iterator](#handy-functions-for-use-with-text-iterator)
 - [Installing](#installing)
 
-
 ### Generic text functions
 
 1. [digit_value](#check-if-given-char-is-a-decimal-digit-and-get-its-value)
@@ -34,7 +33,7 @@ Small library of generic text parsing functions enough to parse simple configs
 4. [src_iter_next](#move-iterator-to-next-character-and-check-it-for-eof)
 5. [src_iter_process_tab](#account-encountered-tab-character)
 6. [src_iter_check_tab](#check-if-current-character-is-a-tab)
-7. [src_iter_inc_line](#account-encountered-newline)
+7. [src_iter_inc_line](#account-encountered-eol-character)
 8. [src_iter_check](#check-if-current-character-is-a-tab-or-eol)
 9. [src_iter_current](#get-current-character)
 10. [src_iter_current_eof](#get-current-character-or-0-as-eof-indicator)
@@ -51,250 +50,250 @@ Small library of generic text parsing functions enough to parse simple configs
 3. [read_non_space_skip_comments](#read-first-non-space-character-skipping-comments)
 4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol)
 
-********************************************************************************
+---------------------------------------------------
 
 #### Check if given char is a decimal digit and get its value
-```
+```C
 unsigned digit_value(char c);
 ```
 Parameters:
-- ```c```  - char to check
+- `c`  - char to check
 
-**Returns:** value <= ```9``` if ```c``` is in range ```[0-9]```.
+**Returns:** value <= `9` if `c` is matched by regexp `[0-9]`
 
-*Declared in:* [```gtparser/char_func.h```](/gtparser/char_func.h)
+*Declared in:* [`gtparser/char_func.h`](/gtparser/char_func.h)
 
 #### Check if given char is a decimal digit
-```
+```C
 int is_digit(char c);
 ```
 Parameters:
-- ```c```  - char to check
+- `c`  - char to check
 
-**Returns:** non-zero if ```c``` is in range ```[0-9]```.
+**Returns:** non-zero if `c` is matched by regexp `[0-9]`
 
-*Declared in:* [```gtparser/char_func.h```](/gtparser/char_func.h)
+*Declared in:* [`gtparser/char_func.h`](/gtparser/char_func.h)
 
 #### Check if given char may start an identifier name
-```
+```C
 int _is_first_name(char c);
 ```
 Parameters:
-- ```c```  - char to check
+- `c`  - char to check
 
-**Returns:** non-zero if ```c``` is in range ```[_a-zA-Z]```.
+**Returns:** non-zero if `c` is matched by regexp: `[_a-zA-Z]`
 
-*Declared in:* [```gtparser/char_func.h```](/gtparser/char_func.h)
+*Declared in:* [`gtparser/char_func.h`](/gtparser/char_func.h)
 
-_Note_: table lookup-based [```is_first_name()```](#check-if-given-char-may-start-an-identifier-name-table-lookup-based-version) may be slightly faster than this header-only inline ```_is_first_name()```.
+_Note_: table lookup-based [`is_first_name()`](#check-if-given-char-may-start-an-identifier-name-table-lookup-based-version) may be slightly faster than this header-only inline `_is_first_name()`
 
 #### Check if given char may continue an identifier name
-```
+```C
 int _is_next_name(char c);
 ```
 Parameters:
-- ```c```  - char to check
+- `c`  - char to check
 
-**Returns:** non-zero if ```c``` is in range ```[_a-zA-Z0-9]```.
+**Returns:** non-zero if `c` is matched by regexp: `[_a-zA-Z0-9]`
 
-*Declared in:* [```gtparser/char_func.h```](/gtparser/char_func.h)
+*Declared in:* [`gtparser/char_func.h`](/gtparser/char_func.h)
 
-_Note_: table lookup-based [```is_next_name()```](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version) may be slightly faster than this header-only inline ```_is_next_name()```.
+_Note_: table lookup-based [`is_next_name()`](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version) may be slightly faster than this header-only inline `_is_next_name()`
 
 #### Check if given char is a hexadecimal digit and get its value
-```
+```C
 unsigned _hex_char_value(char c);
 ```
 Parameters:
-- ```c```  - char to check
+- `c`  - char to check
 
-**Returns:** value <= ```15``` if ```c``` is in range ```[a-fA-F0-9]```.
+**Returns:** value <= `15` if `c` is matched by regexp: `[0-9a-fA-F]`
 
-*Declared in:* [```gtparser/char_func.h```](/gtparser/char_func.h)
+*Declared in:* [`gtparser/char_func.h`](/gtparser/char_func.h)
 
-_Note_: table lookup-based [```hex_char_value()```](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version) may be slightly faster than this header-only inline ```_hex_char_value()```.
+_Note_: table lookup-based [`hex_char_value()`](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version) may be slightly faster than this header-only inline `_hex_char_value()`
 
 #### Check if given char may start an identifier name (table lookup-based version)
-```
+```C
 int is_first_name(char c);
 ```
 Parameters:
-- ```c```  - char to check
+- `c`  - char to check
 
-**Returns:** non-zero if ```c``` is in range ```[_a-zA-Z]```.
+**Returns:** non-zero if `c` is matched by regexp: `[_a-zA-Z]`
 
-*Declared in:* [```gtparser/name_scanner.h```](/gtparser/name_scanner.h)
+*Declared in:* [`gtparser/name_scanner.h`](/gtparser/name_scanner.h)
 
 #### Check if given char may continue an identifier name (table lookup-based version)
-```
+```C
 int is_next_name(char c);
 ```
 Parameters:
-- ```c```  - char to check
+- `c`  - char to check
 
-**Returns:** non-zero if ```c``` is in range ```[_a-zA-Z0-9]```.
+**Returns:** non-zero if `c` is matched by regexp: `[_a-zA-Z0-9]`
 
-*Declared in:* [```gtparser/name_scanner.h```](/gtparser/name_scanner.h)
+*Declared in:* [`gtparser/name_scanner.h`](/gtparser/name_scanner.h)
 
 #### Check if given char is a hexadecimal digit and get its value (table lookup-based version)
-```
+```C
 unsigned hex_char_value(char c);
 ```
 Parameters:
-- ```c```  - char to check
+- `c`  - char to check
 
-**Returns:** value <= ```15``` if ```c``` is in range ```[a-fA-F0-9]```.
+**Returns:** value <= `15` if `c` is matched by regexp: `[0-9a-fA-F]`
 
-*Declared in:* [```gtparser/name_scanner.h```](/gtparser/name_scanner.h)
+*Declared in:* [`gtparser/name_scanner.h`](/gtparser/name_scanner.h)
 
 #### Scan chars of a name
-```
+```C
 const char *_scan_name(const char *s, const char *const end);
 ```
 Parameters:
-- ```s```  - points to first char of a name in a buffer (char in range ```[_a-zA-Z]```)
-- ```end``` - points one char beyond the buffer containing a name
+- `s`   - points to first char of a name in a buffer (char matched by regexp: `[_a-zA-Z]`)
+- `end` - points one char beyond the buffer containing a name
 
-_Note_: ```s``` < ```end```
+_Note_: `s < end`
 
-**Returns:** pointer beyond the last char of scanned name (pointer to char not in range ```[_a-zA-Z0-9]```) or ```end```.
+**Returns:** pointer beyond the last char of scanned name (pointer to char not matched by regexp: `[_a-zA-Z0-9]`) or `end`
 
-*Declared in:* [```gtparser/name_scanner.h```](/gtparser/name_scanner.h)
+*Declared in:* [`gtparser/name_scanner.h`](/gtparser/name_scanner.h)
 
 #### Scan unsigned decimal integer
-```
+```C
 const char *_scan_uint(const char *s, const char *const end, unsigned *number);
 ```
 Parameters:
-- ```s```  - points to first char of unsigned decimal integer printed in a buffer (char in range ```[0-9]```)
-- ```end``` - points one char beyond the buffer containing printed unsigned decimal integer
-- ```number``` - (_output_) scanned unsigned integer value
+- `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
+- `end`    - points one char beyond the buffer containing printed unsigned decimal integer
+- `number` - (_output_) scanned unsigned integer value
 
-_Note_: ```s``` < ```end```
+_Note_: `s < end`
 
-**Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not in range ```[0-9]```) or ```end```.
+**Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not matched by regexp: `[0-9]`) or `end`
 
-**_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
+**_Note_**: on unsigned integer overflow, if printed number is too big, returns `NULL`
 
-*Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
+*Declared in:* [`gtparser/int_scanner.h`](/gtparser/int_scanner.h)
 
 #### Scan unsigned decimal 64-bit integer
-```
+```C
 const char *_scan_uint64(const char *s, const char *const end, unsigned INT64_TYPE *number);
 ```
 Parameters:
-- ```s```  - points to first char of unsigned decimal integer printed in a buffer (char in range ```[0-9]```)
-- ```end``` - points one char beyond the buffer containing printed unsigned decimal integer
-- ```number``` - (_output_) scanned unsigned 64-bit integer value
+- `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
+- `end`    - points one char beyond the buffer containing printed unsigned decimal integer
+- `number` - (_output_) scanned unsigned 64-bit integer value
 
 _Notes_:
-* ```s``` < ```end```
-* ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
+* `s < end`
+* `INT64_TYPE` - 64-bit integer type, by default defined as `long long`
 
-**Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not in range ```[0-9]```) or ```end```.
+**Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not matched by regexp: `[0-9]`) or `end`
 
-**_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns ```NULL```.
+**_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns `NULL`
 
-*Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
+*Declared in:* [`gtparser/int_scanner.h`](/gtparser/int_scanner.h)
 
 #### Scan unsigned hexadecimal integer
-```
+```C
 const char *_scan_hex(const char *s, const char *const end, unsigned *number);
 ```
 Parameters:
-- ```s```  - points to first char of unsigned hexadecimal integer printed in a buffer (char in range ```[0-9a-fA-F]```)
-- ```end``` - points one char beyond the buffer containing printed unsigned hexadecimal integer
-- ```number``` - (_output_) scanned unsigned integer value
+- `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
+- `end`    - points one char beyond the buffer containing printed unsigned hexadecimal integer
+- `number` - (_output_) scanned unsigned integer value
 
-_Note_: ```s``` < ```end```
+_Note_: `s < end`
 
-**Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not in range ```[0-9a-fA-F]```) or ```end```.
+**Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not matched by regexp: `[0-9a-fA-F]`) or `end`
 
-**_Note_**: on unsigned integer overflow, if printed number is too big, returns ```NULL```.
+**_Note_**: on unsigned integer overflow, if printed number is too big, returns `NULL`
 
-*Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
+*Declared in:* [`gtparser/int_scanner.h`](/gtparser/int_scanner.h)
 
 #### Scan unsigned hexadecimal 64-bit integer
-```
+```C
 const char *_scan_hex64(const char *s, const char *const end, unsigned INT64_TYPE *number);
 ```
 Parameters:
-- ```s```  - points to first char of unsigned hexadecimal integer printed in a buffer (char in range ```[0-9a-fA-F]```)
-- ```end``` - points one char beyond the buffer containing printed unsigned hexadecimal integer
-- ```number``` - (_output_) scanned unsigned 64-bit integer value
+- `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
+- `end`    - points one char beyond the buffer containing printed unsigned hexadecimal integer
+- `number` - (_output_) scanned unsigned 64-bit integer value
 
 _Notes_:
-* ```s``` < ```end```
-* ```INT64_TYPE``` - 64-bit integer type, by default defined as ```long long```.
+* `s < end`
+* `INT64_TYPE` - 64-bit integer type, by default defined as `long long`
 
-**Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not in range ```[0-9a-fA-F]```) or ```end```.
+**Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not matched by regexp: `[0-9a-fA-F]`) or `end`
 
-**_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns ```NULL```.
+**_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns `NULL`
 
-*Declared in:* [```gtparser/int_scanner.h```](/gtparser/int_scanner.h)
+*Declared in:* [`gtparser/int_scanner.h`](/gtparser/int_scanner.h)
 
 #### Check if char is a _space_
-```
+```C
 int is_space(char c);
 ```
 Parameters:
-- ```c``` - checked char
+- `c` - checked char
 
-**Returns:** non-zero if ```c``` is a _space_ - character with value in ascii range ```[0..32]```
+**Returns:** non-zero if `c` is a _space_ - ascii character with value in range `[0..32]`
 
-_Note_: this fast and simple function is usable to skip all space characters, like tabulations, new lines, form feeds, bells and so on.
+_Note_: this fast and simple function is usable to skip all space characters, like tabulations, new lines, form feeds, bells and so on
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 ================================================================
 
 #### Initialize source text iterator structure
-```
+```C
 void src_iter_init(struct src_iter *it, const char *input, size_t size);
 ```
 Parameters:
-- ```it```    - iterator structure to initialize
-- ```input``` - text buffer to parse
-- ```size```  - number of chars to parse in text buffer
+- `it`    - iterator structure to initialize
+- `input` - text buffer to parse
+- `size`  - number of chars to parse in text buffer
 
-_Note_: Iterator line and column numbers are set to ```1```
+_Note_: Iterator line and column numbers are set to `1`
 
 *Example:*
-```
+```C
 extern const char *input;
 extern size_t size;
 struct src_iter it;
 src_iter_init(&it, input, size);
 ```
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Step over current character
-```
+```C
 void src_iter_step(struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-Iterator column number incremented by ```1```.
+Iterator column number incremented by `1`
 
 _Notes_:
-* assume current char was checked for ```<TAB>``` (horizontal tabulate character ```'\t'```) or ```<EOL>``` (end-of-line indicator character ```'\n'```)
-* iterator must not point to ```<EOF>``` (end-of-file indicator)
+* assume current char was checked for `<TAB>` (horizontal tabulate character `'\t'`) or `<EOL>` (end-of-line indicator character `'\n'`)
+* iterator must not point to `<EOF>` (end-of-file indicator)
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Check if iterator points to &lt;EOF&gt;
-```
+```C
 int src_iter_eof(const struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-**Returns:** non-zero if iterator points to ```<EOF>```, zero - if not
+**Returns:** non-zero if iterator points to `<EOF>`, `0` - if not
 
 *Example of simple parsing loop:*
-```
+```C
 extern struct src_iter *it;
 while (!src_iter_eof(it)) {
 	/* process current character */
@@ -302,25 +301,25 @@ while (!src_iter_eof(it)) {
 }
 ```
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Move iterator to next character and check it for &lt;EOF&gt;
-```
+```C
 int src_iter_next(struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-**Returns:** non-zero if current character is _**not**_ ```<EOF>```, may continue parsing
+**Returns:** non-zero if current character is _**not**_ `<EOF>`, may continue parsing
 
-Iterator column number incremented by ```1```.
+Iterator column number incremented by `1`
 
 _Notes_:
-* assume current char was checked for ```<TAB>``` or ```<EOL>```
-* iterator must not point to ```<EOF>```
+* assume current char was checked for `<TAB>` or `<EOL>`
+* iterator must not point to `<EOF>`
 
 *Example of simple parsing loop:*
-```
+```C
 extern struct src_iter *it;
 if (!src_iter_eof(it)) {
 	do {
@@ -329,62 +328,62 @@ if (!src_iter_eof(it)) {
 }
 ```
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Account encountered &lt;TAB&gt; character
-```
+```C
 void src_iter_process_tab(struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-Iterator column number incremented by ```1``` to ```GTPARSER_TAB_SIZE```, depending on current column number value.
+Iterator column number incremented by some value in range `[1..GTPARSER_TAB_SIZE]`, depending on current column number value
 
 _Notes_:
-* iterator must point to ```<TAB>``` character
-* horizontal tabulate width equals to ```GTPARSER_TAB_SIZE``` spaces, ```4``` by default.
+* iterator must point to `<TAB>` character
+* horizontal tabulate width equals to `GTPARSER_TAB_SIZE` spaces, `4` by default
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Check if current character is a &lt;TAB&gt;
-```
+```C
 void src_iter_check_tab(struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-Check if current character is a ```<TAB>``` and account it if it is.
+Check if current character is a `<TAB>` and account it by `[src_iter_process_tab()](#account-encountered-tab-character)` if it is
 
-_Note_: iterator must not point to ```<EOF>```
+_Note_: iterator must not point to `<EOF>`
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
-#### Account encountered newline
-```
+#### Account encountered &lt;EOL&gt; character
+```C
 void src_iter_inc_line(struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-Increment iterator line number, set column number to zero.
+Increment iterator line number, set column number to zero
 
-_Note_: iterator must point to ```<EOL>```
+_Note_: iterator must point to `<EOL>` character
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Check if current character is a &lt;TAB&gt; or &lt;EOL&gt;
-```
+```C
 void src_iter_check(struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-Check if current character is a ```<TAB>``` or ```<EOL>```, then account it appropriately.
+Check if current character is a `<TAB>` or `<EOL>`, then account it appropriately by `[src_iter_process_tab()](#account-encountered-tab-character)` or `[src_iter_inc_line()](#account-encountered-eol-character)`
 
-_Note_: iterator must not point to ```<EOF>```
+_Note_: iterator must not point to `<EOF>`
 
 *Example of simple parsing loop:*
-```
+```C
 extern struct src_iter *it;
 if (!src_iter_eof(it)) {
 	do {
@@ -395,7 +394,7 @@ if (!src_iter_eof(it)) {
 }
 ```
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Get current character
 ```
@@ -576,66 +575,66 @@ Parameters:
 
 *Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
 
---------------------------------------------------------------------------
+---------------------------------------------------
 
 ### Installing
 
 1. Get clean-build build system:
 
-    [```git clone https://github.com/mbuilov/clean-build```](https://github.com/mbuilov/clean-build)
+    [`git clone https://github.com/mbuilov/clean-build`](https://github.com/mbuilov/clean-build)
 
 2. For windows, get [Gnu Make](https://www.gnu.org/software/make) executable:
 
-    [```git clone https://github.com/mbuilov/gnumake-windows```](https://github.com/mbuilov/gnumake-windows)
+    [`git clone https://github.com/mbuilov/gnumake-windows`](https://github.com/mbuilov/gnumake-windows)
 
 3. Build library
 
-    3.1 On Linux:
-    ```
+    3.1 On Linux (_example_):
+    ```sh
     $ make MTOP=/home/user/clean-build OS=LINUX CPU=x86_64 TARGET=GTPARSER
     ```
 
-    3.2 On Windows:
-    ```
+    3.2 On Windows (_example_):
+    ```cmd
     C:\tools\gnumake-4.2.1.exe MTOP=C:\tools\clean-build OS=WINXX CPU=x86_64 TARGET=GTPARSER OSVARIANT=WIN7 VS="C:\Program Files (x86)\Microsoft Visual Studio 14.0" WDK="C:\Program Files (x86)\Windows Kits\10" WDK_TARGET="10.0.14393.0"
     ```
 
     _**Tips**_:
-    - define ```NO_STATIC=1``` to not build static library archive
-    - define ```NO_SHARED=1``` to not build shared library (dll)
-    - to view other possible values of ```OS```, ```CPU``` or ```TARGET``` variables, do not define them
-    - define variable ```V=1``` for verbose build, to print executed commands
+    - define `NO_STATIC=1` to not build static library archive
+    - define `NO_SHARED=1` to not build shared library (dll)
+    - to view other possible values of `OS`, `CPU` or `TARGET` variables, do not define them
+    - define variable `V=1` for verbose build, to print executed commands
 
-    If make target is not specified, default target _```all```_ (compile the library) will be built.
+    If make target is not specified, default target _`all`_ (compile the library) will be built.
 
     _**Tip**_: there are predefined targets:
-    * _```test```_      - to build library and tests
-    * _```check```_     - to build library and tests, then run tests
-    * _```clean```_     - to delete built artifacts, except created directories
-    * _```distclean```_ - to delete all artifacts, including created directories
+    * _`test`_      - to build library and tests
+    * _`check`_     - to build library and tests, then run tests
+    * _`clean`_     - to delete built artifacts, except created directories
+    * _`distclean`_ - to delete all artifacts, including created directories
 
 4. Install library and interface headers
 
-    _Note_: make command should be the same as for building, except the target should be _```install```_ or _```uninstall```_.
+    _Note_: make command should be the same as for building, except the target should be _`install`_ or _`uninstall`_.
 
     4.1 On Linux (_example_):
 
     possibly as root, do
-    ```
+    ```sh
     $ make MTOP=/home/user/clean-build OS=LINUX CPU=x86_64 TARGET=GTPARSER install
     ```
 
     4.2 On Windows (_example_):
-    ```
+    ```cmd
     C:\tools\gnumake-4.2.1.exe MTOP=C:\tools\clean-build OS=WINXX CPU=x86_64 TARGET=GTPARSER OSVARIANT=WIN7 VS="C:\Program Files (x86)\Microsoft Visual Studio 14.0" WDK="C:\Program Files (x86)\Windows Kits\10" WDK_TARGET="10.0.14393.0" PREFIX=C:\dst install
     ```
 
-    _Note_: Headers are installed in ```$(PREFIX)/include```, libraries - in ```$(PREFIX)/lib```.
+    _Note_: Headers are installed in `$(PREFIX)/include`, libraries - in `$(LIBDIR)`.
 
     _**Tips**_:
-    - define variable ```PREFIX``` to override default install location - ```/usr/local``` (for UNIX) or ```dist``` (for WINDOWS)
-    - define variable ```LIBDIR``` to override default libraries install location - ```$(PREFIX)/lib```
-    - define variable ```DESTDIR``` to add prefix to ```$(PREFIX)``` - to make path to temporary install location
+    - define variable `PREFIX` to override default install location - `/usr/local` (for UNIX) or `dist` (for WINDOWS)
+    - define variable `LIBDIR` to override default libraries install location - `$(PREFIX)/lib`
+    - define variable `DESTDIR` to add prefix to `$(PREFIX)` - to make path to temporary install location
 
     _**Tip**_: there is one more predefined target:
-    * _```uninstall```_ - to delete installed files. Note: some installed directories may not be deleted.
+    * _`uninstall`_ - to delete installed files. Note: some installed directories may not be deleted.
