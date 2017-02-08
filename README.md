@@ -6,6 +6,7 @@ Small library of generic text parsing functions enough to parse simple configs
 - [Generic text functions](#generic-text-functions)
 - [Text iterator API](#text-iterator-api)
 - [Handy functions for use with text iterator](#handy-functions-for-use-with-text-iterator)
+- [Helpers to form error message](#helpers-to-form-error-message)
 - [Installing](#installing)
 
 ### Generic text functions
