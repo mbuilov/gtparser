@@ -246,7 +246,10 @@ GTPARSER_EXPORTS void _skip_rest_of_line(struct src_iter *it);
 
 /* input:  it points to comment beginning (like '#') */
 /* output: it points to next unchecked char after new line, may be to eof */
-#define _skip_comment(it) _skip_rest_of_line(it)
+static inline void _skip_comment(struct src_iter *it)
+{
+	_skip_rest_of_line(it);
+}
 
 /* input:  it points to unchecked char or to eof */
 /* output: if returns != '\0', it points to non-space and non-eof */
