@@ -69,7 +69,7 @@ Small library of generic text parsing functions enough to parse simple configs
 ```C
 unsigned digit_value(char c);
 ```
-Parameters:
+**Parameters:**
 - `c`  - char to check
 
 **Returns:** value <= `9` if `c` is matched by regexp `[0-9]`
@@ -80,7 +80,7 @@ Parameters:
 ```C
 int is_digit(char c);
 ```
-Parameters:
+**Parameters:**
 - `c`  - char to check
 
 **Returns:** non-zero if `c` is matched by regexp `[0-9]`
@@ -91,7 +91,7 @@ Parameters:
 ```C
 int _is_first_name(char c);
 ```
-Parameters:
+**Parameters:**
 - `c`  - char to check
 
 **Returns:** non-zero if `c` is matched by regexp: `[_a-zA-Z]`
@@ -104,7 +104,7 @@ _Note_: table lookup-based [`is_first_name()`](#check-if-given-char-may-start-an
 ```C
 int _is_next_name(char c);
 ```
-Parameters:
+**Parameters:**
 - `c`  - char to check
 
 **Returns:** non-zero if `c` is matched by regexp: `[_a-zA-Z0-9]`
@@ -117,7 +117,7 @@ _Note_: table lookup-based [`is_next_name()`](#check-if-given-char-may-continue-
 ```C
 unsigned _hex_char_value(char c);
 ```
-Parameters:
+**Parameters:**
 - `c`  - char to check
 
 **Returns:** value <= `15` if `c` is matched by regexp: `[0-9a-fA-F]`
@@ -130,7 +130,7 @@ _Note_: table lookup-based [`hex_char_value()`](#check-if-given-char-is-a-hexade
 ```C
 int is_first_name(char c);
 ```
-Parameters:
+**Parameters:**
 - `c`  - char to check
 
 **Returns:** non-zero if `c` is matched by regexp: `[_a-zA-Z]`
@@ -141,7 +141,7 @@ Parameters:
 ```C
 int is_next_name(char c);
 ```
-Parameters:
+**Parameters:**
 - `c`  - char to check
 
 **Returns:** non-zero if `c` is matched by regexp: `[_a-zA-Z0-9]`
@@ -152,7 +152,7 @@ Parameters:
 ```C
 unsigned hex_char_value(char c);
 ```
-Parameters:
+**Parameters:**
 - `c`  - char to check
 
 **Returns:** value <= `15` if `c` is matched by regexp: `[0-9a-fA-F]`
@@ -163,7 +163,7 @@ Parameters:
 ```C
 const char *_scan_name(const char *s, const char *const end);
 ```
-Parameters:
+**Parameters:**
 - `s`   - points to first char of a name in a buffer (char matched by regexp: `[_a-zA-Z]`)
 - `end` - points one char beyond the buffer containing a name
 
@@ -177,7 +177,7 @@ _Note_: `s < end`
 ```C
 const char *_scan_uint(const char *s, const char *const end, unsigned *number);
 ```
-Parameters:
+**Parameters:**
 - `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
 - `end`    - points one char beyond the buffer containing printed unsigned decimal integer
 - `number` - (_output_) scanned unsigned integer value
@@ -194,7 +194,7 @@ _Note_: `s < end`
 ```C
 const char *_scan_uint64(const char *s, const char *const end, unsigned INT64_TYPE *number);
 ```
-Parameters:
+**Parameters:**
 - `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
 - `end`    - points one char beyond the buffer containing printed unsigned decimal integer
 - `number` - (_output_) scanned unsigned 64-bit integer value
@@ -213,7 +213,7 @@ _Notes_:
 ```C
 const char *_scan_hex(const char *s, const char *const end, unsigned *number);
 ```
-Parameters:
+**Parameters:**
 - `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
 - `end`    - points one char beyond the buffer containing printed unsigned hexadecimal integer
 - `number` - (_output_) scanned unsigned integer value
@@ -230,7 +230,7 @@ _Note_: `s < end`
 ```C
 const char *_scan_hex64(const char *s, const char *const end, unsigned INT64_TYPE *number);
 ```
-Parameters:
+**Parameters:**
 - `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
 - `end`    - points one char beyond the buffer containing printed unsigned hexadecimal integer
 - `number` - (_output_) scanned unsigned 64-bit integer value
@@ -249,7 +249,7 @@ _Notes_:
 ```C
 int is_space(char c);
 ```
-Parameters:
+**Parameters:**
 - `c` - checked char
 
 **Returns:** non-zero if `c` is a _space_ - ascii character with value in range `[0..32]`
@@ -264,7 +264,7 @@ _Note_: this fast and simple function is usable to skip all space characters, li
 ```C
 void src_iter_init(struct src_iter *it, const char *input, size_t size);
 ```
-Parameters:
+**Parameters:**
 - `it`    - iterator structure to initialize
 - `input` - text buffer to parse
 - `size`  - number of chars to parse in text buffer
@@ -285,7 +285,7 @@ src_iter_init(&it, input, size);
 ```C
 void src_iter_step(struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 Iterator column number incremented by `1`
@@ -300,7 +300,7 @@ _Notes_:
 ```C
 int src_iter_eof(const struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 **Returns:** non-zero if iterator points to `<EOF>`, `0` - if not
@@ -320,7 +320,7 @@ while (!src_iter_eof(it)) {
 ```C
 int src_iter_next(struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 **Returns:** non-zero if current character is _**not**_ `<EOF>`, may continue parsing
@@ -347,7 +347,7 @@ if (!src_iter_eof(it)) {
 ```C
 void src_iter_process_tab(struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 Iterator column number incremented by some value in range `[1..GTPARSER_TAB_SIZE]`, depending on current column number value
@@ -362,7 +362,7 @@ _Notes_:
 ```C
 void src_iter_check_tab(struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 Check if current character is a `<TAB>` and account it by `[src_iter_process_tab()](#account-encountered-tab-character)` if it is
@@ -375,7 +375,7 @@ _Note_: iterator must not point to `<EOF>`
 ```C
 void src_iter_inc_line(struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 Increment iterator line number, set column number to zero
@@ -388,7 +388,7 @@ _Note_: iterator must point to `<EOL>` character
 ```C
 void src_iter_check(struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 Check if current character is a `<TAB>` or `<EOL>`, then account it appropriately by `[src_iter_process_tab()](#account-encountered-tab-character)` or `[src_iter_inc_line()](#account-encountered-eol-character)`
@@ -413,7 +413,7 @@ if (!src_iter_eof(it)) {
 ```C
 char src_iter_current(const struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 **Returns:** current character iterator points to
@@ -440,7 +440,7 @@ if (!src_iter_eof(it)) {
 ```C
 char src_iter_current_eof(const struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 **Returns:** current non-zero character if iterator points to non-`<EOF>`, else returns `0`
@@ -467,7 +467,7 @@ for (;;) {
 ```C
 unsigned src_iter_get_column(const struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 **Returns:** current iterator column number
@@ -480,7 +480,7 @@ _Note_: column number may overflow for large texts, but it is not fatal for pars
 ```C
 void src_iter_get_pos(const struct src_iter *it, struct src_pos *pos);
 ```
-Parameters:
+**Parameters:**
 - `it`  - text iterator structure
 - `pos` - (_output_) current iterator text position
 
@@ -490,7 +490,7 @@ Parameters:
 ```C
 struct src_pos src_iter_return_pos(const struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 **Returns:** current iterator text position
@@ -501,7 +501,7 @@ Parameters:
 ```C
 void src_iter_save_pos(const struct src_iter *it, struct src_save_pos *save_pos);
 ```
-Parameters:
+**Parameters:**
 - `it`       - text iterator structure
 - `save_pos` - (_output_) current iterator state
 
@@ -513,7 +513,7 @@ Parameters:
 ```C
 struct src_save_pos src_iter_return_save_pos(const struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 **Returns:** current iterator state
@@ -526,7 +526,7 @@ Returned state value may be used to restore iterator state - unparse characters 
 ```C
 void src_iter_restore_pos(struct src_iter *it, const struct src_save_pos *save_pos);
 ```
-Parameters:
+**Parameters:**
 - `it`       - text iterator structure
 - `save_pos` - saved iterator state
 
@@ -540,7 +540,7 @@ _Note_: `save_pos` may be obtained either by [`src_iter_save_pos()`](#save-itera
 ```C
 void _skip_rest_of_line(struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 Skip current character, then next characters until `<EOL>`, then skip `<EOL>`
@@ -566,7 +566,7 @@ Just another name of [`_skip_rest_of_line()`](#skip-characters-until-new-line) f
 ```C
 char read_non_space_skip_comments(struct src_iter *it, char comment);
 ```
-Parameters:
+**Parameters:**
 - `it`      - text iterator structure
 - `comment` - char indicating start of one-line comment
 
@@ -583,7 +583,7 @@ _Notes_:
 ```C
 char read_non_space_stop_eol(struct src_iter *it);
 ```
-Parameters:
+**Parameters:**
 - `it` - text iterator structure
 
 **Returns:** current non-space char or `<EOL>` or `0`, if non-space char or `<EOL>` was not found and iterator points to `<EOF>`
@@ -597,7 +597,7 @@ Parameters:
 char *parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve);
 char *parser_err_reserve_(char err_buf[], size_t err_buf_size);
 ```
-Parameters:
+**Parameters:**
 - `err_buf`          - buffer where to compose error message
 - `err_buf_size`     - size of err_buf
 - `filename_reserve` - how much space to reserve in `err_buf` for file name passed to [`parser_err_prepend_at()`](#prepend-location-info-to-error-message)
@@ -658,7 +658,7 @@ const char *parser_err_prepend_at_char_(
 	const char *err,
 	unsigned column/*!=0*/);
 ```
-Parameters:
+**Parameters:**
 - `err_buf`          - buffer where to compose error message
 - `err_buf_size`     - size of err_buf
 - `filename_reserve` - how much space to reserve in `err_buf` for file name
