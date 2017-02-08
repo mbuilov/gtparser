@@ -686,10 +686,10 @@ _Note_: if error message was printed to `err_buf` (i.e. `err` is the value retur
 extern char err_buf[];
 extern size_t err_buf_size;
 extern size_t filename_reserve;
-char *err = parser_err_reserve(err_buf, err_buf_size, filename_reserve);
+const char *err = parser_err_reserve(err_buf, err_buf_size, filename_reserve);
 size_t err_space = (size_t)(err_buf + err_buf_size - err);
 ...
-snprintf(err, err_space, "some parameterized error message: %d", 100);
+snprintf((char*)err, err_space, "some parameterized error message: %d", 100);
 /* or */
 err = "some error message without parameters";
 ...
