@@ -41,7 +41,7 @@ static inline struct src_iter *_src_iter_init(struct src_iter *it, const char *i
 {
 	it->current = input;
 	it->end = input;
-	it->back_column = (unsigned)((input - (const char*)1) & ~0u);
+	it->back_column = (unsigned)((unsigned long long)(input - (const char*)1) & ~0u);
 	it->line = 1;
 	return it;
 }
@@ -92,7 +92,7 @@ static inline int src_iter_next(struct src_iter *it)
 
 static inline void _src_iter_process_tab(unsigned *back_column, const char *current, unsigned tab_size)
 {
-	unsigned d = (unsigned)((current - (const char*)0) & ~0u);
+	unsigned d = (unsigned)((unsigned long long)(current - (const char*)0) & ~0u);
 	d = ~0u - (d - *back_column - 1); /* (*back_column - d) */
 	(*back_column) -= d % tab_size;
 }
@@ -116,7 +116,7 @@ static inline void src_iter_check_tab(struct src_iter *it)
 static inline void _src_iter_inc_line(unsigned *line, unsigned *back_column, const char *current)
 {
 	(*line)++;
-	*back_column = (unsigned)((current - (const char*)0) & ~0u);
+	*back_column = (unsigned)((unsigned long long)(current - (const char*)0) & ~0u);
 }
 
 static inline void src_iter_inc_line(struct src_iter *it)
@@ -166,7 +166,7 @@ static inline char src_iter_current_eof(const struct src_iter *it)
 /* get column from start of the line */
 static inline unsigned _src_iter_get_column(const char *current, unsigned back_column)
 {
-	return (unsigned)((current - (const char*)0) & ~0u) - back_column;
+	return (unsigned)((unsigned long long)(current - (const char*)0) & ~0u) - back_column;
 }
 
 /* get column from start of the line */
