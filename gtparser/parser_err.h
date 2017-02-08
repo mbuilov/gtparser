@@ -17,9 +17,10 @@ extern "C" {
 
 /* if error buffer is big enough, then reserve some space at front of it for error prefix:
   "filename: parse error at (4294967295:4294967295):" */
-/* filename_reserve - how much space to reserve for printing file name passed to parser_err_prepend_at...() */
-/* returns pointer to space inside error buffer to print error message to
-  or returns err_buf, if err_buf_size is not big enough */
+/* err_buf_size - size of err_buf */
+/* filename_reserve - how much space to reserve for printing file name passed to parser_err_prepend_at() */
+/* returns pointer to a space inside error buffer to print error message details to,
+  or returns err_buf, if err_buf_size is too small */
 GTPARSER_EXPORTS char *parser_err_reserve(char err_buf[/*err_buf_size*/], size_t err_buf_size, size_t filename_reserve/*0?*/)
 #ifdef __GNUC__
 __attribute__ ((const))
@@ -32,20 +33,26 @@ __attribute__ ((const))
 
 /* if error buffer is big enough, then compose error message in form
   "filename: parse error at (0:0): error message" */
-/* err_buf, err_buf_size, filename_reserve - the same values that were passed to parser_err_reserve()
-  if error message was printed to err_buf (i.e. err points inside err_buf[err_buf_size]) */
+/* err_buf_size - size of err_buf */
+/* filename_reserve - how much space to reserve for printing file name */
 /* filename - if not NULL, then '\0'-terminated C-string */
-/* returns passed err or pointer to error message inside error buffer */
+/* err - '\0'-terminated error message,
+  if error message was printed to err_buf (i.e. err is the value returned by parser_err_reserve()),
+  then err_buf, err_buf_size, filename_reserve - must be the same that were passed to parser_err_reserve() */
+/* line & colunm - position in source file where a parsing error occured,
+  if line is 0, then only column number is printed,
+  if column is 0, then only line number is printed */
+/* returns pointer to composed error message inside err_buf or err, if err_buf_size is too small */
 GTPARSER_EXPORTS const char *parser_err_prepend_at(
 	char err_buf[/*err_buf_size*/], size_t err_buf_size,
 	size_t filename_reserve/*0?*/, const char *filename/*NULL?,'\0'-terminated*/,
-	const char *err/*!=NULL*/, unsigned line/*0?*/, unsigned column/*0?*/);
+	const char *err/*!=NULL,'\0'-terminated*/, unsigned line/*0?*/, unsigned column/*0?*/);
 
 /* same as parser_err_prepend_at(), but don't print column number */
 static inline const char *parser_err_prepend_at_line(
 	char err_buf[/*err_buf_size*/], size_t err_buf_size,
 	size_t filename_reserve/*0?*/, const char *filename/*NULL?,'\0'-terminated*/,
-	const char *err/*!=NULL*/, unsigned line/*!=0*/)
+	const char *err/*!=NULL,'\0'-terminated*/, unsigned line/*!=0*/)
 {
 	return parser_err_prepend_at(
 		err_buf, err_buf_size,
@@ -57,7 +64,7 @@ static inline const char *parser_err_prepend_at_line(
 static inline const char *parser_err_prepend_at_char(
 	char err_buf[/*err_buf_size*/], size_t err_buf_size,
 	size_t filename_reserve/*0?*/, const char *filename/*NULL?,'\0'-terminated*/,
-	const char *err/*!=NULL*/, unsigned column/*!=0*/)
+	const char *err/*!=NULL,'\0'-terminated*/, unsigned column/*!=0*/)
 {
 	return parser_err_prepend_at(
 		err_buf, err_buf_size,
