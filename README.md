@@ -55,7 +55,13 @@ Small library of generic text parsing functions enough to parse simple configs
 ### Helpers to form error message
 
 1. [parser_err_reserve](#reserve-a-space-for-error-message-location-info)
-1. [parser_err_prepend_at](#prepend-location-info-to-error-message)
+2. [parser_err_reserve_](#reserve-a-space-for-error-message-location-info)
+3. [parser_err_prepend_at](#prepend-location-info-to-error-message)
+4. [parser_err_prepend_at_](#prepend-location-info-to-error-message)
+5. [parser_err_prepend_at_line](#prepend-location-info-to-error-message)
+6. [parser_err_prepend_at_line_](#prepend-location-info-to-error-message)
+7. [parser_err_prepend_at_char](#prepend-location-info-to-error-message)
+8. [parser_err_prepend_at_char_](#prepend-location-info-to-error-message)
 
 ---------------------------------------------------
 
@@ -589,6 +595,7 @@ Parameters:
 #### Reserve a space for error message location info
 ```C
 char *parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve);
+char *parser_err_reserve_(char err_buf[], size_t err_buf_size);
 ```
 Parameters:
 - `err_buf`          - buffer where to compose error message
@@ -596,6 +603,8 @@ Parameters:
 - `filename_reserve` - how much space to reserve in `err_buf` for file name passed to [`parser_err_prepend_at()`](#prepend-location-info-to-error-message)
 
 **Returns:** pointer to a space inside `err_buf` to print error message details to, or returns `err_buf`, if `err_buf` is too small
+
+`parser_err_reserve_()` - just calls `parser_err_reserve()` with zero `filename_reserve` value
 
 _Note_: if `err_buf` is big enough, then [`parser_err_prepend_at()`](#prepend-location-info-to-error-message) will prepend resulting error message with something like `"filename: parse error at (4294967295:4294967295):"`
 
@@ -613,6 +622,36 @@ const char *parser_err_prepend_at(
 	const char *err,
 	unsigned line/*0?*/,
 	unsigned column/*0?*/);
+const char *parser_err_prepend_at_line(
+	char err_buf,
+	size_t err_buf_size,
+	size_t filename_reserve/*0?*/,
+	const char *filename/*NULL?*/,
+	const char *err,
+	unsigned line/*!=0*/);
+const char *parser_err_prepend_at_char(
+	char err_buf,
+	size_t err_buf_size,
+	size_t filename_reserve/*0?*/,
+	const char *filename/*NULL?*/,
+	const char *err,
+	unsigned column/*!=0*/);
+const char *parser_err_prepend_at_(
+	char err_buf,
+	size_t err_buf_size,
+	const char *err,
+	unsigned line/*0?*/,
+	unsigned column/*0?*/);
+const char *parser_err_prepend_at_line_(
+	char err_buf,
+	size_t err_buf_size,
+	const char *err,
+	unsigned line/*!=0*/);
+const char *parser_err_prepend_at_char_(
+	char err_buf,
+	size_t err_buf_size,
+	const char *err,
+	unsigned column/*!=0*/);
 ```
 Parameters:
 - `err_buf`          - buffer where to compose error message
@@ -624,6 +663,16 @@ Parameters:
 - `column`           - source column number where a parsing error was encountered, if zero, then only line number is printed
 
 **Returns:** pointer to composed error message with prepended location info in `err_buf` or `err`, if `err_buf` is too small
+
+`parser_err_prepend_at_line()` - just calls `parser_err_prepend_at()` with zero `column` value
+
+`parser_err_prepend_at_char()` - just calls `parser_err_prepend_at()` with zero `line` value
+
+`parser_err_prepend_at_()` - just calls `parser_err_prepend_at()` with zero `filename_reserve` and `NULL` `filename` values
+
+`parser_err_prepend_at_line_()` - just calls `parser_err_prepend_at_line()` with zero `filename_reserve` and `NULL` `filename` values
+
+`parser_err_prepend_at_char_()` - just calls `parser_err_prepend_at_line()` with zero `filename_reserve` and `NULL` `filename` values
 
 _Note_: if error message was printed to `err_buf` (i.e. `err` is the value returned by [`parser_err_reserve()`](#reserve-a-space-for-error-message-location-info)), then `err_buf`, `err_buf_size` and `filename_reserve` must be the same that were passed to [`parser_err_reserve()`](#reserve-a-space-for-error-message-location-info)
 
