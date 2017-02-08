@@ -25,7 +25,7 @@ Small library of generic text parsing functions enough to parse simple configs
 13. [_scan_hex64](#scan-unsigned-hexadecimal-64-bit-integer)
 14. [is_space](#check-if-char-is-a-space)
 
-### Text iterator API
+### Text iterator API ([gtparser/parser_base.h](/gtparser/parser_base.h))
 
 1. [src_iter_init](#initialize-source-text-iterator-structure)
 2. [src_iter_step](#step-over-current-character)
@@ -45,7 +45,8 @@ Small library of generic text parsing functions enough to parse simple configs
 16. [src_iter_restore_pos](#restore-iterator-state)
 
 ### Handy functions for use with text iterator
-1. [_skip_rest_of_line](#skip-characters-until-end-of-line)
+
+1. [_skip_rest_of_line](#skip-characters-until-new-line)
 2. [_skip_comment](#skip-one-line-comment)
 3. [read_non_space_skip_comments](#read-first-non-space-character-skipping-comments)
 4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol)
@@ -388,7 +389,7 @@ extern struct src_iter *it;
 if (!src_iter_eof(it)) {
 	do {
 		/* process current character */
-		/* account <TAB> or new line */
+		/* account <TAB> or <EOL> */
 		src_iter_check(it);
 	} while (src_iter_next(it));
 }
@@ -397,45 +398,45 @@ if (!src_iter_eof(it)) {
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Get current character
-```
+```C
 char src_iter_current(const struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
 **Returns:** current character iterator points to
 
-_Note_: iterator must not point to ```<EOF>```
+_Note_: iterator must not point to `<EOF>`
 
 *Example of simple parsing loop:*
-```
+```C
 extern struct src_iter *it;
 if (!src_iter_eof(it)) {
 	do {
 		/* get current character to process */
 		char c = src_iter_current(it);
 		/* process current character */
-		/* account <TAB> or new line */
+		/* account <TAB> or <EOL> */
 		src_iter_check(it);
 	} while (src_iter_next(it));
 }
 ```
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Get current character or 0 as &lt;EOF&gt; indicator
-```
+```C
 char src_iter_current_eof(const struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-**Returns:** non-zero current character if iterator points to non-```<EOF>```, else returns ```0```
+**Returns:** current non-zero character if iterator points to non-`<EOF>`, else returns `0`
 
 _Note_: this function may be usable for parsing texts where characters with zero value are not expected
 
 *Example of simple parsing loop:*
-```
+```C
 extern struct src_iter *it;
 for (;;) {
 	/* get current character to process */
@@ -443,137 +444,139 @@ for (;;) {
 	if (!c)
 		break; /* iterator points to <EOF> */
 	/* process current character */
-	/* account <TAB> or new line */
+	/* account <TAB> or <EOL> */
 	src_iter_check(it);
 }
 ```
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Get current column number
-```
+```C
 unsigned src_iter_get_column(const struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
 **Returns:** current iterator column number
 
 _Note_: column number may overflow for large texts, but it is not fatal for parsing
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Get iterator text position (line and column numbers)
-```
+```C
 void src_iter_get_pos(const struct src_iter *it, struct src_pos *pos);
 ```
 Parameters:
-- ```it``` - text iterator structure
-- ```pos``` - (_output_) current iterator text position
+- `it`  - text iterator structure
+- `pos` - (_output_) current iterator text position
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Return iterator text position (line and column numbers)
-```
+```C
 struct src_pos src_iter_return_pos(const struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
 **Returns:** current iterator text position
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Save iterator state
-```
+```C
 void src_iter_save_pos(const struct src_iter *it, struct src_save_pos *save_pos);
 ```
 Parameters:
-- ```it```       - text iterator structure
-- ```save_pos``` - (_output_) current iterator state
+- `it`       - text iterator structure
+- `save_pos` - (_output_) current iterator state
 
-```save_pos``` may be used to restore iterator state - unparse characters processed after ```save_pos``` was taken.
+`save_pos` may be used to restore iterator state - unparse characters processed after `save_pos` was taken
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Return iterator state
-```
+```C
 struct src_save_pos src_iter_return_save_pos(const struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
 **Returns:** current iterator state
 
-Returned state value may be used to restore iterator state - unparse characters processed after state was taken.
+Returned state value may be used to restore iterator state - unparse characters processed after state was taken
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Restore iterator state
-```
+```C
 void src_iter_restore_pos(struct src_iter *it, const struct src_save_pos *save_pos);
 ```
 Parameters:
-- ```it```       - text iterator structure
-- ```save_pos``` - saved iterator state
+- `it`       - text iterator structure
+- `save_pos` - saved iterator state
 
-_Note_: ```save_pos``` may be obtained either by [```src_iter_save_pos()```](#save-iterator-state) or [```src_iter_return_save_pos()```](#return-iterator-state)
+_Note_: `save_pos` may be obtained either by [`src_iter_save_pos()`](#save-iterator-state) or [`src_iter_return_save_pos()`](#return-iterator-state)
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 ================================================================
 
-#### Skip characters until end of line
-```
+#### Skip characters until new line
+```C
 void _skip_rest_of_line(struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-Skip current character, then next characters until new line.
+Skip current character, then next characters until `<EOL>`, then skip `<EOL>`
 
-On return, iterator points to beginning of next line or to ```<EOF>```.
+On return, iterator points to beginning of next line or to `<EOF>`
 
 _Notes_:
 * this function is usable to skip one-line comment
-* before the call, iterator must not point to ```<EOF>``` (assume iterator points to char indicating start of a comment)
+* before the call, iterator must not point to `<EOF>` (assume iterator points to char indicating start of a comment)
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Skip one-line comment
-```
+```C
 void _skip_comment(struct src_iter *it);
 ```
 
-Just another name of [```_skip_rest_of_line()```](#skip-characters-until-end-of-line) function.
+Just another name of [`_skip_rest_of_line()`](#skip-characters-until-new-line) function
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Read first non-space character skipping comments
-```
+```C
 char read_non_space_skip_comments(struct src_iter *it, char comment);
 ```
 Parameters:
-- ```it```      - text iterator structure
-- ```comment``` - char indicating start of one-line comment
+- `it`      - text iterator structure
+- `comment` - char indicating start of one-line comment
 
-**Returns:** current non-space char or ```0```, if non-space char was not found and iterator points to ```<EOF>```
+**Returns:** current non-space char or `0`, if non-space char was not found and iterator points to `<EOF>`
 
 _Notes_:
-* checks all characters, starting from current one by [```is_space()```](#check-if-char-is-a-space) function
-* skips one-line comments by [```_skip_comment()```](#skip-one-line-comment) fuction
-* iterator may point to ```<EOF>```
+* checks all characters, starting from current one by [`is_space()`](#check-if-char-is-a-space) function
+* skips one-line comments by [`_skip_comment()`](#skip-one-line-comment) fuction
+* iterator may point to `<EOF>`
+
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 #### Read first non-space character or &lt;EOL&gt;
-```
+```C
 char read_non_space_stop_eol(struct src_iter *it);
 ```
 Parameters:
-- ```it``` - text iterator structure
+- `it` - text iterator structure
 
-**Returns:** current non-space char or ```<EOL>``` or ```0```, if non-space char or ```<EOL>``` was not found and iterator points to ```<EOF>```
+**Returns:** current non-space char or `<EOL>` or `0`, if non-space char or `<EOL>` was not found and iterator points to `<EOF>`
 
-*Declared in:* [```gtparser/parser_base.h```](/gtparser/parser_base.h)
+*Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
 ---------------------------------------------------
 
@@ -605,7 +608,7 @@ Parameters:
     - to view other possible values of `OS`, `CPU` or `TARGET` variables, do not define them
     - define variable `V=1` for verbose build, to print executed commands
 
-    If make target is not specified, default target _`all`_ (compile the library) will be built.
+    If make target is not specified, default target _`all`_ (compile the library) will be built
 
     _**Tip**_: there are predefined targets:
     * _`test`_      - to build library and tests
@@ -615,7 +618,7 @@ Parameters:
 
 4. Install library and interface headers
 
-    _Note_: make command should be the same as for building, except the target should be _`install`_ or _`uninstall`_.
+    _Note_: make command should be the same as for building, except the target should be _`install`_ or _`uninstall`_
 
     4.1 On Linux (_example_):
 
@@ -629,7 +632,7 @@ Parameters:
     C:\tools\gnumake-4.2.1.exe MTOP=C:\tools\clean-build OS=WINXX CPU=x86_64 TARGET=GTPARSER OSVARIANT=WIN7 VS="C:\Program Files (x86)\Microsoft Visual Studio 14.0" WDK="C:\Program Files (x86)\Windows Kits\10" WDK_TARGET="10.0.14393.0" PREFIX=C:\dst install
     ```
 
-    _Note_: Headers are installed in `$(PREFIX)/include`, libraries - in `$(LIBDIR)`.
+    _Note_: Headers are installed in `$(PREFIX)/include`, libraries - in `$(LIBDIR)`
 
     _**Tips**_:
     - define variable `PREFIX` to override default install location - `/usr/local` (for UNIX) or `dist` (for WINDOWS)
