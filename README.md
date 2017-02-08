@@ -622,6 +622,7 @@ const char *parser_err_prepend_at(
 	const char *err,
 	unsigned line/*0?*/,
 	unsigned column/*0?*/);
+
 const char *parser_err_prepend_at_line(
 	char err_buf,
 	size_t err_buf_size,
@@ -629,6 +630,7 @@ const char *parser_err_prepend_at_line(
 	const char *filename/*NULL?*/,
 	const char *err,
 	unsigned line/*!=0*/);
+
 const char *parser_err_prepend_at_char(
 	char err_buf,
 	size_t err_buf_size,
@@ -636,17 +638,20 @@ const char *parser_err_prepend_at_char(
 	const char *filename/*NULL?*/,
 	const char *err,
 	unsigned column/*!=0*/);
+
 const char *parser_err_prepend_at_(
 	char err_buf,
 	size_t err_buf_size,
 	const char *err,
 	unsigned line/*0?*/,
 	unsigned column/*0?*/);
+
 const char *parser_err_prepend_at_line_(
 	char err_buf,
 	size_t err_buf_size,
 	const char *err,
 	unsigned line/*!=0*/);
+
 const char *parser_err_prepend_at_char_(
 	char err_buf,
 	size_t err_buf_size,
@@ -684,12 +689,21 @@ extern size_t filename_reserve;
 char *err = parser_err_reserve(err_buf, err_buf_size, filename_reserve);
 size_t err_space = (size_t)(err_buf + err_buf_size - err);
 ...
-snprintf(err, err_space, "some error message");
+snprintf(err, err_space, "some parameterized error message: %d", 100);
+/* or */
+err = "some error message without parameters";
 ...
 extern const char *filename;
 extern unsigned line;
 extern unsigned column;
-const char *err_msg = parser_err_prepend_at(err_buf, err_buf_size, filename_reserve, filename, err, line, column);
+const char *err_msg = parser_err_prepend_at(
+	err_buf,
+	err_buf_size,
+	filename_reserve,
+	filename,
+	err,
+	line,
+	column);
 ```
 
 ---------------------------------------------------
