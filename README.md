@@ -53,8 +53,8 @@ Small library of generic text parsing functions enough to parse simple configs
 
 ### Helpers to form error message
 
-1. [parser_err_reserve](#reserve-a-space-in-error-buffer-for-error-message-location-info)
-1. [parser_err_prepend_at](#prepend-error-message-location-info-to-error-message)
+1. [parser_err_reserve](#reserve-a-space-for-error-message-location-info)
+1. [parser_err_prepend_at](#prepend-location-info-to-error-message)
 
 ---------------------------------------------------
 
@@ -585,24 +585,24 @@ Parameters:
 
 ================================================================
 
-#### Reserve a space in error buffer for error message location info
+#### Reserve a space for error message location info
 ```C
 char *parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve);
 ```
 Parameters:
 - `err_buf`          - buffer where to compose error message
 - `err_buf_size`     - buffer size
-- `filename_reserve` - how much space to reserve in `err_buf` for file name passed to [`parser_err_prepend_at()`](#prepend-error-message-location-info-to-error-message)
+- `filename_reserve` - how much space to reserve in `err_buf` for file name passed to [`parser_err_prepend_at()`](#prepend-location-info-to-error-message)
 
 **Returns:** pointer to a space inside `err_buf` to print error message details to, or returns `err_buf`, if `err_buf_size` is too small
 
-_Note_: if `err_buf_size` is big enough, then [`parser_err_prepend_at()`](#prepend-error-message-location-info-to-error-message) will prepend resulting error message with something like `"filename: parse error at (4294967295:4294967295):"`
+_Note_: if `err_buf_size` is big enough, then [`parser_err_prepend_at()`](#prepend-location-info-to-error-message) will prepend resulting error message with something like `"filename: parse error at (4294967295:4294967295):"`
 
-*Example:* - see [`parser_err_prepend_at()`](#prepend-error-message-location-info-to-error-message)
+*Example:* - see [`parser_err_prepend_at()`](#prepend-location-info-to-error-message)
 
 *Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
 
-#### Prepend error message location info to error message
+#### Prepend location info to error message
 ```C
 const char *parser_err_prepend_at(
 	char err_buf,
@@ -624,7 +624,7 @@ Parameters:
 
 **Returns:** pointer to composed error message with prepended location info in `err_buf` or `err`, if `err_buf_size` is too small
 
-_Note_: if error message was printed to `err_buf` (i.e. `err` is the value returned by [`parser_err_reserve()`](#reserve-a-space-in-error-buffer-for-error-message-location-info)), then `err_buf`, `err_buf_size` and `filename_reserve` must be the same that were passed to [`parser_err_reserve()`](#reserve-a-space-in-error-buffer-for-error-message-location-info)
+_Note_: if error message was printed to `err_buf` (i.e. `err` is the value returned by [`parser_err_reserve()`](#reserve-a-space-for-error-message-location-info)), then `err_buf`, `err_buf_size` and `filename_reserve` must be the same that were passed to [`parser_err_reserve()`](#reserve-a-space-for-error-message-location-info)
 
 *Example:*
 ```C
