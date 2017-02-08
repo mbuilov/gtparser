@@ -591,14 +591,14 @@ char *parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_re
 ```
 Parameters:
 - `err_buf`          - buffer where to compose error message
-- `err_buf_size`     - buffer size
+- `err_buf_size`     - size of err_buf
 - `filename_reserve` - how much space to reserve in `err_buf` for file name passed to [`parser_err_prepend_at()`](#prepend-location-info-to-error-message)
 
-**Returns:** pointer to a space inside `err_buf` to print error message details to, or returns `err_buf`, if `err_buf_size` is too small
+**Returns:** pointer to a space inside `err_buf` to print error message details to, or returns `err_buf`, if `err_buf` is too small
 
-_Note_: if `err_buf_size` is big enough, then [`parser_err_prepend_at()`](#prepend-location-info-to-error-message) will prepend resulting error message with something like `"filename: parse error at (4294967295:4294967295):"`
+_Note_: if `err_buf` is big enough, then [`parser_err_prepend_at()`](#prepend-location-info-to-error-message) will prepend resulting error message with something like `"filename: parse error at (4294967295:4294967295):"`
 
-*Example:* - see [`parser_err_prepend_at()`](#prepend-location-info-to-error-message)
+*Example:* see [`parser_err_prepend_at()`](#prepend-location-info-to-error-message)
 
 *Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
 
@@ -615,14 +615,14 @@ const char *parser_err_prepend_at(
 ```
 Parameters:
 - `err_buf`          - buffer where to compose error message
-- `err_buf_size`     - buffer size
+- `err_buf_size`     - size of err_buf
 - `filename_reserve` - how much space to reserve in `err_buf` for file name
-- `filename`         - '\0'-terminated source file name where an error was encountered, may be `NULL`
-- `err`              - '\0'-terminated error message
+- `filename`         - `'\0'`-terminated source file name where an error was encountered, may be `NULL`
+- `err`              - `'\0'`-terminated error message
 - `line`             - source line number where a parsing error was encountered, if zero, then only column number is printed
 - `column`           - source column number where a parsing error was encountered, if zero, then only line number is printed
 
-**Returns:** pointer to composed error message with prepended location info in `err_buf` or `err`, if `err_buf_size` is too small
+**Returns:** pointer to composed error message with prepended location info in `err_buf` or `err`, if `err_buf` is too small
 
 _Note_: if error message was printed to `err_buf` (i.e. `err` is the value returned by [`parser_err_reserve()`](#reserve-a-space-for-error-message-location-info)), then `err_buf`, `err_buf_size` and `filename_reserve` must be the same that were passed to [`parser_err_reserve()`](#reserve-a-space-for-error-message-location-info)
 
