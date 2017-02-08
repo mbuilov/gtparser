@@ -669,11 +669,11 @@ Parameters:
 
 **Returns:** pointer to composed error message with prepended location info in `err_buf` or `err`, if `err_buf` is too small
 
-	* `parser_err_prepend_at_line()`  - just calls `parser_err_prepend_at()` with zero `column` value
-	* `parser_err_prepend_at_char()`  - just calls `parser_err_prepend_at()` with zero `line` value
-	* `parser_err_prepend_at_()`      - just calls `parser_err_prepend_at()` with zero `filename_reserve` and `NULL` `filename` values
-	* `parser_err_prepend_at_line_()` - just calls `parser_err_prepend_at_line()` with zero `filename_reserve` and `NULL` `filename` values
-	* `parser_err_prepend_at_char_()` - just calls `parser_err_prepend_at_line()` with zero `filename_reserve` and `NULL` `filename` values
+* `parser_err_prepend_at_line()`  - just calls `parser_err_prepend_at()` with zero `column` value
+* `parser_err_prepend_at_char()`  - just calls `parser_err_prepend_at()` with zero `line` value
+* `parser_err_prepend_at_()`      - just calls `parser_err_prepend_at()` with zero `filename_reserve` and `NULL` `filename` values
+* `parser_err_prepend_at_line_()` - just calls `parser_err_prepend_at_line()` with zero `filename_reserve` and `NULL` `filename` values
+* `parser_err_prepend_at_char_()` - just calls `parser_err_prepend_at_line()` with zero `filename_reserve` and `NULL` `filename` values
 
 _Note_: if error message was printed to `err_buf` (i.e. `err` is the value returned by [`parser_err_reserve()`](#reserve-a-space-for-error-message-location-info)), then `err_buf`, `err_buf_size` and `filename_reserve` must be the same that were passed to [`parser_err_reserve()`](#reserve-a-space-for-error-message-location-info)
 
