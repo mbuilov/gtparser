@@ -1,11 +1,13 @@
 # gtparser
-Small library of generic text parsing functions enough to parse simple configs
+Small library of generic text parsing functions enough to parse simple grammars.
+For such grammars, it may be easier to implement parsing rules by hand, over than using parser generator like Bison.
+To use these functions, source text should be available as raw array of chars (large text from file may be mmap()'ed to a memory region).
 
 ## Contents
 
 - [Generic text functions](#generic-text-functions)
-- [Text iterator API](#text-iterator-api)
-- [Handy functions for use with text iterator](#handy-functions-for-use-with-text-iterator)
+- [Source text iterator API](#source-text-iterator-api)
+- [Handy functions for use with source text iterator](#handy-functions-for-use-with-source-text-iterator)
 - [Helpers to form error message](#helpers-to-form-error-message)
 - [Installing](#installing)
 
@@ -26,7 +28,7 @@ Small library of generic text parsing functions enough to parse simple configs
 13. [_scan_hex64](#scan-unsigned-hexadecimal-64-bit-integer)
 14. [is_space](#check-if-char-is-a-space)
 
-### Text iterator API ([gtparser/parser_base.h](/gtparser/parser_base.h))
+### Source text iterator API ([gtparser/parser_base.h](/gtparser/parser_base.h))
 
 1. [src_iter_init](#initialize-source-text-iterator-structure)
 2. [src_iter_step](#step-over-current-character)
@@ -45,7 +47,7 @@ Small library of generic text parsing functions enough to parse simple configs
 15. [src_iter_return_save_pos](#return-iterator-state)
 16. [src_iter_restore_pos](#restore-iterator-state)
 
-### Handy functions for use with text iterator
+### Handy functions for use with source text iterator
 
 1. [_skip_rest_of_line](#skip-characters-until-new-line)
 2. [_skip_comment](#skip-one-line-comment)
@@ -62,6 +64,9 @@ Small library of generic text parsing functions enough to parse simple configs
 6. [parser_err_prepend_at_line_](#prepend-location-info-to-error-message)
 7. [parser_err_prepend_at_char](#prepend-location-info-to-error-message)
 8. [parser_err_prepend_at_char_](#prepend-location-info-to-error-message)
+9. [parser_err_print_char](#append-character-to-buffer)
+10. [parser_err_print_string](#append-string-to-buffer)
+11. [_parser_err_print_string](#append-string-to-buffer)
 
 ---------------------------------------------------
 
@@ -161,7 +166,7 @@ Parameters:
 
 #### Scan chars of a name
 ```C
-const char *_scan_name(const char *s, const char *const end);
+const char *_scan_name(const char *s/*<end*/, const char *const end);
 ```
 Parameters:
 - `s`   - points to first char of a name in a buffer (char matched by regexp: `[_a-zA-Z]`)
@@ -175,7 +180,7 @@ _Note_: `s < end`
 
 #### Scan unsigned decimal integer
 ```C
-const char *_scan_uint(const char *s, const char *const end, unsigned *number);
+const char *_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number);
 ```
 Parameters:
 - `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
@@ -192,7 +197,7 @@ _Note_: `s < end`
 
 #### Scan unsigned decimal 64-bit integer
 ```C
-const char *_scan_uint64(const char *s, const char *const end, unsigned INT64_TYPE *number);
+const char *_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number);
 ```
 Parameters:
 - `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
@@ -211,7 +216,7 @@ _Notes_:
 
 #### Scan unsigned hexadecimal integer
 ```C
-const char *_scan_hex(const char *s, const char *const end, unsigned *number);
+const char *_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number);
 ```
 Parameters:
 - `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
@@ -228,7 +233,7 @@ _Note_: `s < end`
 
 #### Scan unsigned hexadecimal 64-bit integer
 ```C
-const char *_scan_hex64(const char *s, const char *const end, unsigned INT64_TYPE *number);
+const char *_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number);
 ```
 Parameters:
 - `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
@@ -701,6 +706,65 @@ const char *err_msg = parser_err_prepend_at(
 	line,
 	column);
 ```
+
+*Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
+
+#### Append character to buffer
+```C
+char *parser_err_print_char(char c, char *buf/*<=end*/, const char *const end);
+```
+Parameters:
+- `c`   - character to append
+- `buf` - position in buffer where to append `c`
+- `end` - points one char beyond destinaton buffer
+
+**Returns:** advanced buffer position pointer if `c` was appended, else returns `buf`, which is equal to `end`
+
+*Example:*
+```C
+extern char *buf;
+extern char *end;
+extern int error1;
+extern int error2;
+if (error1)
+	buf = parser_err_print_char('a', buf, end);
+if (error2)
+	buf = parser_err_print_char('b', buf, end);
+...
+```
+
+*Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
+
+#### Append string to buffer
+```C
+char *parser_err_print_string(const char *string/*'\0'-terminated*/, char *buf/*<=end*/, const char *const end);
+char *_parser_err_print_string(const char *string, size_t string_len, char *buf/*<=end*/, const char *const end);
+
+```
+Parameters:
+- `string`     - string to append to buffer
+- `string_len` - length of `string`
+- `buf`        - position in buffer where to append `string`
+- `end`        - points one char beyond destination buffer
+
+**Returns:** advanced buffer position pointer if `string` was appended, else returns `buf`, which is equal to `end`
+
+_Note_: `string` may be trimmed if it's too long to fit in buffer
+
+*Example:*
+```C
+extern char *buf;
+extern char *end;
+extern int error1;
+extern int error2;
+if (error1)
+	buf = parser_err_print_string("string1", buf, end);
+if (error2)
+	buf = _parser_err_print_string("string2", 3, buf, end);
+...
+```
+
+*Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
 
 ---------------------------------------------------
 
