@@ -102,10 +102,10 @@ static inline char *parser_err_print_char(char c, char *buf/*<=end*/, const char
 /* print c-string to buffer,
   trim printed string if necessary,
   returns pointer to next char in buf after printed string */
-GTPARSER_EXPORTS char *parser_err_print_string(const char *string, char *buf, const char *const end);
+GTPARSER_EXPORTS char *parser_err_print_string(const char *string/*'\0'-terminated*/, char *buf/*<=end*/, const char *const end);
 
 /* same as parser_err_print_string(), but print only string_len chars of string */
-GTPARSER_EXPORTS char *_parser_err_print_string(const char *string, size_t string_len, char *buf, const char *const end);
+GTPARSER_EXPORTS char *_parser_err_print_string(const char *string, size_t string_len, char *buf/*<=end*/, const char *const end);
 
 /* err_buf and err_buf_size must be defined */
 #define PARSER_ERR_START \
