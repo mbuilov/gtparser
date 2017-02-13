@@ -80,15 +80,37 @@ GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_bu
 	return err;
 }
 
-GTPARSER_EXPORTS char *_parser_err_print_string(const char *string, size_t string_len, char *buf, const char *const end)
+GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count);
 {
-	if (string_len > (unsigned)(end - buf))
-		string_len = (unsigned)(end - buf); /* trim string tail */
-	MEMCPY(buf, string, string_len);
-	return buf + string_len;
+	size_t buf_size = (size_t)(end - buf);
+	if (count > buf_size)
+		count = buf_size; /* trim chars array tail */
+	MEMCPY(buf, chars, count);
+	return buf + count;
 }
 
-GTPARSER_EXPORTS char *parser_err_print_string(const char *string, char *buf, const char *const end)
+#if (defined(__GNUC__) && (__GNUC__ > 4 || (4 == __GNUC__ && __GNUC_MINOR__ >= 9))) || \
+    (defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 8)))
+__attribute__ ((format(printf, 3, 4)))
+#elif defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
+_At_(format, _Printf_format_string_)
+#endif
+GTPARSER_EXPORTS char *parser_err_print(char *buf/*<=end*/, const char *const end, const char *format/*'\0'-terminated*/, ...)
 {
-	return _parser_err_print_string(string, STRLEN(string), buf, end);
+	va_list args;
+	va_start(args, format);
+	{
+		size_t buf_size = (size_t)(end - buf);
+#ifdef WIN32
+		int n = _vsnprintf(buf, buf_size, format, args);
+#else
+		int n = vsnprintf(buf, buf_size, format, args);
+#endif
+		if (n < 0 || (size_t)n > buf_size)
+			buf = end;
+		else
+			buf += n;
+	}
+	va_end(args);
+	return buf;
 }
