@@ -64,9 +64,9 @@ To use these functions, source text should be available as raw array of chars (l
 6. [parser_err_prepend_at_line_](#prepend-location-info-to-error-message)
 7. [parser_err_prepend_at_char](#prepend-location-info-to-error-message)
 8. [parser_err_prepend_at_char_](#prepend-location-info-to-error-message)
-9. [parser_err_print_char](#append-character-to-buffer)
-10. [parser_err_print_string](#append-string-to-buffer)
-11. [_parser_err_print_string](#append-string-to-buffer)
+9. [parser_err_print_char](#append-character-to-a-buffer)
+10. [parser_err_print_string](#append-string-to-a-buffer)
+11. [_parser_err_print_string](#append-string-to-a-buffer)
 
 ---------------------------------------------------
 
@@ -180,7 +180,7 @@ _Note_: `s < end`
 
 #### Scan unsigned decimal integer
 ```C
-const char *_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number);
+const char *_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
 ```
 Parameters:
 - `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
@@ -197,7 +197,7 @@ _Note_: `s < end`
 
 #### Scan unsigned decimal 64-bit integer
 ```C
-const char *_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number);
+const char *_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
 ```
 Parameters:
 - `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
@@ -216,7 +216,7 @@ _Notes_:
 
 #### Scan unsigned hexadecimal integer
 ```C
-const char *_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number);
+const char *_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
 ```
 Parameters:
 - `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
@@ -233,7 +233,7 @@ _Note_: `s < end`
 
 #### Scan unsigned hexadecimal 64-bit integer
 ```C
-const char *_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number);
+const char *_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
 ```
 Parameters:
 - `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
@@ -483,7 +483,7 @@ _Note_: column number may overflow for large texts, but it is not fatal for pars
 
 #### Get iterator text position (line and column numbers)
 ```C
-void src_iter_get_pos(const struct src_iter *it, struct src_pos *pos);
+void src_iter_get_pos(const struct src_iter *it, struct src_pos *pos/*out*/);
 ```
 Parameters:
 - `it`  - text iterator structure
@@ -504,7 +504,7 @@ Parameters:
 
 #### Save iterator state
 ```C
-void src_iter_save_pos(const struct src_iter *it, struct src_save_pos *save_pos);
+void src_iter_save_pos(const struct src_iter *it, struct src_save_pos *save_pos/*out*/);
 ```
 Parameters:
 - `it`       - text iterator structure
@@ -604,7 +604,7 @@ char *parser_err_reserve_(char err_buf[], size_t err_buf_size);
 ```
 Parameters:
 - `err_buf`          - buffer where to compose error message
-- `err_buf_size`     - size of err_buf
+- `err_buf_size`     - size of `err_buf`
 - `filename_reserve` - how much space to reserve in `err_buf` for file name passed to [`parser_err_prepend_at()`](#prepend-location-info-to-error-message)
 
 **Returns:** pointer to a space inside `err_buf` to print error message details to, or returns `err_buf`, if `err_buf` is too small
@@ -665,7 +665,7 @@ const char *parser_err_prepend_at_char_(
 ```
 Parameters:
 - `err_buf`          - buffer where to compose error message
-- `err_buf_size`     - size of err_buf
+- `err_buf_size`     - size of `err_buf`
 - `filename_reserve` - how much space to reserve in `err_buf` for file name
 - `filename`         - `'\0'`-terminated source file name where an error was encountered, may be `NULL`
 - `err`              - `'\0'`-terminated error message
@@ -709,16 +709,18 @@ const char *err_msg = parser_err_prepend_at(
 
 *Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
 
-#### Append character to buffer
+#### Append character to a buffer
 ```C
 char *parser_err_print_char(char c, char *buf/*<=end*/, const char *const end);
 ```
 Parameters:
 - `c`   - character to append
-- `buf` - position in buffer where to append `c`
+- `buf` - position in destination buffer where to append `c`
 - `end` - points one char beyond destinaton buffer
 
-**Returns:** advanced buffer position pointer if `c` was appended, else returns `buf`, which is equal to `end`
+**Returns:** buffer position `<= end` beyond appended `c`
+
+_Note_: nothing is appended if `buf == end` prior the call
 
 *Example:*
 ```C
@@ -735,21 +737,23 @@ if (error2)
 
 *Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
 
-#### Append string to buffer
+#### Append string to a buffer
 ```C
 char *parser_err_print_string(const char *string/*'\0'-terminated*/, char *buf/*<=end*/, const char *const end);
 char *_parser_err_print_string(const char *string, size_t string_len, char *buf/*<=end*/, const char *const end);
 
 ```
 Parameters:
-- `string`     - string to append to buffer
+- `string`     - string to append to destination buffer
 - `string_len` - length of `string`
-- `buf`        - position in buffer where to append `string`
+- `buf`        - position in destination buffer where to append `string`
 - `end`        - points one char beyond destination buffer
 
-**Returns:** advanced buffer position pointer if `string` was appended, else returns `buf`, which is equal to `end`
+**Returns:** buffer position `<= end` beyond appended `string`
 
 _Note_: `string` may be trimmed if it's too long to fit in buffer
+
+_Note_: nothing is appended if `buf == end` prior the call
 
 *Example:*
 ```C
@@ -760,7 +764,7 @@ extern int error2;
 if (error1)
 	buf = parser_err_print_string("string1", buf, end);
 if (error2)
-	buf = _parser_err_print_string("string2", 3, buf, end);
+	buf = _parser_err_print_string("string2", 7, buf, end);
 ...
 ```
 
