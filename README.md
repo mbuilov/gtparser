@@ -8,7 +8,7 @@ To use these functions, source text should be available as raw array of chars (l
 - [Generic text functions](#generic-text-functions)
 - [Source text iterator API](#source-text-iterator-api)
 - [Handy functions for use with source text iterator](#handy-functions-for-use-with-source-text-iterator)
-- [Helpers to form error message](#helpers-to-form-error-message)
+- [Helpers to compose error message](#helpers-to-compose-error-message)
 - [Installing](#installing)
 
 ### Generic text functions
@@ -54,7 +54,7 @@ To use these functions, source text should be available as raw array of chars (l
 3. [read_non_space_skip_comments](#read-first-non-space-character-skipping-comments)
 4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol)
 
-### Helpers to form error message
+### Helpers to compose error message
 
 1. [parser_err_reserve](#reserve-a-space-for-error-message-location-info)
 2. [parser_err_reserve_](#reserve-a-space-for-error-message-location-info)
