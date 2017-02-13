@@ -65,8 +65,9 @@ To use these functions, source text should be available as raw array of chars (l
 7. [parser_err_prepend_at_char](#prepend-location-info-to-error-message)
 8. [parser_err_prepend_at_char_](#prepend-location-info-to-error-message)
 9. [parser_err_print_char](#append-character-to-a-buffer)
-10. [parser_err_print_string](#append-string-to-a-buffer)
-11. [_parser_err_print_string](#append-string-to-a-buffer)
+10. [parser_err_print](#append-parametrized-message-to-a-buffer)
+11. [parser_err_print_chars](#append-characters-array-to-a-buffer)
+12. [parser_err_finish](#terminate-buffer-with-0)
 
 ---------------------------------------------------
 
@@ -257,7 +258,7 @@ int is_space(char c);
 Parameters:
 - `c` - checked char
 
-**Returns:** non-zero if `c` is a _space_ - ascii character with value in range `[0..32]`
+**Returns:** non-zero if `c` is a _space_ - character with value in ASCII range `[0..32]`
 
 _Note_: this fast and simple function is usable to skip all space characters, like tabulations, new lines, form feeds, bells and so on
 
@@ -579,7 +580,7 @@ Parameters:
 
 _Notes_:
 * checks all characters, starting from current one by [`is_space()`](#check-if-char-is-a-space) function
-* skips one-line comments by [`_skip_comment()`](#skip-one-line-comment) fuction
+* skips one-line comments by [`_skip_comment()`](#skip-one-line-comment) function
 * iterator may point to `<EOF>`
 
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
@@ -709,63 +710,84 @@ const char *err_msg = parser_err_prepend_at(
 
 *Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
 
-#### Append character to a buffer
+#### Append parametrized message to a buffer
 ```C
-char *parser_err_print_char(char c, char *buf/*<=end*/, const char *const end);
+char *parser_err_print(char *buf/*<=end*/, const char *const end, const char *format, ...);
 ```
 Parameters:
-- `c`   - character to append
-- `buf` - position in destination buffer where to append `c`
-- `end` - points one char beyond destinaton buffer
+- `buf`    - position in destination buffer where to append formatted message
+- `end`    - points one char beyond destination buffer
+- `format` - format string of parametrized message to append to destination buffer
+- `...`    - parameters of parametrized message
 
-**Returns:** buffer position `<= end` beyond appended `c`
+**Returns:** buffer position `<= end` after appended formatted message
 
-_Note_: nothing is appended if `buf == end` prior the call
+_Note_: formatted message tail may be trimmed if it's too long to fit in buffer
 
 *Example:*
 ```C
 extern char *buf;
 extern char *end;
-extern int error1;
-extern int error2;
-if (error1)
-	buf = parser_err_print_char('a', buf, end);
-if (error2)
-	buf = parser_err_print_char('b', buf, end);
+extern int error;
+if (error)
+	buf = parser_err_print(buf, end, "an error occurred: %d", error);
 ...
 ```
 
 *Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
 
-#### Append string to a buffer
+#### Append characters array to a buffer
 ```C
-char *parser_err_print_string(const char *string/*'\0'-terminated*/, char *buf/*<=end*/, const char *const end);
-char *_parser_err_print_string(const char *string, size_t string_len, char *buf/*<=end*/, const char *const end);
-
+char *parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count);
 ```
 Parameters:
-- `string`     - string to append to destination buffer
-- `string_len` - length of `string`
-- `buf`        - position in destination buffer where to append `string`
-- `end`        - points one char beyond destination buffer
+- `buf`   - position in destination buffer where to append chars
+- `end`   - points one char beyond destination buffer
+- `chars` - characters array to append to destination buffer
+- `count` - number of characters to append to destination buffer
 
-**Returns:** buffer position `<= end` beyond appended `string`
+**Returns:** buffer position `<= end` after appended characters
 
-_Note_: `string` may be trimmed if it's too long to fit in buffer
-
-_Note_: nothing is appended if `buf == end` prior the call
+_Note_: characters array tail may be trimmed if it's too long to fit in buffer
 
 *Example:*
 ```C
 extern char *buf;
 extern char *end;
-extern int error1;
-extern int error2;
-if (error1)
-	buf = parser_err_print_string("string1", buf, end);
-if (error2)
-	buf = _parser_err_print_string("string2", 7, buf, end);
+extern int error;
+if (error)
+	buf = parser_err_print_chars(buf, end, "some error", 10);
 ...
+```
+
+*Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
+
+#### Terminate buffer with '\0'
+```C
+void parser_err_finish(char *buf/*<=end*/, const char *const end, size_t err_space);
+```
+Parameters:
+- `buf`       - position in destination buffer where to append `'\0'`
+- `end`       - points one char beyond destination buffer
+- `err_space` - total destination buffer size
+
+_Notes_:
+* if `err_space` is zero, nothing is appended
+* if `buf == end`, then last char in buffer is replaced with `'\0'`
+
+*Example:*
+```C
+extern char err[];
+extern size_t err_space;
+{
+	const char *buf = err;
+	const char *const end = err + err_space;
+	buf = parser_err_print(buf, end, "some message: %d", 100);
+	buf = parser_err_print(buf, end, "some message: %d", 101);
+	buf = parser_err_print(buf, end, "some message: %d", 102);
+	parser_err_finish(buf, end, err_space);
+}
+/* err - '\0'-terminated error message */
 ```
 
 *Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
