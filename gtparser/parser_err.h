@@ -39,7 +39,7 @@ __attribute__ ((const))
 /* err - '\0'-terminated error message,
   if error message was printed to err_buf (i.e. err is the value returned by parser_err_reserve()),
   then err_buf, err_buf_size, filename_reserve - must be the same that were passed to parser_err_reserve() */
-/* line & colunm - position in source file where a parsing error occured,
+/* line & column - position in source file where a parsing error occurred,
   if line is 0, then only column number is printed,
   if column is 0, then only line number is printed */
 /* returns pointer to composed error message inside err_buf or err, if err_buf_size is too small */
@@ -82,52 +82,31 @@ static inline const char *parser_err_prepend_at_char(
 #define parser_err_prepend_at_char_(err_buf, err_buf_size, err, column) \
 	parser_err_prepend_at_char(err_buf, err_buf_size, /*filename_reserve:*/0, /*filename:*/NULL, err, column)
 
-/* print error message into err_buf as follows:
+/* print formatted message in error buffer,
+  trim message tail if necessary to fit it in the buffer,
+  returns pointer to next char after printed message or end */
+/* NOTE: error buffer may be not '\0'-terminated after the call */
+#if (defined(__GNUC__) && (__GNUC__ > 4 || (4 == __GNUC__ && __GNUC_MINOR__ >= 9))) || \
+    (defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 8)))
+__attribute__ ((format(printf, 3, 4)))
+#elif defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
+_At_(format, _Printf_format_string_)
+#endif
+GTPARSER_EXPORTS char *parser_err_print(char *buf/*<=end*/, const char *const end, const char *format/*'\0'-terminated*/, ...);
 
-  PARSER_ERR_START
-  PARSER_ERR_PRINT_CONSTANT("error message");
-  PARSER_ERR_PRINT_STRING_LEN(cstr, len);
-  PARSER_ERR_PRINT_STRING(msg_cstr);
-  PARSER_ERR_PRINT_CHAR('x');
-  PARSER_ERR_END
-*/
+/* append chars to error buffer,
+  trim chars array tail if necessary to fit it in the buffer,
+  returns pointer to next char after printed chars or end */
+/* NOTE: error buffer may be not '\0'-terminated after the call */
+GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count);
 
-static inline char *parser_err_print_char(char c, char *buf/*<=end*/, const char *const end)
+/* terminate error buffer with '\0' */
+static inline void parser_err_finish(char *buf/*<=end*/, const char *const end, size_t err_space)
 {
 	if (buf < end)
-		*buf++ = c;
-	return buf;
-}
-
-/* print c-string to buffer,
-  trim printed string if necessary,
-  returns pointer to next char in buf after printed string */
-GTPARSER_EXPORTS char *parser_err_print_string(const char *string/*'\0'-terminated*/, char *buf/*<=end*/, const char *const end);
-
-/* same as parser_err_print_string(), but print only string_len chars of string */
-GTPARSER_EXPORTS char *_parser_err_print_string(const char *string, size_t string_len, char *buf/*<=end*/, const char *const end);
-
-/* err_buf and err_buf_size must be defined */
-#define PARSER_ERR_START \
-if (err_buf_size) { \
-	char *__buf = err_buf; const char *const __end = __buf + err_buf_size - 1/*'\0'*/;
-
-#define PARSER_ERR_PRINT_CONSTANT(__string) \
-	__buf = _parser_err_print_string(__string"", sizeof(__string"") - 1 + \
-		0*sizeof(int[1-2*(1 == sizeof(__string))]) + \
-		0*sizeof(int[1-2*(sizeof(__string) > (~0u >> 1))]), __buf, __end)
-
-#define PARSER_ERR_PRINT_STRING_LEN(__str, __len) \
-	__buf = _parser_err_print_string(__str, __len, __buf, __end)
-
-#define PARSER_ERR_PRINT_STRING(__str) \
-	__buf = parser_err_print_string(__str, __buf, __end)
-
-#define PARSER_ERR_PRINT_CHAR(__c) \
-	__buf = parser_err_print_char(__c, __buf, __end)
-
-#define PARSER_ERR_END \
-	*__buf = '\0'; \
+		*buf = '\0';
+	else if (err_space)
+		end[-1] = '\0';
 }
 
 #ifdef __cplusplus
