@@ -35,6 +35,24 @@ struct src_iter {
 	const char *end;
 	unsigned back_column;
 	unsigned line;
+#ifdef __cplusplus
+	inline void init(const char *input, size_t size);
+	inline void step();
+	inline bool eof() const;
+	inline bool next();
+	inline void process_tab();
+	inline void check_tab();
+	inline void inc_line();
+	inline void check();
+	inline char current() const;
+	inline char current_eof() const;
+	inline unsigned get_column() const;
+	inline void get_pos(struct src_pos &pos/*out*/) const;
+	inline struct src_pos return_pos() const;
+	inline void save_pos(struct src_save_pos &save_pos/*out*/) const;
+	inline struct src_save_pos return_save_pos() const;
+	inline void restore_pos(const struct src_save_pos &save_pos);
+#endif /* __cplusplus */
 };
 
 static inline struct src_iter *_src_iter_init(struct src_iter *it, const char *input)
@@ -77,6 +95,7 @@ static inline int src_iter_eof(const struct src_iter *it)
 
 /* input:  it points to checked char */
 /* output: it points to unchecked char, may be to eof */
+/* returns zero if it points to eof */
 static inline int _src_iter_next(const char **current, const char *end)
 {
 	_src_iter_step(current);
@@ -85,6 +104,7 @@ static inline int _src_iter_next(const char **current, const char *end)
 
 /* input:  it points to checked char */
 /* output: it points to unchecked char, may be to eof */
+/* returns zero if it points to eof */
 static inline int src_iter_next(struct src_iter *it)
 {
 	return _src_iter_next(&it->current, it->end);
@@ -260,6 +280,90 @@ GTPARSER_EXPORTS char read_non_space_skip_comments(struct src_iter *it, char com
 /* output: if returns != '\0', it points to '\n' or to non-space and non-eof */
 /* returns current char or '\0' on eof */
 GTPARSER_EXPORTS char read_non_space_stop_eol(struct src_iter *it);
+
+#ifdef __cplusplus
+
+inline void src_iter::init(const char *input, size_t size)
+{
+	src_iter_init(this, input, size);
+}
+
+inline void src_iter::step()
+{
+	src_iter_step(this);
+}
+
+inline bool src_iter::eof() const
+{
+	return 0 != src_iter_eof(this);
+}
+
+inline bool src_iter::next()
+{
+	return 0 != src_iter_next(this);
+}
+
+inline void src_iter::process_tab()
+{
+	src_iter_process_tab(this);
+}
+
+inline void src_iter::check_tab()
+{
+	src_iter_check_tab(this);
+}
+
+inline void src_iter::inc_line()
+{
+	src_iter_inc_line(this);
+}
+
+inline void src_iter::check()
+{
+	src_iter_check(this);
+}
+
+inline char src_iter::current() const
+{
+	return src_iter_current(this);
+}
+
+inline char src_iter::current_eof() const
+{
+	return src_iter_current_eof(this);
+}
+
+inline unsigned src_iter::get_column() const
+{
+	return src_iter_get_column(this);
+}
+
+inline void src_iter::get_pos(struct src_pos &pos/*out*/) const
+{
+	src_iter_get_pos(this, &pos/*out*/);
+}
+
+inline struct src_pos src_iter::return_pos() const
+{
+	return src_iter_return_pos(this);
+}
+
+inline void src_iter::save_pos(struct src_save_pos &save_pos/*out*/) const
+{
+	src_iter_save_pos(this, &save_pos/*out*/);
+}
+
+inline struct src_save_pos src_iter::return_save_pos() const
+{
+	return src_iter_return_save_pos(this);
+}
+
+inline void src_iter::restore_pos(const struct src_save_pos &save_pos)
+{
+	src_iter_restore_pos(this, &save_pos/*in*/);
+}
+
+#endif /* __cplusplus */
 
 #ifdef __cplusplus
 }
