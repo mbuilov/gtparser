@@ -16,8 +16,9 @@
 extern "C" {
 #endif
 
-/* assume (*current) pointts to first name character,
+/* assume (*current) points to first name character,
   returns scanned name */
+/* NOTE: after return it->current points to non-[_a-zA-Z0-9], may be to end */
 static inline const char *_read_name(const char **current, const char *end)
 {
 	const char *name = *current;
@@ -25,8 +26,9 @@ static inline const char *_read_name(const char **current, const char *end)
 	return name;
 }
 
-/* assume it->current pointts to first name character,
+/* assume it->current points to first name character,
   returns scanned name */
+/* NOTE: after return it->current points to non-[_a-zA-Z0-9], may be to end */
 static inline const char *read_name(struct src_iter *it)
 {
 	return _read_name(&it->current, it->end);
