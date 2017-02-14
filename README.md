@@ -584,7 +584,7 @@ _Note_: iterator must point to first char of a name ([`src_iter_current_char()`]
 
 **Returns:** pointer to first char of read name
 
-_Note_: by return, `it` points to non-name char (not matched by regexp `[_a-zA-Z0-9]` or to `<EOF>`
+_Note_: by return, `it` points to non-name char (not matched by regexp `[_a-zA-Z0-9]`) or to `<EOF>`
 
 *Declared in:* [`gtparser/name_parser.h`](/gtparser/name_parser.h)
 
