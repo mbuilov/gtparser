@@ -6,6 +6,7 @@
 
 /* parser_base.c */
 
+#include "gtparser/gtparser_config.h"
 #include "gtparser/parser_base.h"
 
 /* it points to checked char */
@@ -14,7 +15,7 @@ GTPARSER_EXPORTS void _skip_rest_of_line(struct src_iter *it)
 	const char *s = it->current;
 	while (_src_iter_next(&s, it->end)) {
 		_src_iter_check(&it->line, &it->back_column, s, GTPARSER_TAB_SIZE);
-		if ('\n' == _src_iter_get_char(s)) {
+		if ('\n' == _src_iter_current_char(s)) {
 			_src_iter_step(&s);
 			break;
 		}
@@ -26,7 +27,7 @@ GTPARSER_EXPORTS void _skip_rest_of_line(struct src_iter *it)
 GTPARSER_EXPORTS char read_non_space_skip_comments(struct src_iter *it, char comment)
 {
 	while (!src_iter_eof(it)) {
-		char c = src_iter_get_char(it);
+		char c = src_iter_current_char(it);
 		if (comment == c) {
 			_skip_comment(it);
 			continue;
@@ -43,7 +44,7 @@ GTPARSER_EXPORTS char read_non_space_skip_comments(struct src_iter *it, char com
 GTPARSER_EXPORTS char read_non_space_stop_eol(struct src_iter *it)
 {
 	while (!src_iter_eof(it)) {
-		char c = src_iter_get_char(it);
+		char c = src_iter_current_char(it);
 		if ('\n' == c || !is_space(c))
 			return c;
 		src_iter_check_tab(it);
