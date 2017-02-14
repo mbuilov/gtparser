@@ -654,11 +654,11 @@ _Notes_:
 * on error, `it` will point to error position
 
 Meta-characters removed by [`copy_cstring()`](#copy-parsed-c-string):
+* each line continuation-split (consists of two chars: `\<EOL>`) is removed
 * each `'\'` is removed and next char after it is unescaped (likely converted to some to non-printable char)
-* each line continuation-split (consists of two chars: `'\<EOL>`) is removed
-* encoded characters in octadecimal (`\377`) or hexadecimal (`\xff`) encoding are unencoded
 * list of recognized escape sequences (a character after `'\'` will be replaced with byte value in `{}`):
   `\a{0x07} \b{0x08} \t{0x09} \n{0x0a} \v{0x0b} \f{0x0c} \r{0x0d}`
+* encoded characters in octadecimal (`\377`) or hexadecimal (`\xff`) encoding are unencoded
 * octadecimal-encoded chars (max 3 octadecimal digits after `'\'`):
   `\0..\7, \00..\77, \000..\377`
 * hexadecimal-encoded chars (max 2 hexadecimal digits after `'\x'`):
