@@ -824,7 +824,7 @@ char *parser_err_print(char *buf/*<=end*/, const char *const end, const char *fo
 Parameters:
 - `buf`    - position in destination buffer where to append formatted message
 - `end`    - points one char beyond destination buffer
-- `format` - format string of parametrized message to append to destination buffer
+- `format` - `printf()`-like format string of parametrized message to append to destination buffer
 - `...`    - parameters of parametrized message
 
 **Returns:** buffer position `<= end` after appended formatted message
