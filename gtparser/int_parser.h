@@ -23,7 +23,7 @@ static inline int read_uint(struct src_iter *it, unsigned *number/*out*/)
 {
 	const char *s = _scan_uint(it->current, it->end, number/*out*/);
 	if (!s)
-		return 0; /* integer overlow */
+		return 0; /* integer overflow */
 	it->current = s;
 	return 1;
 }
@@ -31,7 +31,7 @@ static inline int read_uint64(struct src_iter *it, unsigned INT64_TYPE *number/*
 {
 	const char *s = _scan_uint64(it->current, it->end, number/*out*/);
 	if (!s)
-		return 0; /* integer overlow */
+		return 0; /* integer overflow */
 	it->current = s;
 	return 1;
 }
@@ -43,7 +43,7 @@ static inline int read_hex(struct src_iter *it, unsigned *number/*out*/)
 {
 	const char *s = _scan_hex(it->current, it->end, number/*out*/);
 	if (!s)
-		return 0; /* integer overlow */
+		return 0; /* integer overflow */
 	it->current = s;
 	return 1;
 }
@@ -51,7 +51,7 @@ static inline int read_hex64(struct src_iter *it, unsigned INT64_TYPE *number/*o
 {
 	const char *s = _scan_hex64(it->current, it->end, number/*out*/);
 	if (!s)
-		return 0; /* integer overlow */
+		return 0; /* integer overflow */
 	it->current = s;
 	return 1;
 }
