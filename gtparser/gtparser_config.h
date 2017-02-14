@@ -11,6 +11,7 @@
 
 /* define needed external functions */
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -27,5 +28,10 @@
 #define MEMMOVE(dst,src,sz) memmove(dst,src,sz)
 #define MEMCPY(dst,src,sz)  memcpy(dst,src,sz)
 #define SPRINTF             sprintf
+#ifdef WIN32
+#define VSNPRINTF(buf,sz,format,ap) _vsnprintf(buf,sz,format,ap)
+#else
+#define VSNPRINTF(buf,sz,format,ap) vsnprintf(buf,sz,format,ap)
+#endif
 
 #endif /* GTPARSER_CONFIG_H_INCLUDED */

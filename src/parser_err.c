@@ -80,7 +80,7 @@ GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_bu
 	return err;
 }
 
-GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count);
+GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count)
 {
 	size_t buf_size = (size_t)(end - buf);
 	if (count > buf_size)
@@ -89,7 +89,7 @@ GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *co
 	return buf + count;
 }
 
-#if (defined(__GNUC__) && (__GNUC__ > 4 || (4 == __GNUC__ && __GNUC_MINOR__ >= 9))) || \
+#if (defined(__GNUC__) && (__GNUC__ > 3 || (3 == __GNUC__ && __GNUC_MINOR__ >= 1))) || \
     (defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 8)))
 __attribute__ ((format(printf, 3, 4)))
 #elif defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
@@ -101,13 +101,9 @@ GTPARSER_EXPORTS char *parser_err_print(char *buf/*<=end*/, const char *const en
 	va_start(args, format);
 	{
 		size_t buf_size = (size_t)(end - buf);
-#ifdef WIN32
-		int n = _vsnprintf(buf, buf_size, format, args);
-#else
-		int n = vsnprintf(buf, buf_size, format, args);
-#endif
+		int n = VSNPRINTF(buf, buf_size, format, args);
 		if (n < 0 || (size_t)n > buf_size)
-			buf = end;
+			buf += buf_size;
 		else
 			buf += n;
 	}

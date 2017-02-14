@@ -86,7 +86,7 @@ static inline const char *parser_err_prepend_at_char(
   trim message tail if necessary to fit it in the buffer,
   returns pointer to next char after printed message or end */
 /* NOTE: error buffer may be not '\0'-terminated after the call */
-#if (defined(__GNUC__) && (__GNUC__ > 4 || (4 == __GNUC__ && __GNUC_MINOR__ >= 9))) || \
+#if (defined(__GNUC__) && (__GNUC__ > 3 || (3 == __GNUC__ && __GNUC_MINOR__ >= 1))) || \
     (defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 8)))
 __attribute__ ((format(printf, 3, 4)))
 #elif defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
@@ -106,7 +106,7 @@ static inline void parser_err_finish(char *buf/*<=end*/, const char *const end, 
 	if (buf < end)
 		*buf = '\0';
 	else if (err_space)
-		end[-1] = '\0';
+		buf[-1] = '\0';
 }
 
 #ifdef __cplusplus

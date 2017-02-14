@@ -44,8 +44,8 @@ struct src_iter {
 	inline void check_tab();
 	inline void inc_line();
 	inline void check();
-	inline char current() const;
-	inline char current_eof() const;
+	inline char get_char() const;
+	inline char get_char_eof() const;
 	inline unsigned get_column() const;
 	inline void get_pos(struct src_pos &pos/*out*/) const;
 	inline struct src_pos return_pos() const;
@@ -160,27 +160,27 @@ static inline void src_iter_check(struct src_iter *it)
 }
 
 /* get current char the it points to (it must not point to eof) */
-static inline char _src_iter_current(const char *current)
+static inline char _src_iter_get_char(const char *current)
 {
 	return *current;
 }
 
 /* get current char the it points to (it must not point to eof) */
-static inline char src_iter_current(const struct src_iter *it)
+static inline char src_iter_get_char(const struct src_iter *it)
 {
-	return _src_iter_current(it->current);
+	return _src_iter_get_char(it->current);
 }
 
 /* get current char the it points to, '\0' if it points to eof */
-static inline char _src_iter_current_eof(const char *current, const char *end)
+static inline char _src_iter_get_char_eof(const char *current, const char *end)
 {
 	return _src_iter_eof(current, end) ? '\0' : *current;
 }
 
 /* get current char the it points to, '\0' if it points to eof */
-static inline char src_iter_current_eof(const struct src_iter *it)
+static inline char src_iter_get_char_eof(const struct src_iter *it)
 {
-	return _src_iter_current_eof(it->current, it->end);
+	return _src_iter_get_char_eof(it->current, it->end);
 }
 
 /* get column from start of the line */
@@ -323,14 +323,14 @@ inline void src_iter::check()
 	src_iter_check(this);
 }
 
-inline char src_iter::current() const
+inline char src_iter::get_char() const
 {
-	return src_iter_current(this);
+	return src_iter_get_char(this);
 }
 
-inline char src_iter::current_eof() const
+inline char src_iter::get_char_eof() const
 {
-	return src_iter_current_eof(this);
+	return src_iter_get_char_eof(this);
 }
 
 inline unsigned src_iter::get_column() const
