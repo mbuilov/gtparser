@@ -14,9 +14,9 @@
 static enum PARSE_CSTRING_ERR _parse_cstring(unsigned *line, const char **current,
 	unsigned *back_column, size_t *removed, const char *const end)
 {
-	const char quote = _src_iter_get_char(*current);
+	const char quote = _src_iter_current_char(*current);
 	while (_src_iter_next(current, end)) {
-		char c = _src_iter_get_char(*current);
+		char c = _src_iter_current_char(*current);
 _switch_c:
 		if (quote == c)
 			return PARSE_CSTRING_OK; /* it points to the last quote */
@@ -26,11 +26,11 @@ _switch_c:
 			if (!_src_iter_next(current, end))
 				break; /* error: unterminated string */
 			(*removed)++; /* '\' must be removed */
-			c = _src_iter_get_char(*current);
+			c = _src_iter_current_char(*current);
 			if ('\r' == c) {
 				if (!_src_iter_next(current, end))
 					break; /* error: unterminated string */
-				c = _src_iter_get_char(*current);
+				c = _src_iter_current_char(*current);
 				if ('\n' != c)
 					return PARSE_CSTRING_EXPECTING_LINE_FEED; /* expecting line-feed after carridge-return */
 				(*removed) += 2; /* line continuation (split) must be removed */
@@ -41,14 +41,14 @@ _switch_c:
 				/* hexadecimal constant */
 				if (!_src_iter_next(current, end))
 					break; /* error: unterminated string */
-				c = _src_iter_get_char(*current);
+				c = _src_iter_current_char(*current);
 				{
 					unsigned n = _hex_char_value(c);
 					if (n > 15)
 						return PARSE_CSTRING_EXPECTING_HEX_DIGIT; /* expecting hexadecimal digit in hex escape sequence after \x */
 					if (!_src_iter_next(current, end))
 						break; /* error: unterminated string */
-					c = _src_iter_get_char(*current);
+					c = _src_iter_current_char(*current);
 					{
 						unsigned m = _hex_char_value(c);
 						if (m <= 15 && n + m) {
@@ -70,14 +70,14 @@ _switch_c:
 					/* octal constant */
 					if (!_src_iter_next(current, end))
 						break; /* error: unterminated string */
-					c = _src_iter_get_char(*current);
+					c = _src_iter_current_char(*current);
 					{
 						unsigned m = digit_value(c);
 						if (m <= 7) {
 							if (!_src_iter_next(current, end))
 								break; /* error: unterminated string */
 							n = n*8 + m;
-							c = _src_iter_get_char(*current);
+							c = _src_iter_current_char(*current);
 							m = digit_value(c);
 							if (m <= 7) {
 								if (n*8 + m > 255) {
