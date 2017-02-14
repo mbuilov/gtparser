@@ -21,7 +21,7 @@ _switch_c:
 		if (quote == c)
 			return PARSE_CSTRING_OK; /* it points to the last quote */
 		if ('\n' == c || '\r' == c)
-			return PARSE_CSTRING_UNESCAPED_NEWLINE; /* unescaped line-feed or carridge-return */
+			return PARSE_CSTRING_UNESCAPED_NEWLINE; /* unescaped line-feed or carriage-return */
 		if ('\\' == c) {
 			if (!_src_iter_next(current, end))
 				break; /* error: unterminated string */
@@ -32,7 +32,7 @@ _switch_c:
 					break; /* error: unterminated string */
 				c = _src_iter_current_char(*current);
 				if ('\n' != c)
-					return PARSE_CSTRING_EXPECTING_LINE_FEED; /* expecting line-feed after carridge-return */
+					return PARSE_CSTRING_EXPECTING_LINE_FEED; /* expecting line-feed after carriage-return */
 				(*removed) += 2; /* line continuation (split) must be removed */
 			}
 			else if ('\n' == c)
