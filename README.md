@@ -3,7 +3,7 @@ Small library of generic text parsing functions enough to parse simple grammars.
 
 For such grammars, it may be easier to implement parsing rules by hand, over than using parser generator like Bison.
 
-To use these functions, source text should be available as raw array of chars (large text from file may be mmap()'ed to a memory region).
+To use these functions, source text should be available as a raw array of chars (large text from file may be mmap()'ed to a memory region).
 
 ## Contents
 
