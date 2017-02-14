@@ -673,7 +673,7 @@ Meta-characters removed by [`copy_cstring()`](#copy-parsed-c-string):
 void copy_cstring(char dst[]/*out*/, const char *begin, const char *end, size_t removed);
 ```
 Parameters:
-- `dst`     - destination buffer to copy C-string to
+- `dst`     - destination buffer to copy and unescape C-string to
 - `begin`   - points to next char after first (opening) quote in source C-string
 - `end`     - points to the last (closing) quote in source C-string
 - `removed` - number of meta-characters to be removed (determined by [`parse_cstring()`](#parse-c-string))
