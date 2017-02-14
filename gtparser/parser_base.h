@@ -44,13 +44,13 @@ struct src_iter {
 	inline void check_tab();
 	inline void inc_line();
 	inline void check();
-	inline char get_char() const;
-	inline char get_char_eof() const;
+	inline char current_char() const;
+	inline char char_or_eof() const;
 	inline unsigned get_column() const;
 	inline void get_pos(struct src_pos &pos/*out*/) const;
-	inline struct src_pos return_pos() const;
+	inline struct src_pos get_pos() const;
 	inline void save_pos(struct src_save_pos &save_pos/*out*/) const;
-	inline struct src_save_pos return_save_pos() const;
+	inline struct src_save_pos save_pos() const;
 	inline void restore_pos(const struct src_save_pos &save_pos);
 #endif /* __cplusplus */
 };
@@ -160,27 +160,27 @@ static inline void src_iter_check(struct src_iter *it)
 }
 
 /* get current char the it points to (it must not point to eof) */
-static inline char _src_iter_get_char(const char *current)
+static inline char _src_iter_current_char(const char *current)
 {
 	return *current;
 }
 
 /* get current char the it points to (it must not point to eof) */
-static inline char src_iter_get_char(const struct src_iter *it)
+static inline char src_iter_current_char(const struct src_iter *it)
 {
-	return _src_iter_get_char(it->current);
+	return _src_iter_current_char(it->current);
 }
 
 /* get current char the it points to, '\0' if it points to eof */
-static inline char _src_iter_get_char_eof(const char *current, const char *end)
+static inline char _src_iter_char_or_eof(const char *current, const char *end)
 {
 	return _src_iter_eof(current, end) ? '\0' : *current;
 }
 
 /* get current char the it points to, '\0' if it points to eof */
-static inline char src_iter_get_char_eof(const struct src_iter *it)
+static inline char src_iter_char_or_eof(const struct src_iter *it)
 {
-	return _src_iter_get_char_eof(it->current, it->end);
+	return _src_iter_char_or_eof(it->current, it->end);
 }
 
 /* get column from start of the line */
@@ -323,14 +323,14 @@ inline void src_iter::check()
 	src_iter_check(this);
 }
 
-inline char src_iter::get_char() const
+inline char src_iter::current_char() const
 {
-	return src_iter_get_char(this);
+	return src_iter_current_char(this);
 }
 
-inline char src_iter::get_char_eof() const
+inline char src_iter::char_or_eof() const
 {
-	return src_iter_get_char_eof(this);
+	return src_iter_char_or_eof(this);
 }
 
 inline unsigned src_iter::get_column() const
@@ -343,7 +343,7 @@ inline void src_iter::get_pos(struct src_pos &pos/*out*/) const
 	src_iter_get_pos(this, &pos/*out*/);
 }
 
-inline struct src_pos src_iter::return_pos() const
+inline struct src_pos src_iter::get_pos() const
 {
 	return src_iter_return_pos(this);
 }
@@ -353,7 +353,7 @@ inline void src_iter::save_pos(struct src_save_pos &save_pos/*out*/) const
 	src_iter_save_pos(this, &save_pos/*out*/);
 }
 
-inline struct src_save_pos src_iter::return_save_pos() const
+inline struct src_save_pos src_iter::save_pos() const
 {
 	return src_iter_return_save_pos(this);
 }
