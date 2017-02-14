@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-GTPARSER_EXPORTS extern const char _is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u];
+extern const char _is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u];
 
 static inline int is_first_name(char c)
 {
