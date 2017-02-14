@@ -23,11 +23,11 @@ To use these functions, source text should be available as a raw array of chars 
 6. [is_first_name (table lookup-based)](#check-if-given-char-may-start-an-identifier-name-table-lookup-based-version)
 7. [is_next_name (table lookup-based)](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version)
 8. [hex_char_value (table lookup-based)](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version)
-9. [_scan_name](#scan-chars-of-a-name)
+9. [_scan_name](#scan-characters-of-a-name)
 10. [_scan_uint](#scan-unsigned-decimal-integer)
-11. [_scan_uint64](#scan-unsigned-decimal-64-bit-integer)
+11. [_scan_uint64](#scan-unsigned-decimal-integer)
 12. [_scan_hex](#scan-unsigned-hexadecimal-integer)
-13. [_scan_hex64](#scan-unsigned-hexadecimal-64-bit-integer)
+13. [_scan_hex64](#scan-unsigned-hexadecimal-integer)
 14. [is_space](#check-if-char-is-a-space)
 
 ### Source text iterator API ([gtparser/parser_base.h](/gtparser/parser_base.h))
@@ -55,6 +55,11 @@ To use these functions, source text should be available as a raw array of chars 
 2. [_skip_comment](#skip-one-line-comment)
 3. [read_non_space_skip_comments](#read-first-non-space-character-skipping-comments)
 4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol)
+5. [read_name](#read-characters-of-a-name)
+6. [read_uint](#read-unsigned-decimal-integer)
+7. [read_uint64](#read-unsigned-decimal-integer)
+8. [read_hex](#read-unsigned-hexadecimal-integer)
+9. [read_hex64](#read-unsigned-hexadecimal-integer)
 
 ### Helpers to compose error message
 
@@ -169,12 +174,12 @@ Parameters:
 
 *Declared in:* [`gtparser/name_scanner.h`](/gtparser/name_scanner.h)
 
-#### Scan chars of a name
+#### Scan characters of a name
 ```C
 const char *_scan_name(const char *s/*<end*/, const char *const end);
 ```
 Parameters:
-- `s`   - points to first char of a name in a buffer (char matched by regexp: `[_a-zA-Z]`)
+- `s`   - points to first char of a name in a buffer (likely a char matched by regexp: `[_a-zA-Z]`)
 - `end` - points one char beyond the buffer containing a name
 
 _Note_: `s < end`
@@ -186,28 +191,12 @@ _Note_: `s < end`
 #### Scan unsigned decimal integer
 ```C
 const char *_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
-```
-Parameters:
-- `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
-- `end`    - points one char beyond the buffer containing printed unsigned decimal integer
-- `number` - (_output_) scanned unsigned integer value
-
-_Note_: `s < end`
-
-**Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not matched by regexp: `[0-9]`) or `end`
-
-**_Note_**: on unsigned integer overflow, if printed number is too big, returns `NULL`
-
-*Declared in:* [`gtparser/int_scanner.h`](/gtparser/int_scanner.h)
-
-#### Scan unsigned decimal 64-bit integer
-```C
 const char *_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
 ```
 Parameters:
 - `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
 - `end`    - points one char beyond the buffer containing printed unsigned decimal integer
-- `number` - (_output_) scanned unsigned 64-bit integer value
+- `number` - (_output_) scanned unsigned (64-bit) integer value
 
 _Notes_:
 * `s < end`
@@ -215,35 +204,19 @@ _Notes_:
 
 **Returns:** pointer beyond the last char of scanned unsigned decimal integer (pointer to char not matched by regexp: `[0-9]`) or `end`
 
-**_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns `NULL`
+**_Note_**: on unsigned integer overflow, if printed number is too big, returns `NULL`
 
 *Declared in:* [`gtparser/int_scanner.h`](/gtparser/int_scanner.h)
 
 #### Scan unsigned hexadecimal integer
 ```C
 const char *_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
-```
-Parameters:
-- `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
-- `end`    - points one char beyond the buffer containing printed unsigned hexadecimal integer
-- `number` - (_output_) scanned unsigned integer value
-
-_Note_: `s < end`
-
-**Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not matched by regexp: `[0-9a-fA-F]`) or `end`
-
-**_Note_**: on unsigned integer overflow, if printed number is too big, returns `NULL`
-
-*Declared in:* [`gtparser/int_scanner.h`](/gtparser/int_scanner.h)
-
-#### Scan unsigned hexadecimal 64-bit integer
-```C
 const char *_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
 ```
 Parameters:
 - `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
 - `end`    - points one char beyond the buffer containing printed unsigned hexadecimal integer
-- `number` - (_output_) scanned unsigned 64-bit integer value
+- `number` - (_output_) scanned unsigned (64-bit) integer value
 
 _Notes_:
 * `s < end`
@@ -251,7 +224,7 @@ _Notes_:
 
 **Returns:** pointer beyond the last char of scanned unsigned hexadecimal integer (pointer to char not matched by regexp: `[0-9a-fA-F]`) or `end`
 
-**_Note_**: on unsigned integer overflow, if printed number is too big to be stored in 64 bits, returns `NULL`
+**_Note_**: on unsigned integer overflow, if printed number is too big, returns `NULL`
 
 *Declared in:* [`gtparser/int_scanner.h`](/gtparser/int_scanner.h)
 
@@ -599,6 +572,61 @@ Parameters:
 **Returns:** current non-space char or `<EOL>` or `'\0'`, if non-space char or `<EOL>` was not found and iterator points to `<EOF>`
 
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
+
+#### Read characters of a name
+```C
+const char *read_name(struct src_iter *it);
+```
+Parameters:
+- `it` - source text iterator structure
+
+_Note_: iterator must point to first char of a name ([`src_iter_current_char()`](#get-current-character) returns likely a char matched by regexp: `[_a-zA-Z]`)
+
+**Returns:** pointer to first char of read name
+
+_Note_: by return, `it` points to non-name char (not matched by regexp `[_a-zA-Z0-9]` or to `<EOF>`
+
+*Declared in:* [`gtparser/name_parser.h`](/gtparser/name_parser.h)
+
+#### Read unsigned decimal integer
+```C
+int read_uint(struct src_iter *it, unsigned *number/*out*/);
+int read_uint64(struct src_iter *it, unsigned INT64_TYPE *number/*out*/);
+```
+Parameters:
+- `it`     - source text iterator structure
+- `number` - (_output_) parsed unsigned (64-bit) integer value
+
+_Note_: iterator must point to first char of unsigned decimal integer ([`src_iter_current_char()`](#get-current-character) must return a char matched by regexp: `[0-9]`)
+
+**Returns:** `1` if number was successfully read, `0` - on unsigned integer overflow, if printed number is too big
+
+_Notes_:
+* by successful return, `it` points beyond the last char of scanned unsigned decimal integer (points to a char not matched by regexp: `[0-9]` or to `<EOF>`)
+* on integer overflow, iterator not changed
+* `INT64_TYPE` - 64-bit integer type, by default defined as `long long`
+
+*Declared in:* [`gtparser/int_parser.h`](/gtparser/int_parser.h)
+
+#### Read unsigned hexadecimal integer
+```C
+int read_hex(struct src_iter *it, unsigned *number/*out*/);
+int read_hex64(struct src_iter *it, unsigned INT64_TYPE *number/*out*/);
+```
+Parameters:
+- `it`     - source text iterator structure
+- `number` - (_output_) parsed unsigned (64-bit) integer value
+
+_Note_: iterator must point to first char of unsigned hexadecimal integer ([`src_iter_current_char()`](#get-current-character) must return a char matched by regexp: `[0-9a-fA-F]`)
+
+**Returns:** `1` if number was successfully read, `0` - on unsigned integer overflow, if printed number is too big
+
+_Notes_:
+* by successful return, `it` points beyond the last char of scanned unsigned hexadecimal integer (points to a char not matched by regexp: `[0-9a-fA-F]` or to `<EOF>`)
+* on integer overflow, iterator not changed
+* `INT64_TYPE` - 64-bit integer type, by default defined as `long long`
+
+*Declared in:* [`gtparser/int_parser.h`](/gtparser/int_parser.h)
 
 ================================================================
 
