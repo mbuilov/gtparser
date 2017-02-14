@@ -8,7 +8,7 @@ To use these functions, source text should be available as a raw array of chars 
 ## Contents
 
 - [Generic text functions](#generic-text-functions)
-- [Source text iterator API](#source-text-iterator-api)
+- [Source text iterator API](#source-text-iterator-api-gtparserparser_baseh)
 - [Handy functions for use with source text iterator](#handy-functions-for-use-with-source-text-iterator)
 - [Helpers to compose error message](#helpers-to-compose-error-message)
 - [Installing](#installing)
