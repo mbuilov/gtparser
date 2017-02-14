@@ -348,9 +348,9 @@ inline struct src_pos src_iter::get_pos() const
 	return src_iter_return_pos(this);
 }
 
-inline void src_iter::save_pos(struct src_save_pos &save_pos/*out*/) const
+inline void src_iter::save_pos(struct src_save_pos &_save_pos/*out*/) const
 {
-	src_iter_save_pos(this, &save_pos/*out*/);
+	src_iter_save_pos(this, &_save_pos/*out*/);
 }
 
 inline struct src_save_pos src_iter::save_pos() const
@@ -358,9 +358,9 @@ inline struct src_save_pos src_iter::save_pos() const
 	return src_iter_return_save_pos(this);
 }
 
-inline void src_iter::restore_pos(const struct src_save_pos &save_pos)
+inline void src_iter::restore_pos(const struct src_save_pos &_save_pos)
 {
-	src_iter_restore_pos(this, &save_pos/*in*/);
+	src_iter_restore_pos(this, &_save_pos/*in*/);
 }
 
 #endif /* __cplusplus */
