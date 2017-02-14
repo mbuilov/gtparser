@@ -375,7 +375,7 @@ void src_iter_check_tab(struct src_iter *it);
 Parameters:
 - `it` - text iterator structure
 
-Check if current character is a `<TAB>` and account it by `[src_iter_process_tab()](#account-encountered-tab-character)` if it is
+Check if current character is a `<TAB>` and account it by [`src_iter_process_tab()`](#account-encountered-tab-character) if it is
 
 _Note_: iterator must not point to `<EOF>`
 
@@ -401,7 +401,7 @@ void src_iter_check(struct src_iter *it);
 Parameters:
 - `it` - text iterator structure
 
-Check if current character is a `<TAB>` or `<EOL>`, then account it appropriately by `[src_iter_process_tab()](#account-encountered-tab-character)` or `[src_iter_inc_line()](#account-encountered-eol-character)`
+Check if current character is a `<TAB>` or `<EOL>`, then account it appropriately by [`src_iter_process_tab()`](#account-encountered-tab-character) or [`src_iter_inc_line()`](#account-encountered-eol-character)
 
 _Note_: iterator must not point to `<EOF>`
 
