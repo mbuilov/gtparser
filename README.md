@@ -777,7 +777,7 @@ Parameters:
 
 _Note_: string constant tail may be trimmed if it's too long to fit in buffer
 
-_Note_: implemented as a macro calling [`parser_err_print_chars()`]#(append-characters-array-to-a-buffer)
+_Note_: implemented as a macro calling [`parser_err_print_chars()`](#append-characters-array-to-a-buffer)
 
 *Example:*
 ```C
