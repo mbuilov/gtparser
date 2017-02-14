@@ -89,6 +89,11 @@ GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *co
 	return buf + count;
 }
 
+GTPARSER_EXPORTS char *parser_err_print_string(char *buf/*<=end*/, const char *const end, const char *string/*'\0'-terminated*/)
+{
+	return parser_err_print_chars(buf, end, string, STRLEN(string));
+}
+
 #if (defined(__GNUC__) && (__GNUC__ > 3 || (3 == __GNUC__ && __GNUC_MINOR__ >= 1))) || \
     (defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 8)))
 __attribute__ ((format(printf, 3, 4)))

@@ -94,11 +94,34 @@ _At_(format, _Printf_format_string_)
 #endif
 GTPARSER_EXPORTS char *parser_err_print(char *buf/*<=end*/, const char *const end, const char *format/*'\0'-terminated*/, ...);
 
+/* append string to error buffer,
+  trim string tail if necessary to fit it in the buffer,
+  returns pointer to next char after appended string or end */
+/* NOTE: error buffer may be not '\0'-terminated after the call */
+GTPARSER_EXPORTS char *parser_err_print_string(char *buf/*<=end*/, const char *const end, const char *string/*'\0'-terminated*/);
+
 /* append chars to error buffer,
   trim chars array tail if necessary to fit it in the buffer,
-  returns pointer to next char after printed chars or end */
+  returns pointer to next char after appended chars or end */
 /* NOTE: error buffer may be not '\0'-terminated after the call */
 GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count);
+
+/* append character to error buffer if there is a place for it,
+  returns pointer to next char after appended char or end */
+/* NOTE: error buffer may be not '\0'-terminated after the call */
+static inline char *parser_err_print_char(char *buf/*<=end*/, const char *const end, char c)
+{
+	if (buf < end)
+		*buf++ = c;
+	return buf;
+}
+
+/* append string constant to error buffer,
+  trim string tail if necessary to fit it in the buffer,
+  returns pointer to next char after appended string or end */
+/* NOTE: error buffer may be not '\0'-terminated after the call */
+#define parser_err_print_string_constant(buf/*<=end*/, end, s) \
+	parser_err_print_chars(buf, end, s, sizeof("" s) - 1)
 
 /* terminate error buffer with '\0' */
 static inline void parser_err_finish(char *buf/*<=end*/, const char *const end, size_t err_space)
