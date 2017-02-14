@@ -15,8 +15,8 @@ struct src_iter;
 
 enum PARSE_CSTRING_ERR {
 	PARSE_CSTRING_OK = 0,
-	PARSE_CSTRING_UNESCAPED_NEWLINE,   /* unescaped line-feed \n or carridge-return \r */
-	PARSE_CSTRING_EXPECTING_LINE_FEED, /* expecting line-feed \n after carridge-return \r */
+	PARSE_CSTRING_UNESCAPED_NEWLINE,   /* unescaped line-feed \n or carriage-return \r */
+	PARSE_CSTRING_EXPECTING_LINE_FEED, /* expecting line-feed \n after carriage-return \r */
 	PARSE_CSTRING_EXPECTING_HEX_DIGIT, /* expecting hexadecimal digit in hex escape sequence after \x */
 	PARSE_CSTRING_TOO_BIG_OCTAL,       /* too big octal character value > 255 in string, maximum allowed \377 */
 	PARSE_CSTRING_NULL_INSIDE_CSTRING, /* null character (with zero value) inside string is not allowed */
