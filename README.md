@@ -580,7 +580,7 @@ Parameters:
 - `it`      - text iterator structure
 - `comment` - char indicating start of one-line comment
 
-**Returns:** current non-space char or `0`, if non-space char was not found and iterator points to `<EOF>`
+**Returns:** current non-space char or `'\0'`, if non-space char was not found and iterator points to `<EOF>`
 
 _Notes_:
 * checks all characters, starting from current one by [`is_space()`](#check-if-char-is-a-space) function
@@ -596,7 +596,7 @@ char read_non_space_stop_eol(struct src_iter *it);
 Parameters:
 - `it` - text iterator structure
 
-**Returns:** current non-space char or `<EOL>` or `0`, if non-space char or `<EOL>` was not found and iterator points to `<EOF>`
+**Returns:** current non-space char or `<EOL>` or `'\0'`, if non-space char or `<EOL>` was not found and iterator points to `<EOF>`
 
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
