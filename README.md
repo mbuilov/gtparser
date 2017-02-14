@@ -10,7 +10,7 @@ To use these functions, source text should be available as a raw array of chars 
 - [Generic text functions](#generic-text-functions)
 - [Source text iterator API](#source-text-iterator-api-gtparserparser_baseh)
 - [Handy functions for use with source text iterator](#handy-functions-for-use-with-source-text-iterator)
-- [Helpers to compose error message](#helpers-to-compose-error-message)
+- [Helpers for composing error message](#helpers-for-composing-error-message)
 - [Installing](#installing)
 
 ### Generic text functions
@@ -60,8 +60,10 @@ To use these functions, source text should be available as a raw array of chars 
 7. [read_uint64](#read-unsigned-decimal-integer)
 8. [read_hex](#read-unsigned-hexadecimal-integer)
 9. [read_hex64](#read-unsigned-hexadecimal-integer)
+10. [parse_cstring](#parse-c-string)
+11. [copy_cstring](#copy-parsed-c-string)
 
-### Helpers to compose error message
+### Helpers for composing error message
 
 1. [parser_err_reserve](#reserve-a-space-for-error-message-location-info)
 2. [parser_err_reserve_](#reserve-a-space-for-error-message-location-info)
@@ -249,7 +251,7 @@ void src_iter_init(struct src_iter *it, const char *input, size_t size);
 ```
 Parameters:
 - `it`    - iterator structure to initialize
-- `input` - text buffer to parse
+- `input` - read-only text buffer to parse
 - `size`  - number of chars to parse in text buffer
 
 _Note_: Iterator line and column numbers are set to `1`
@@ -580,11 +582,11 @@ const char *read_name(struct src_iter *it);
 Parameters:
 - `it` - source text iterator structure
 
-_Note_: iterator must point to first char of a name ([`src_iter_current_char()`](#get-current-character) returns likely a char matched by regexp: `[_a-zA-Z]`)
-
 **Returns:** pointer to first char of read name
 
-_Note_: by return, `it` points to non-name char (not matched by regexp `[_a-zA-Z0-9]`) or to `<EOF>`
+_Notes_:
+* before the call, `it` must point to first char of a name ([`src_iter_current_char()`](#get-current-character) returns likely a char matched by regexp: `[_a-zA-Z]`)
+* by return, `it` will point to non-name char (not matched by regexp `[_a-zA-Z0-9]`) or to `<EOF>`
 
 *Declared in:* [`gtparser/name_parser.h`](/gtparser/name_parser.h)
 
@@ -597,13 +599,12 @@ Parameters:
 - `it`     - source text iterator structure
 - `number` - (_output_) parsed unsigned (64-bit) integer value
 
-_Note_: iterator must point to first char of unsigned decimal integer ([`src_iter_current_char()`](#get-current-character) must return a char matched by regexp: `[0-9]`)
-
 **Returns:** `1` if number was successfully read, `0` - on unsigned integer overflow, if printed number is too big
 
 _Notes_:
-* by successful return, `it` points beyond the last char of scanned unsigned decimal integer (points to a char not matched by regexp: `[0-9]` or to `<EOF>`)
-* on integer overflow, iterator not changed
+* before the call, `it` must point to first char of unsigned decimal integer ([`src_iter_current_char()`](#get-current-character) must return a char matched by regexp: `[0-9]`)
+* by successful return, `it` will point beyond the last char of scanned unsigned decimal integer (points to a char not matched by regexp: `[0-9]` or to `<EOF>`)
+* on integer overflow, `it` not changed
 * `INT64_TYPE` - 64-bit integer type, by default defined as `long long`
 
 *Declared in:* [`gtparser/int_parser.h`](/gtparser/int_parser.h)
@@ -617,16 +618,85 @@ Parameters:
 - `it`     - source text iterator structure
 - `number` - (_output_) parsed unsigned (64-bit) integer value
 
-_Note_: iterator must point to first char of unsigned hexadecimal integer ([`src_iter_current_char()`](#get-current-character) must return a char matched by regexp: `[0-9a-fA-F]`)
-
 **Returns:** `1` if number was successfully read, `0` - on unsigned integer overflow, if printed number is too big
 
 _Notes_:
-* by successful return, `it` points beyond the last char of scanned unsigned hexadecimal integer (points to a char not matched by regexp: `[0-9a-fA-F]` or to `<EOF>`)
-* on integer overflow, iterator not changed
+* before the call, `it` must point to first char of unsigned hexadecimal integer ([`src_iter_current_char()`](#get-current-character) must return a char matched by regexp: `[0-9a-fA-F]`)
+* by successful return, `it` will point beyond the last char of scanned unsigned hexadecimal integer (points to a char not matched by regexp: `[0-9a-fA-F]` or to `<EOF>`)
+* on integer overflow, `it` not changed
 * `INT64_TYPE` - 64-bit integer type, by default defined as `long long`
 
 *Declared in:* [`gtparser/int_parser.h`](/gtparser/int_parser.h)
+
+#### Parse C-string
+```C
+enum PARSE_CSTRING_ERR {
+	PARSE_CSTRING_OK = 0,              /* C-string successfully parsed                                             */
+	PARSE_CSTRING_UNESCAPED_NEWLINE,   /* unescaped line-feed '\n' or carriage-return '\r'                         */
+	PARSE_CSTRING_EXPECTING_LINE_FEED, /* expecting line-feed '\n' after carriage-return '\r'                      */
+	PARSE_CSTRING_EXPECTING_HEX_DIGIT, /* expecting hexadecimal digit in hex escape sequence after '\x'            */
+	PARSE_CSTRING_TOO_BIG_OCTAL,       /* too big octal character value > 255 in string, maximum allowed is '\377' */
+	PARSE_CSTRING_NULL_INSIDE_CSTRING, /* null character '\0' inside C-string is not allowed                       */
+	PARSE_CSTRING_UNTERMINATED         /* unterminated string                                                      */
+};
+
+enum PARSE_CSTRING_ERR parse_cstring(struct src_iter *it, size_t *removed/*out*/);
+```
+Parameters:
+- `it`      - source text iterator structure
+- `removed` - (_output_) number of meta-characters to be removed by [`copy_cstring()`](#copy-parsed-c-string)
+
+**Returns:** one of `enum PARSE_CSTRING_ERR` values
+
+_Notes_:
+* before the call, `it` must point to first (opening) quote of source C-string ([`src_iter_current_char()`](#get-current-character) returns `'"'`)
+* by successful return, `it` will point to last (closing) quote of source C-string
+* on error, `it` will point to error position
+
+Meta-characters removed by [`copy_cstring()`](#copy-parsed-c-string):
+* each `'\'` is removed and next char after it is unescaped (likely converted to some to non-printable char)
+* each line continuation-split (consists of two chars: `'\<EOL>`) is removed
+* encoded characters in octadecimal (`\377`) or hexadecimal (`\xff`) encoding are unencoded
+* list of recognized escape sequences (a character after `'\'` will be replaced with byte value in `{}`):
+  `\a{0x07} \b{0x08} \t{0x09} \n{0x0a} \v{0x0b} \f{0x0c} \r{0x0d}`
+* octadecimal-encoded chars (max 3 octadecimal digits after `'\'`):
+  `\0..\7, \00..\77, \000..\377`
+* hexadecimal-encoded chars (max 2 hexadecimal digits after `'\x'`):
+  `\x0..\xf, \x00..\xff`
+
+*Example:* see [`copy_cstring()`](#copy-parsed-c-string)
+
+*Declared in:* [`gtparser/cstring_parser.h`](/gtparser/cstring_parser.h)
+
+#### Copy parsed C-string
+```C
+void copy_cstring(char dst[]/*out*/, const char *begin, const char *end, size_t removed);
+```
+Parameters:
+- `dst`     - destination buffer to copy C-string to
+- `begin`   - points to next char after first (opening) quote in source C-string
+- `end`     - points to the last (closing) quote in source C-string
+- `removed` - number of meta-characters to be removed (determined by [`parse_cstring()`](#parse-c-string))
+
+_Note_: `dst` buffer must be large enough to read unescaped source C-string into it: `dst` buffer length must be `>= end - begin - removed`
+
+*Example:*
+```C
+extern struct src_iter *it;
+extern char dst[];
+extern size_t dst_size;
+size_t removed;
+const char *first = it->current; /* assume it points to first (opening) quote */
+enum PARSE_CSTRING_ERR err = parse_cstring(it, &removed/*out*/);
+if (PARSE_CSTRING_OK == err) {
+	const char *last = it->current; /* now it points to last (closing) quote */
+	size_t need_size = (size_t)(last - first) - removed; /* size of buffer to hold unescaped C-string + terminating '\0' */
+	if (dst_size >= need_size)
+		copy_cstring(dst, first + 1/*quote*/, last, removed);
+}
+```
+
+*Declared in:* [`gtparser/cstring_parser.h`](/gtparser/cstring_parser.h)
 
 ================================================================
 
