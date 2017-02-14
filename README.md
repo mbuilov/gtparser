@@ -1,9 +1,11 @@
 # gtparser
-Small library of generic text parsing functions enough to parse simple grammars.
+Small library of generic text parsing functions enough to parse simple grammars, like in config files.
 
 For such grammars, it may be easier to implement parsing rules by hand, over than using parser generator like Bison.
 
-To use these functions, source text should be available as a raw array of chars (large text from file may be mmap()'ed to a memory region).
+To use these functions, source text should be available as a read-only raw array of chars in one-byte encoding, for example in utf-8.
+
+Large text files may be mmap()'ed to a memory region before parsing.
 
 ## Contents
 
