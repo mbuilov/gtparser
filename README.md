@@ -38,8 +38,8 @@ To use these functions, source text should be available as raw array of chars (l
 6. [src_iter_check_tab](#check-if-current-character-is-a-tab)
 7. [src_iter_inc_line](#account-encountered-eol-character)
 8. [src_iter_check](#check-if-current-character-is-a-tab-or-eol)
-9. [src_iter_current](#get-current-character)
-10. [src_iter_current_eof](#get-current-character-or-0-as-eof-indicator)
+9. [src_iter_current_char](#get-current-character)
+10. [src_iter_char_or_eof](#get-current-character-or-0-as-eof-indicator)
 11. [src_iter_get_column](#get-current-column-number)
 12. [src_iter_get_pos](#get-iterator-text-position-line-and-column-numbers)
 13. [src_iter_return_pos](#return-iterator-text-position-line-and-column-numbers)
@@ -417,7 +417,7 @@ if (!src_iter_eof(it)) {
 
 #### Get current character
 ```C
-char src_iter_current(const struct src_iter *it);
+char src_iter_current_char(const struct src_iter *it);
 ```
 Parameters:
 - `it` - text iterator structure
@@ -432,7 +432,7 @@ extern struct src_iter *it;
 if (!src_iter_eof(it)) {
 	do {
 		/* get current character to process */
-		char c = src_iter_current(it);
+		char c = src_iter_current_char(it);
 		/* process current character */
 		/* account <TAB> or <EOL> */
 		src_iter_check(it);
@@ -442,9 +442,9 @@ if (!src_iter_eof(it)) {
 
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
-#### Get current character or 0 as &lt;EOF&gt; indicator
+#### Get current character or '\0' as &lt;EOF&gt; indicator
 ```C
-char src_iter_current_eof(const struct src_iter *it);
+char src_iter_char_or_eof(const struct src_iter *it);
 ```
 Parameters:
 - `it` - text iterator structure
@@ -458,7 +458,7 @@ _Note_: this function may be usable for parsing texts where characters with zero
 extern struct src_iter *it;
 for (;;) {
 	/* get current character to process */
-	char c = src_iter_current_eof(it);
+	char c = src_iter_char_or_eof(it);
 	if (!c)
 		break; /* iterator points to <EOF> */
 	/* process current character */
