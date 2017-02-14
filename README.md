@@ -678,7 +678,7 @@ Parameters:
 - `end`     - points to the last (closing) quote in source C-string
 - `removed` - number of meta-characters to be removed (determined by [`parse_cstring()`](#parse-c-string))
 
-_Note_: `dst` buffer must be large enough to read unescaped source C-string into it: `dst` buffer length must be `>= end - begin - removed`
+_Note_: `dst` buffer must be large enough to read unescaped source C-string into it: `dst` buffer length must be `>= (end - begin - removed)`
 
 *Example:*
 ```C
@@ -691,8 +691,10 @@ enum PARSE_CSTRING_ERR err = parse_cstring(it, &removed/*out*/);
 if (PARSE_CSTRING_OK == err) {
 	const char *last = it->current; /* now it points to last (closing) quote */
 	size_t need_size = (size_t)(last - first) - removed; /* size of buffer to hold unescaped C-string + terminating '\0' */
-	if (dst_size >= need_size)
+	if (dst_size >= need_size) {
 		copy_cstring(dst, first + 1/*quote*/, last, removed);
+		dst[need_size - 1] = '\0';
+	}
 }
 ```
 
