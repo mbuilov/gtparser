@@ -14,18 +14,18 @@
 struct src_iter;
 
 enum PARSE_CSTRING_ERR {
-	PARSE_CSTRING_OK = 0,
-	PARSE_CSTRING_UNESCAPED_NEWLINE,   /* unescaped line-feed \n or carriage-return \r */
-	PARSE_CSTRING_EXPECTING_LINE_FEED, /* expecting line-feed \n after carriage-return \r */
-	PARSE_CSTRING_EXPECTING_HEX_DIGIT, /* expecting hexadecimal digit in hex escape sequence after \x */
-	PARSE_CSTRING_TOO_BIG_OCTAL,       /* too big octal character value > 255 in string, maximum allowed \377 */
-	PARSE_CSTRING_NULL_INSIDE_CSTRING, /* null character (with zero value) inside string is not allowed */
-	PARSE_CSTRING_UNTERMINATED         /* unterminated string */
+	PARSE_CSTRING_OK = 0,              /* C-string successfully parsed                                             */
+	PARSE_CSTRING_UNESCAPED_NEWLINE,   /* unescaped line-feed '\n' or carriage-return '\r'                         */
+	PARSE_CSTRING_EXPECTING_LINE_FEED, /* expecting line-feed '\n' after carriage-return '\r'                      */
+	PARSE_CSTRING_EXPECTING_HEX_DIGIT, /* expecting hexadecimal digit in hex escape sequence after '\x'            */
+	PARSE_CSTRING_TOO_BIG_OCTAL,       /* too big octal character value > 255 in string, maximum allowed is '\377' */
+	PARSE_CSTRING_NULL_INSIDE_CSTRING, /* null character '\0' inside C-string is not allowed                       */
+	PARSE_CSTRING_UNTERMINATED         /* unterminated string                                                      */
 };
 
-/* input:  it points to first quote */
-/* output: it points to last quote */
-/* removed - number of removed chars:
+/* input:  it points to first (opening) quote */
+/* output: it points to last (closing) quote */
+/* removed - number of removed meta-characters:
   - each '\' is removed and next char after it is unescaped (likely converted to some to non-printable char),
   - each line continuation-split (two chars: \<newline>) is removed,
   - encoded characters in octadecimal (\377) or hexadecimal (\xff) encoding are unencoded */
@@ -48,8 +48,9 @@ GTPARSER_EXPORTS enum PARSE_CSTRING_ERR parse_cstring(struct src_iter *it, size_
 
 /* copy previously parsed by parse_cstring() string into supplied
   dst buffer (which must be large enough) unescaping escape sequences */
-/* begin - points to next char after first quote in source c-string */
-/* end   - points to the last quote in source c-string */
+/* begin   - points to next char after first (opening) quote in source C-string */
+/* end     - points to the last (closing) quote in source C-string */
+/* removed - value determined by parse_cstring() */
 GTPARSER_EXPORTS void copy_cstring(
 	A_Out_writes(end - begin - removed) char dst[]/*out*/,
 	A_In_reads_to_ptr(end) const char *begin,
