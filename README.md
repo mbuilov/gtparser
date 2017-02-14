@@ -65,9 +65,11 @@ To use these functions, source text should be available as raw array of chars (l
 7. [parser_err_prepend_at_char](#prepend-location-info-to-error-message)
 8. [parser_err_prepend_at_char_](#prepend-location-info-to-error-message)
 9. [parser_err_print_char](#append-character-to-a-buffer)
-10. [parser_err_print](#append-parametrized-message-to-a-buffer)
-11. [parser_err_print_chars](#append-characters-array-to-a-buffer)
-12. [parser_err_finish](#terminate-buffer-with-0)
+10. [parser_err_print_chars](#append-characters-array-to-a-buffer)
+11. [parser_err_print_string_constant](#append-string-constant-to-a-buffer)
+12. [parser_err_print_string](#append-0-terminated-string-to-a-buffer)
+13. [parser_err_print](#append-parametrized-message-to-a-buffer)
+14. [parser_err_finish](#terminate-buffer-with-0)
 
 ---------------------------------------------------
 
@@ -710,27 +712,25 @@ const char *err_msg = parser_err_prepend_at(
 
 *Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
 
-#### Append parametrized message to a buffer
+#### Append character to a buffer
 ```C
-char *parser_err_print(char *buf/*<=end*/, const char *const end, const char *format, ...);
+char *parser_err_print_char(char *buf/*<=end*/, const char *const end, char c);
 ```
 Parameters:
-- `buf`    - position in destination buffer where to append formatted message
-- `end`    - points one char beyond destination buffer
-- `format` - format string of parametrized message to append to destination buffer
-- `...`    - parameters of parametrized message
+- `buf` - position in destination buffer where to append character
+- `end` - points one char beyond destination buffer
+- `c`   - character to append to destination buffer
 
-**Returns:** buffer position `<= end` after appended formatted message
+**Returns:** buffer position `<= end` after appended character
 
-_Note_: formatted message tail may be trimmed if it's too long to fit in buffer
+_Note_: character added only if there is a place for it in destination buffer
 
 *Example:*
 ```C
 extern char *buf;
 extern char *end;
-extern int error;
 if (error)
-	buf = parser_err_print(buf, end, "an error occurred: %d", error);
+	buf = parser_err_print_char(buf, end, '.');
 ...
 ```
 
@@ -757,6 +757,83 @@ extern char *end;
 extern int error;
 if (error)
 	buf = parser_err_print_chars(buf, end, "some error", 10);
+...
+```
+
+*Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
+
+#### Append string constant to a buffer
+```C
+char *parser_err_print_string_constant(char *buf/*<=end*/, const char *const end, const char s[]);
+```
+Parameters:
+- `buf` - position in destination buffer where to append string constant
+- `end` - points one char beyond destination buffer
+- `s`   - string constant to append to destination buffer
+
+**Returns:** buffer position `<= end` after appended string constant
+
+_Note_: string constant tail may be trimmed if it's too long to fit in buffer
+
+*Example:*
+```C
+extern char *buf;
+extern char *end;
+extern int error;
+if (error)
+	buf = parser_err_print_string_constant(buf, end, "some error");
+...
+```
+
+*Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
+
+#### Append '\0'-terminated string to a buffer
+```C
+char *parser_err_print_string(char *buf/*<=end*/, const char *const end, const char *string/*'\0'-terminated*/);
+```
+Parameters:
+- `buf`    - position in destination buffer where to append string
+- `end`    - points one char beyond destination buffer
+- `string` - string to append to destination buffer
+
+**Returns:** buffer position `<= end` after appended string
+
+_Note_: string tail may be trimmed if it's too long to fit in buffer
+
+*Example:*
+```C
+extern char *buf;
+extern char *end;
+extern int error;
+extern const char *err_message1;
+if (error)
+	buf = parser_err_print_string(buf, end, err_message1);
+...
+```
+
+*Declared in:* [`gtparser/parser_err.h`](/gtparser/parser_err.h)
+
+#### Append parametrized message to a buffer
+```C
+char *parser_err_print(char *buf/*<=end*/, const char *const end, const char *format, ...);
+```
+Parameters:
+- `buf`    - position in destination buffer where to append formatted message
+- `end`    - points one char beyond destination buffer
+- `format` - format string of parametrized message to append to destination buffer
+- `...`    - parameters of parametrized message
+
+**Returns:** buffer position `<= end` after appended formatted message
+
+_Note_: formatted message tail may be trimmed if it's too long to fit in buffer
+
+*Example:*
+```C
+extern char *buf;
+extern char *end;
+extern int error;
+if (error)
+	buf = parser_err_print(buf, end, "an error occurred: %d", error);
 ...
 ```
 
