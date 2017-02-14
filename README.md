@@ -453,7 +453,7 @@ char src_iter_char_or_eof(const struct src_iter *it);
 Parameters:
 - `it` - text iterator structure
 
-**Returns:** current non-zero character if iterator points to non-`<EOF>`, else returns `0`
+**Returns:** current non-zero character if iterator points to non-`<EOF>`, else returns `'\0'`
 
 _Note_: this function may be usable for parsing texts where characters with zero value are not expected
 
