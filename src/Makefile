@@ -77,7 +77,7 @@ else ifeq (WINXX,$(OS))
 DST_INC_DIR := $(subst $(space),\$(space),$(DESTDIR)$(PREFIX)/include/gtparser)
 DST_LIB_DIR := $(subst $(space),\$(space),$(DESTDIR)$(LIBDIR))
 
-$(DST_INC_DIR): | $(DST_LIB_DIR)
+$(DST_LIB_DIR): | $(DST_INC_DIR)
 $(DST_INC_DIR) $(DST_LIB_DIR):
 	$(call MKDIR,"$(subst \ , ,$@)")
 
