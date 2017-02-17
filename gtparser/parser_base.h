@@ -262,13 +262,13 @@ static inline int is_space(char c)
 
 /* input:  it points to checked char (like comment beginning) */
 /* output: it points to next unchecked char after new line, may be to eof */
-GTPARSER_EXPORTS void _skip_rest_of_line(struct src_iter *it);
+GTPARSER_EXPORTS void gt_skip_rest_of_line(struct src_iter *it);
 
 /* input:  it points to comment beginning (like '#') */
 /* output: it points to next unchecked char after new line, may be to eof */
 static inline void _skip_comment(struct src_iter *it)
 {
-	_skip_rest_of_line(it);
+	gt_skip_rest_of_line(it);
 }
 
 /* input:  it points to unchecked char or to eof */

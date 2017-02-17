@@ -10,7 +10,7 @@
 #include "gtparser/parser_base.h"
 
 /* it points to checked char */
-GTPARSER_EXPORTS void _skip_rest_of_line(struct src_iter *it)
+GTPARSER_EXPORTS void gt_skip_rest_of_line(struct src_iter *it)
 {
 	const char *s = it->current;
 	while (_src_iter_next(&s, it->end)) {

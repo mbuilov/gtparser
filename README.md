@@ -53,7 +53,7 @@ Large text files may be mmap()'ed to a memory region before parsing.
 
 ### Handy functions for use with source text iterator
 
-1. [_skip_rest_of_line](#skip-characters-until-new-line)
+1. [gt_skip_rest_of_line](#skip-characters-until-new-line)
 2. [_skip_comment](#skip-one-line-comment)
 3. [read_non_space_skip_comments](#read-first-non-space-character-skipping-comments)
 4. [read_non_space_stop_eol](#read-first-non-space-character-or-eol)
@@ -525,7 +525,7 @@ _Note_: `save_pos` may be obtained either by [`src_iter_save_pos()`](#save-itera
 
 #### Skip characters until new line
 ```C
-void _skip_rest_of_line(struct src_iter *it);
+void gt_skip_rest_of_line(struct src_iter *it);
 ```
 Parameters:
 - `it` - text iterator structure
@@ -545,7 +545,7 @@ _Notes_:
 void _skip_comment(struct src_iter *it);
 ```
 
-Just another name of [`_skip_rest_of_line()`](#skip-characters-until-new-line) function
+Just another name of [`gt_skip_rest_of_line()`](#skip-characters-until-new-line) function
 
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
