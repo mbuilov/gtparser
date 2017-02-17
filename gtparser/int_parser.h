@@ -21,7 +21,7 @@ extern "C" {
 /* returns 0 on integer overflow, it->current - not changed */
 static inline int read_uint(struct src_iter *it, unsigned *number/*out*/)
 {
-	const char *s = _scan_uint(it->current, it->end, number/*out*/);
+	const char *s = gt_scan_uint(it->current, it->end, number/*out*/);
 	if (!s)
 		return 0; /* integer overflow */
 	it->current = s;
@@ -29,7 +29,7 @@ static inline int read_uint(struct src_iter *it, unsigned *number/*out*/)
 }
 static inline int read_uint64(struct src_iter *it, unsigned INT64_TYPE *number/*out*/)
 {
-	const char *s = _scan_uint64(it->current, it->end, number/*out*/);
+	const char *s = gt_scan_uint64(it->current, it->end, number/*out*/);
 	if (!s)
 		return 0; /* integer overflow */
 	it->current = s;
@@ -41,7 +41,7 @@ static inline int read_uint64(struct src_iter *it, unsigned INT64_TYPE *number/*
 /* returns 0 on integer overflow, it->current - not changed */
 static inline int read_hex(struct src_iter *it, unsigned *number/*out*/)
 {
-	const char *s = _scan_hex(it->current, it->end, number/*out*/);
+	const char *s = gt_scan_hex(it->current, it->end, number/*out*/);
 	if (!s)
 		return 0; /* integer overflow */
 	it->current = s;
@@ -49,7 +49,7 @@ static inline int read_hex(struct src_iter *it, unsigned *number/*out*/)
 }
 static inline int read_hex64(struct src_iter *it, unsigned INT64_TYPE *number/*out*/)
 {
-	const char *s = _scan_hex64(it->current, it->end, number/*out*/);
+	const char *s = gt_scan_hex64(it->current, it->end, number/*out*/);
 	if (!s)
 		return 0; /* integer overflow */
 	it->current = s;

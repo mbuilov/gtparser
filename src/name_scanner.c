@@ -16,7 +16,10 @@ typedef int _char___value[1-2*( 95 != '_')];
 typedef int _char_a_value[1-2*( 97 != 'a')];
 typedef int _char_z_value[1-2*(122 != 'z')];
 
-const char _is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u] = {
+#ifdef _MSC_VER
+GTPARSER_EXPORTS
+#endif
+const char gt_is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u] = {
 /*                      \a \b \t \n \v \f \r                                                        */
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 /* sp  !  "  #  $  %  &  '  (  )  *  +  ,  -  .  /  0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  */
@@ -28,7 +31,7 @@ const char _is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u] = 
 };
 
 /* s points to [_a-zA-Z] */
-GTPARSER_EXPORTS const char *_scan_name(const char *s, const char *const end)
+GTPARSER_EXPORTS const char *gt_scan_name(const char *s, const char *const end)
 {
 	while (++s != end) {
 		if (!is_next_name(*s))

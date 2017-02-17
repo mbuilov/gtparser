@@ -22,14 +22,14 @@ extern "C" {
 /* input:  s points to [0-9] */
 /* return: pointer to non-[0-9], may be to end */
 /* returns NULL on integer overflow */
-GTPARSER_EXPORTS const char *_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
-GTPARSER_EXPORTS const char *_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
+GTPARSER_EXPORTS const char *gt_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
+GTPARSER_EXPORTS const char *gt_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
 
 /* input:  s points to [0-9a-fA-F] */
 /* return: pointer to non-[0-9a-fA-F], may be to end */
 /* returns NULL on integer overflow */
-GTPARSER_EXPORTS const char *_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
-GTPARSER_EXPORTS const char *_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
+GTPARSER_EXPORTS const char *gt_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
+GTPARSER_EXPORTS const char *gt_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
 
 #ifdef __cplusplus
 }

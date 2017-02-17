@@ -18,7 +18,7 @@ static int test1(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_OK != r) {
 			printf("failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
@@ -42,7 +42,7 @@ static int test2(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_OK != r) {
 			printf("failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
@@ -63,7 +63,7 @@ static int test2(void)
 			}
 			{
 				char dst[2];
-				copy_cstring(dst, src + 1, it.current, removed);
+				gt_copy_cstring(dst, src + 1, it.current, removed);
 				dst[len] = '\0';
 				if (dst[0] != '"') {
 					printf("bad parsed test string \"%s\" -> \"%s\" {%u}\n", src, dst, (unsigned char)dst[0]);
@@ -82,7 +82,7 @@ static int test3(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_OK != r) {
 			printf("failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
@@ -103,7 +103,7 @@ static int test3(void)
 			}
 			{
 				char dst[3];
-				copy_cstring(dst, src + 1, it.current, removed);
+				gt_copy_cstring(dst, src + 1, it.current, removed);
 				dst[len] = '\0';
 				if (dst[0] != '\a' || dst[1] != '1') {
 					printf("bad parsed test string \"%s\" -> \"%s\" {%u,%u}\n", src, dst, (unsigned char)dst[0], (unsigned char)dst[1]);
@@ -122,7 +122,7 @@ static int test4(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_OK != r) {
 			printf("failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
@@ -143,7 +143,7 @@ static int test4(void)
 			}
 			{
 				char dst[3];
-				copy_cstring(dst, src + 1, it.current, removed);
+				gt_copy_cstring(dst, src + 1, it.current, removed);
 				dst[len] = '\0';
 				if (dst[0] != '\376' || dst[1] != '1') {
 					printf("bad parsed test string \"%s\" -> \"%s\" {%u,%u}\n", src, dst, (unsigned char)dst[0], (unsigned char)dst[1]);
@@ -162,7 +162,7 @@ static int test5(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_OK != r) {
 			printf("failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
@@ -183,7 +183,7 @@ static int test5(void)
 			}
 			{
 				char dst[3];
-				copy_cstring(dst, src + 1, it.current, removed);
+				gt_copy_cstring(dst, src + 1, it.current, removed);
 				dst[len] = '\0';
 				if (dst[0] != '\x1c' || dst[1] != '3') {
 					printf("bad parsed test string \"%s\" -> \"%s\" {%u,%u}\n", src, dst, (unsigned char)dst[0], (unsigned char)dst[1]);
@@ -202,7 +202,7 @@ static int test6(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_OK != r) {
 			printf("failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
@@ -223,7 +223,7 @@ static int test6(void)
 			}
 			{
 				char dst[6];
-				copy_cstring(dst, src + 1, it.current, removed);
+				gt_copy_cstring(dst, src + 1, it.current, removed);
 				dst[len] = '\0';
 				if (dst[0] != '\1' || dst[1] != '\1' || dst[2] != '\1' || dst[3] != '\1' || dst[4] != '\x0F') {
 					printf("bad parsed test string \"%s\" -> \"%s\" {%u,%u,%u,%u,%u}\n", src, dst,
@@ -243,7 +243,7 @@ static int test7(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_TOO_BIG_OCTAL != r) {
 			printf("expecting PARSE_CSTRING_TOO_BIG_OCTAL error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
@@ -259,7 +259,7 @@ static int test8(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_NULL_INSIDE_CSTRING != r) {
 			printf("expecting PARSE_CSTRING_NULL_INSIDE_CSTRING error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
@@ -275,7 +275,7 @@ static int test9(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_NULL_INSIDE_CSTRING != r) {
 			printf("expecting PARSE_CSTRING_NULL_INSIDE_CSTRING error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
@@ -291,7 +291,7 @@ static int test10(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_EXPECTING_HEX_DIGIT != r) {
 			printf("expecting PARSE_CSTRING_EXPECTING_HEX_DIGIT error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
@@ -307,7 +307,7 @@ static int test11(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = parse_cstring(&it, &removed);
+		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
 		if (PARSE_CSTRING_UNTERMINATED != r) {
 			printf("expecting PARSE_CSTRING_UNTERMINATED error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;

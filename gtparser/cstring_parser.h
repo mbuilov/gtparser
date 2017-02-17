@@ -36,7 +36,7 @@ enum PARSE_CSTRING_ERR {
   hexadecimal-encoded chars (max 2 hexadecimal digits after '\x'):
   \x0..\xf, \x00..\xff */
 /* NOTE: '\0' (null) character is not allowed inside the string, because C-string is '\0'-terminated */
-GTPARSER_EXPORTS enum PARSE_CSTRING_ERR parse_cstring(struct src_iter *it, size_t *removed/*out*/);
+GTPARSER_EXPORTS enum PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/);
 
 /* for static code analysis */
 #ifndef A_Out_writes
@@ -46,12 +46,12 @@ GTPARSER_EXPORTS enum PARSE_CSTRING_ERR parse_cstring(struct src_iter *it, size_
 #define A_Pre_satisfies(cond)
 #endif
 
-/* copy previously parsed by parse_cstring() string into supplied
+/* copy previously parsed by gt_parse_cstring() string into supplied
   dst buffer (which must be large enough) unescaping escape sequences */
 /* begin   - points to next char after first (opening) quote in source C-string */
 /* end     - points to the last (closing) quote in source C-string */
-/* removed - value determined by parse_cstring() */
-GTPARSER_EXPORTS void copy_cstring(
+/* removed - value determined by gt_parse_cstring() */
+GTPARSER_EXPORTS void gt_copy_cstring(
 	A_Out_writes(end - begin - removed) char dst[]/*out*/,
 	A_In_reads_to_ptr(end) const char *begin,
 	A_Notnull const char *end,

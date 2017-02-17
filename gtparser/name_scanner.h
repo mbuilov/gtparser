@@ -16,22 +16,25 @@
 extern "C" {
 #endif
 
-extern const char _is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u];
+#ifdef _MSC_VER
+GTPARSER_EXPORTS
+#endif
+extern const char gt_is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u];
 
 static inline int is_first_name(char c)
 {
-	return _is_next_name_lookup_table[(unsigned char)c] >= 20;
+	return gt_is_next_name_lookup_table[(unsigned char)c] >= 20;
 }
 
 static inline int is_next_name(char c)
 {
-	return _is_next_name_lookup_table[(unsigned char)c];
+	return gt_is_next_name_lookup_table[(unsigned char)c];
 }
 
 /* returns hex char value or >15 if non-hex char */
 static inline unsigned hex_char_value(char c)
 {
-	unsigned x = (unsigned char)_is_next_name_lookup_table[(unsigned char)c];
+	unsigned x = (unsigned char)gt_is_next_name_lookup_table[(unsigned char)c];
 #ifdef _DEBUG
 	if (x < 10u)
 		x += (~0u - 10u) + 1u;
@@ -43,7 +46,7 @@ static inline unsigned hex_char_value(char c)
 
 /* input:  s points to [_a-zA-Z] */
 /* output: s points to non-[_a-zA-Z0-9], may be to end */
-GTPARSER_EXPORTS const char *_scan_name(const char *s/*<end*/, const char *const end)
+GTPARSER_EXPORTS const char *gt_scan_name(const char *s/*<end*/, const char *const end)
 #ifdef __GNUC__
 __attribute__ ((pure))
 #endif

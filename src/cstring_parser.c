@@ -110,7 +110,7 @@ _switch_c:
 	return PARSE_CSTRING_UNTERMINATED; /* unterminated string */
 }
 
-GTPARSER_EXPORTS enum PARSE_CSTRING_ERR parse_cstring(struct src_iter *it, size_t *removed/*out*/)
+GTPARSER_EXPORTS enum PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/)
 {
 	const char *current = it->current;
 	size_t _removed = 0;
@@ -120,7 +120,7 @@ GTPARSER_EXPORTS enum PARSE_CSTRING_ERR parse_cstring(struct src_iter *it, size_
 	return r;
 }
 
-GTPARSER_EXPORTS void copy_cstring(char dst[]/*out*/, const char *begin, const char *end, size_t removed)
+GTPARSER_EXPORTS void gt_copy_cstring(char dst[]/*out*/, const char *begin, const char *end, size_t removed)
 {
 	/* copy char-by-char unescaping escape sequences */
 	while (removed) {

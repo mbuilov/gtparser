@@ -22,7 +22,7 @@ extern "C" {
 static inline const char *_read_name(const char **current, const char *end)
 {
 	const char *name = *current;
-	*current = _scan_name(*current, end);
+	*current = gt_scan_name(*current, end);
 	return name;
 }
 

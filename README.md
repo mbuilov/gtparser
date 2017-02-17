@@ -25,11 +25,11 @@ Large text files may be mmap()'ed to a memory region before parsing.
 6. [is_first_name (table lookup-based)](#check-if-given-char-may-start-an-identifier-name-table-lookup-based-version)
 7. [is_next_name (table lookup-based)](#check-if-given-char-may-continue-an-identifier-name-table-lookup-based-version)
 8. [hex_char_value (table lookup-based)](#check-if-given-char-is-a-hexadecimal-digit-and-get-its-value-table-lookup-based-version)
-9. [_scan_name](#scan-characters-of-a-name)
-10. [_scan_uint](#scan-unsigned-decimal-integer)
-11. [_scan_uint64](#scan-unsigned-decimal-integer)
-12. [_scan_hex](#scan-unsigned-hexadecimal-integer)
-13. [_scan_hex64](#scan-unsigned-hexadecimal-integer)
+9. [gt_scan_name](#scan-characters-of-a-name)
+10. [gt_scan_uint](#scan-unsigned-decimal-integer)
+11. [gt_scan_uint64](#scan-unsigned-decimal-integer)
+12. [gt_scan_hex](#scan-unsigned-hexadecimal-integer)
+13. [gt_scan_hex64](#scan-unsigned-hexadecimal-integer)
 14. [is_space](#check-if-char-is-a-space)
 
 ### Source text iterator API ([gtparser/parser_base.h](/gtparser/parser_base.h))
@@ -62,8 +62,8 @@ Large text files may be mmap()'ed to a memory region before parsing.
 7. [read_uint64](#read-unsigned-decimal-integer)
 8. [read_hex](#read-unsigned-hexadecimal-integer)
 9. [read_hex64](#read-unsigned-hexadecimal-integer)
-10. [parse_cstring](#parse-c-string)
-11. [copy_cstring](#copy-parsed-c-string)
+10. [gt_parse_cstring](#parse-c-string)
+11. [gt_copy_cstring](#copy-parsed-c-string)
 
 ### Helpers for composing error message
 
@@ -180,7 +180,7 @@ Parameters:
 
 #### Scan characters of a name
 ```C
-const char *_scan_name(const char *s/*<end*/, const char *const end);
+const char *gt_scan_name(const char *s/*<end*/, const char *const end);
 ```
 Parameters:
 - `s`   - points to first char of a name in a buffer (likely a char matched by regexp: `[_a-zA-Z]`)
@@ -194,8 +194,8 @@ _Note_: `s < end`
 
 #### Scan unsigned decimal integer
 ```C
-const char *_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
-const char *_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
+const char *gt_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
+const char *gt_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
 ```
 Parameters:
 - `s`      - points to first char of unsigned decimal integer printed in a buffer (char matched by regexp: `[0-9]`)
@@ -214,8 +214,8 @@ _Notes_:
 
 #### Scan unsigned hexadecimal integer
 ```C
-const char *_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
-const char *_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
+const char *gt_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/);
+const char *gt_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/);
 ```
 Parameters:
 - `s`      - points to first char of unsigned hexadecimal integer printed in a buffer (char matched by regexp: `[0-9a-fA-F]`)
@@ -642,11 +642,11 @@ enum PARSE_CSTRING_ERR {
 	PARSE_CSTRING_UNTERMINATED         /* unterminated string                                                      */
 };
 
-enum PARSE_CSTRING_ERR parse_cstring(struct src_iter *it, size_t *removed/*out*/);
+enum PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/);
 ```
 Parameters:
 - `it`      - source text iterator structure
-- `removed` - (_output_) number of meta-characters to be removed by [`copy_cstring()`](#copy-parsed-c-string)
+- `removed` - (_output_) number of meta-characters to be removed by [`gt_copy_cstring()`](#copy-parsed-c-string)
 
 **Returns:** one of `enum PARSE_CSTRING_ERR` values
 
@@ -655,7 +655,7 @@ _Notes_:
 * by successful return, `it` will point to last (closing) quote of source C-string
 * on error, `it` will point to error position
 
-Meta-characters removed by [`copy_cstring()`](#copy-parsed-c-string):
+Meta-characters removed by [`gt_copy_cstring()`](#copy-parsed-c-string):
 * each line continuation-split (consists of two chars: `\<EOL>`) is removed
 * each `'\'` is removed and next char after it is unescaped (likely converted to some to non-printable char)
 * list of recognized escape sequences (a character after `'\'` will be replaced with byte value in `{}`):
@@ -666,19 +666,19 @@ Meta-characters removed by [`copy_cstring()`](#copy-parsed-c-string):
 * hexadecimal-encoded chars (max 2 hexadecimal digits after `'\x'`):
   `\x0..\xf, \x00..\xff`
 
-*Example:* see [`copy_cstring()`](#copy-parsed-c-string)
+*Example:* see [`gt_copy_cstring()`](#copy-parsed-c-string)
 
 *Declared in:* [`gtparser/cstring_parser.h`](/gtparser/cstring_parser.h)
 
 #### Copy parsed C-string
 ```C
-void copy_cstring(char dst[]/*out*/, const char *begin, const char *end, size_t removed);
+void gt_copy_cstring(char dst[]/*out*/, const char *begin, const char *end, size_t removed);
 ```
 Parameters:
 - `dst`     - destination buffer to copy and unescape C-string to
 - `begin`   - points to next char after first (opening) quote in source C-string
 - `end`     - points to the last (closing) quote in source C-string
-- `removed` - number of meta-characters to be removed (determined by [`parse_cstring()`](#parse-c-string))
+- `removed` - number of meta-characters to be removed (determined by [`gt_parse_cstring()`](#parse-c-string))
 
 _Note_: `dst` buffer must be large enough to read unescaped source C-string into it: `dst` buffer length must be `>= (end - begin - removed)`
 
@@ -689,12 +689,12 @@ extern char dst[];
 extern size_t dst_size;
 size_t removed;
 const char *first = it->current; /* assume it points to first (opening) quote */
-enum PARSE_CSTRING_ERR err = parse_cstring(it, &removed/*out*/);
+enum PARSE_CSTRING_ERR err = gt_parse_cstring(it, &removed/*out*/);
 if (PARSE_CSTRING_OK == err) {
 	const char *last = it->current; /* now it points to last (closing) quote */
 	size_t need_size = (size_t)(last - first) - removed; /* size of buffer to hold unescaped C-string + terminating '\0' */
 	if (dst_size >= need_size) {
-		copy_cstring(dst, first + 1/*quote*/, last, removed);
+		gt_copy_cstring(dst, first + 1/*quote*/, last, removed);
 		dst[need_size - 1] = '\0';
 	}
 }

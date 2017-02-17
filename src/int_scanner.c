@@ -10,7 +10,7 @@
 #include "gtparser/int_scanner.h"
 
 /* s points to [0-9] */
-GTPARSER_EXPORTS const char *_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/)
 {
 	unsigned n = digit_value(*s);
 	while (++s != end) {
@@ -33,7 +33,7 @@ GTPARSER_EXPORTS const char *_scan_uint(const char *s/*<end*/, const char *const
 }
 
 /* s points to [0-9] */
-GTPARSER_EXPORTS const char *_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/)
 {
 	unsigned INT64_TYPE n = digit_value(*s);
 	while (++s != end) {
@@ -56,7 +56,7 @@ GTPARSER_EXPORTS const char *_scan_uint64(const char *s/*<end*/, const char *con
 }
 
 /* s points to [0-9a-fA-F] */
-GTPARSER_EXPORTS const char *_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/)
 {
 	unsigned n = hex_char_value(*s);
 	while (++s != end) {
@@ -72,7 +72,7 @@ GTPARSER_EXPORTS const char *_scan_hex(const char *s/*<end*/, const char *const 
 }
 
 /* s points to [0-9a-fA-F] */
-GTPARSER_EXPORTS const char *_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/)
 {
 	unsigned INT64_TYPE n = hex_char_value(*s);
 	while (++s != end) {
