@@ -16,9 +16,7 @@
 extern "C" {
 #endif
 
-#ifdef _MSC_VER
 GTPARSER_EXPORTS
-#endif
 extern const char gt_is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u];
 
 static inline int is_first_name(char c)

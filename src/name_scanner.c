@@ -16,9 +16,6 @@ typedef int _char___value[1-2*( 95 != '_')];
 typedef int _char_a_value[1-2*( 97 != 'a')];
 typedef int _char_z_value[1-2*(122 != 'z')];
 
-#ifdef _MSC_VER
-GTPARSER_EXPORTS
-#endif
 const char gt_is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u] = {
 /*                      \a \b \t \n \v \f \r                                                        */
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
