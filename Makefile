@@ -12,7 +12,7 @@ ifneq ($(filter WINXX,$(OS)),)
 TO_MAKE += version
 endif
 
-ifneq ($(filter check tests,$(MAKECMDGOALS)),)
+ifneq ($(filter check tests clean,$(MAKECMDGOALS)),)
 check tests: all
 TO_MAKE += tests
 endif
@@ -33,8 +33,11 @@ LIBDIR ?= $(PREFIX)\lib
 
 endif # WINXX
 
-install: install_libgtparser
-uninstall: uninstall_libgtparser
+install: install_gtparser
+	@$(call ECHO,Successfully installed to $(DESTDIR)$(PREFIX))
+
+uninstall: uninstall_gtparser
+	@$(call ECHO,Uninstalled from $(DESTDIR)$(PREFIX))
 
 include $(MTOP)/parallel.mk
 
