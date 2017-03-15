@@ -2,13 +2,7 @@
 # GTPARSER_TEST_SRC variable must be defined
 
 include $(MTOP)/c.mk
-include $(MTOP)/ctest.mk
-
-ifdef NO_STATIC
-ifdef NO_SHARED
-$(error cannot link $(GTPARSER_LIB_NAME) library for tests)
-endif
-endif
+include $(MTOP)/exts/ctest.mk
 
 SRC     := $(GTPARSER_TEST_SRC)
 INCLUDE := ..
@@ -46,6 +40,9 @@ $(foreach x,$(wordlist 2,999999,$(TEST_LIB_VARIANTS) $(TEST_DLL_VARIANTS)),$(eva
   $(EXPAND_TEST_TEMPLATE))$(call MAKE_CONTINUE,SRC INCLUDE DEFINES RPATH))
 
 $(foreach x,$(firstword $(TEST_LIB_VARIANTS) $(TEST_DLL_VARIANTS)),$(eval $(EXPAND_TEST_TEMPLATE)))
+
+# build all to build or run tests
+check tests: all
 
 # to run tests under cygwin
 check: PATH := $(PATH):$(LIB_DIR)
