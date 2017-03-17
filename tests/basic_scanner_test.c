@@ -1,7 +1,7 @@
 /*******************************************************************************
 * gtparser tests
 * Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
-* Licensed under GPL version 3 or any later version, see COPYING
+* Licensed under GPL version 3 or any later version, see COPYING.GPL3
 *******************************************************************************/
 
 /* basic_scanner_test.c */
@@ -18,7 +18,7 @@ static int check_first_name_chars(int t)
 	for (;;) {
 		if (!t ? _is_first_name((char)c) : is_first_name((char)c)) {
 			if (p == sizeof(first_chars) - 1 || first_chars[p++] != c) {
-				printf("bad first name char: %d\n", (char)c);
+				fprintf(stderr, "bad first name char: %d\n", (char)c);
 				return 1;
 			}
 		}
@@ -27,7 +27,7 @@ static int check_first_name_chars(int t)
 		c++;
 	}
 	if (p != sizeof(first_chars) - 1) {
-		printf("not all chars are recognized as first name\n");
+		fprintf(stderr, "not all chars are recognized as first name\n");
 		return 1;
 	}
 	return 0;
@@ -41,7 +41,7 @@ static int check_next_name_chars(int t)
 	for (;;) {
 		if (!t ? _is_next_name((char)c) : is_next_name((char)c)) {
 			if (p == sizeof(next_chars) - 1 || next_chars[p++] != c) {
-				printf("bad next name char: %d\n", (char)c);
+				fprintf(stderr, "bad next name char: %d\n", (char)c);
 				return 1;
 			}
 		}
@@ -50,7 +50,7 @@ static int check_next_name_chars(int t)
 		c++;
 	}
 	if (p != sizeof(next_chars) - 1) {
-		printf("not all chars are recognized as next name\n");
+		fprintf(stderr, "not all chars are recognized as next name\n");
 		return 1;
 	}
 	return 0;
@@ -64,7 +64,7 @@ static int check_hex_chars(int t)
 	for (;;) {
 		if ((!t ? _hex_char_value((char)c) : hex_char_value((char)c)) <= 15) {
 			if (p == sizeof(hex_chars) - 1 || hex_chars[p++] != c) {
-				printf("bad hex char: %d\n", (char)c);
+				fprintf(stderr, "bad hex char: %d\n", (char)c);
 				return 1;
 			}
 		}
@@ -73,7 +73,7 @@ static int check_hex_chars(int t)
 		c++;
 	}
 	if (p != sizeof(hex_chars) - 1) {
-		printf("not all chars are recognized as hex\n");
+		fprintf(stderr, "not all chars are recognized as hex\n");
 		return 1;
 	}
 	return 0;
@@ -87,7 +87,7 @@ static int test_scan_name(void)
 		const char *const end = test_name1 + sizeof(test_name1) - 1;
 		s = gt_scan_name(s, end);
 		if ((unsigned)(s - test_name1) != 11) {
-			printf("gt_scan_name(%s) failed\n", test_name1);
+			fprintf(stderr, "gt_scan_name(%s) failed\n", test_name1);
 			return 1;
 		}
 	}
@@ -97,7 +97,7 @@ static int test_scan_name(void)
 		const char *const end = test_name2 + sizeof(test_name2) - 1;
 		s = gt_scan_name(s, end);
 		if ((unsigned)(s - test_name2) != 13) {
-			printf("gt_scan_name(%s) failed\n", test_name2);
+			fprintf(stderr, "gt_scan_name(%s) failed\n", test_name2);
 			return 1;
 		}
 	}
@@ -107,7 +107,7 @@ static int test_scan_name(void)
 		const char *const end = test_name3 + sizeof(test_name3) - 1;
 		s = gt_scan_name(s, end);
 		if ((unsigned)(s - test_name3) != 1) {
-			printf("gt_scan_name(%s) failed\n", test_name3);
+			fprintf(stderr, "gt_scan_name(%s) failed\n", test_name3);
 			return 1;
 		}
 	}
@@ -117,7 +117,7 @@ static int test_scan_name(void)
 		const char *const end = test_name4 + sizeof(test_name4) - 1;
 		s = gt_scan_name(s, end);
 		if ((unsigned)(s - test_name4) != 3) {
-			printf("gt_scan_name(%s) failed\n", test_name4);
+			fprintf(stderr, "gt_scan_name(%s) failed\n", test_name4);
 			return 1;
 		}
 	}
@@ -133,7 +133,7 @@ static int test_scan_uint(void)
 		unsigned n = 1;
 		s = gt_scan_uint(s, end, &n);
 		if (!s || n != 0) {
-			printf("gt_scan_uint(%s) failed\n", test_uint1);
+			fprintf(stderr, "gt_scan_uint(%s) failed\n", test_uint1);
 			return 1;
 		}
 	}
@@ -144,7 +144,7 @@ static int test_scan_uint(void)
 		unsigned n = 3;
 		s = gt_scan_uint(s, end, &n);
 		if (!s || n != 1) {
-			printf("gt_scan_uint(%s) failed\n", test_uint2);
+			fprintf(stderr, "gt_scan_uint(%s) failed\n", test_uint2);
 			return 1;
 		}
 	}
@@ -155,7 +155,7 @@ static int test_scan_uint(void)
 		unsigned n = 4;
 		s = gt_scan_uint(s, end, &n);
 		if (!s || n != 4294967295) {
-			printf("gt_scan_uint(%s) failed\n", test_uint3);
+			fprintf(stderr, "gt_scan_uint(%s) failed\n", test_uint3);
 			return 1;
 		}
 	}
@@ -166,7 +166,7 @@ static int test_scan_uint(void)
 		unsigned n = 5;
 		s = gt_scan_uint(s, end, &n);
 		if (s) {
-			printf("gt_scan_uint(%s) failed\n", test_uint4);
+			fprintf(stderr, "gt_scan_uint(%s) failed\n", test_uint4);
 			return 1;
 		}
 	}
@@ -177,7 +177,7 @@ static int test_scan_uint(void)
 		unsigned n = 6;
 		s = gt_scan_uint(s, end, &n);
 		if (s) {
-			printf("gt_scan_uint(%s) failed\n", test_uint5);
+			fprintf(stderr, "gt_scan_uint(%s) failed\n", test_uint5);
 			return 1;
 		}
 	}
@@ -193,7 +193,7 @@ static int test_scan_hex(void)
 		unsigned n = 1;
 		s = gt_scan_hex(s, end, &n);
 		if (!s || n != 0) {
-			printf("gt_scan_hex(%s) failed\n", test_hex1);
+			fprintf(stderr, "gt_scan_hex(%s) failed\n", test_hex1);
 			return 1;
 		}
 	}
@@ -204,7 +204,7 @@ static int test_scan_hex(void)
 		unsigned n = 2;
 		s = gt_scan_hex(s, end, &n);
 		if (!s || n != 1) {
-			printf("gt_scan_hex(%s) failed\n", test_hex2);
+			fprintf(stderr, "gt_scan_hex(%s) failed\n", test_hex2);
 			return 1;
 		}
 	}
@@ -215,7 +215,7 @@ static int test_scan_hex(void)
 		unsigned n = 3;
 		s = gt_scan_hex(s, end, &n);
 		if (!s || n != 0xabc1) {
-			printf("gt_scan_hex(%s) failed\n", test_hex3);
+			fprintf(stderr, "gt_scan_hex(%s) failed\n", test_hex3);
 			return 1;
 		}
 	}
@@ -226,7 +226,7 @@ static int test_scan_hex(void)
 		unsigned n = 4;
 		s = gt_scan_hex(s, end, &n);
 		if (!s || n != 0xFFFFFFFF) {
-			printf("gt_scan_hex(%s) failed\n", test_hex4);
+			fprintf(stderr, "gt_scan_hex(%s) failed\n", test_hex4);
 			return 1;
 		}
 	}
@@ -237,7 +237,7 @@ static int test_scan_hex(void)
 		unsigned n = 5;
 		s = gt_scan_hex(s, end, &n);
 		if (s) {
-			printf("gt_scan_hex(%s) failed\n", test_hex5);
+			fprintf(stderr, "gt_scan_hex(%s) failed\n", test_hex5);
 			return 1;
 		}
 	}
