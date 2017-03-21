@@ -1,16 +1,24 @@
 include $(dir $(lastword $(MAKEFILE_LIST)))../top.mk
 include $(MTOP)/c.mk
 
-LIB     := $(if $(NO_STATIC),,$(GTPARSER_LIB_NAME) $(GTPARSER_LIB_VARIANTS))
-DLL     := $(if $(NO_SHARED),,$(GTPARSER_LIB_NAME) $(GTPARSER_DLL_VARIANTS))
-INCLUDE := ..
 SRC     := \
   parser_base.c \
   parser_err.c \
   name_scanner.c \
   int_scanner.c \
   cstring_parser.c
-DLL_DEFINES := GTPARSER_EXPORTS=$(DLL_EXPORTS_DEFINE)
+INCLUDE := ..
+
+ifndef NO_SHARED
+DLL     := $(GTPARSER_LIB_NAME) $(GTPARSER_DLL_VARIANTS)
+DEFINES := GTPARSER_EXPORTS=$(DLL_EXPORTS_DEFINE)
+endif
+
+$(call MAKE_CONTINUE,SRC INCLUDE)
+
+ifndef NO_STATIC
+LIB     := $(GTPARSER_LIB_NAME) $(GTPARSER_LIB_VARIANTS)
+endif
 
 $(DEFINE_TARGETS)
 
