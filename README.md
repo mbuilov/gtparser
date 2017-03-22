@@ -3,7 +3,7 @@ Small library of generic text parsing functions enough to parse simple grammars,
 
 For such grammars, it may be easier to implement parsing rules by hand, over than using parser generator like Bison.
 
-To use these functions, source text should be available as a read-only raw array of chars in one-byte encoding, for example in utf-8.
+To use these functions, source text should be available as a read-only raw array of bytes in utf-8 or other ascii-based encoding (for example latin1 or cp1251).
 
 Large text files may be mmap()'ed to a memory region before parsing.
 
@@ -245,7 +245,7 @@ _Note_: this fast and simple function is usable to skip all space characters, li
 
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
-================================================================
+------------------------------------------------------------
 
 #### Initialize source text iterator structure
 ```C
@@ -521,7 +521,7 @@ _Note_: `save_pos` may be obtained either by [`src_iter_save_pos()`](#save-itera
 
 *Declared in:* [`gtparser/parser_base.h`](/gtparser/parser_base.h)
 
-================================================================
+------------------------------------------------------------
 
 #### Skip characters until new line
 ```C
@@ -702,7 +702,7 @@ if (PARSE_CSTRING_OK == err) {
 
 *Declared in:* [`gtparser/cstring_parser.h`](/gtparser/cstring_parser.h)
 
-================================================================
+------------------------------------------------------------
 
 #### Reserve a space for error message location info
 ```C
