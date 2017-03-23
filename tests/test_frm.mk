@@ -26,7 +26,7 @@ endef
 
 # $v - dynamic library variant to test
 define TEST_DLL_TEMPLATE
-DLLS    := $(GTPARSER_LIB_NAME)$(call DLL_VAR_SUFFIX,DLL,$v,$(GTPARSER_DLL_VARIANTS))
+DLLS    := $(GTPARSER_LIB_NAME)
 EXE     := $(call FORM_EXE_NAME,dyn)
 DEFINES := GTPARSER_EXPORTS=$(DLL_IMPORTS_DEFINE)
 $$(call DO_TEST_EXE,$$(DLLS:=.$(call ver_major,$(PRODUCT_VER))))
