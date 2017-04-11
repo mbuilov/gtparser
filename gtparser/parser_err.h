@@ -124,6 +124,7 @@ static inline char *parser_err_print_char(char *buf/*<=end*/, const char *const 
 	parser_err_print_chars(buf, end, s, sizeof("" s) - 1)
 
 /* terminate error buffer with '\0' */
+/* err_space - error buffer size */
 static inline void parser_err_finish(char *buf/*<=end*/, const char *const end, size_t err_space)
 {
 	if (buf < end)
