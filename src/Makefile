@@ -28,8 +28,9 @@ DLL := $(if $(NO_SHARED),,$(GTPARSER_LIB_NAME) $(GTPARSER_DLL_VARIANTS))
 LIB := $(if $(NO_STATIC),,$(GTPARSER_LIB_NAME) $(GTPARSER_LIB_VARIANTS))
 
 LIBRARY_NAME := gtparser
+LIBRARY_HDIR := gtparser
 
-LIBRARY_HEADERS := \
+LIBRARY_HEADERS := $(addprefix $(TOP)/gtparser/,\
   gtparser.h \
   char_func.h \
   cstring_parser.h \
@@ -38,7 +39,7 @@ LIBRARY_HEADERS := \
   name_parser.h \
   name_scanner.h \
   parser_base.h \
-  parser_err.h
+  parser_err.h)
 
 define GTPARSER_PC_COMMENT
 Author:  $(VENDOR_NAME)
