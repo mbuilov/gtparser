@@ -8,7 +8,7 @@ SRC     := $(GTPARSER_TEST_SRC)
 INCLUDE := ..
 RPATH   := $(LIB_DIR)
 
-# don't test D-variant of static library - this variant for linking static library to dll
+# don't test D-variant of static library - this variant is for linking static library to dll
 TEST_LIB_VARIANTS := $(addsuffix -lib,$(if $(NO_STATIC),,$(filter-out D,$(call FILTER_VARIANTS_LIST,LIB,$(GTPARSER_LIB_VARIANTS)))))
 TEST_DLL_VARIANTS := $(addsuffix -dll,$(if $(NO_SHARED),,$(call FILTER_VARIANTS_LIST,DLL,$(GTPARSER_DLL_VARIANTS))))
 
@@ -25,11 +25,12 @@ $$(DO_TEST_EXE)
 endef
 
 # $v - dynamic library variant to test
+# note: add $(LIB_DIR) to $(PATH) to run tests under cygwin
 define TEST_DLL_TEMPLATE
 DLLS    := $(GTPARSER_LIB_NAME)
 EXE     := $(call FORM_EXE_NAME,dyn)
 DEFINES := GTPARSER_EXPORTS=$(DLL_IMPORTS_DEFINE)
-$$(call DO_TEST_EXE,$$(DLLS:=.$(call ver_major,$(PRODUCT_VER))))
+$$(call DO_TEST_EXE,$$(DLLS:=.$(call ver_major,$(PRODUCT_VER))),,,PATH=$$$$(PATH)$$(PATHSEP)$$(LIB_DIR))
 endef
 
 # expand $(TEST_LIB_TEMPLATE) or $(TEST_DLL_TEMPLATE)
@@ -40,8 +41,5 @@ $(foreach x,$(wordlist 2,999999,$(TEST_LIB_VARIANTS) $(TEST_DLL_VARIANTS)),$(eva
   $(EXPAND_TEST_TEMPLATE))$(call MAKE_CONTINUE,SRC INCLUDE RPATH))
 
 $(foreach x,$(firstword $(TEST_LIB_VARIANTS) $(TEST_DLL_VARIANTS)),$(eval $(EXPAND_TEST_TEMPLATE)))
-
-# to run tests under cygwin
-check: PATH := $(PATH:=:)$(LIB_DIR)
 
 $(DEFINE_TARGETS)
