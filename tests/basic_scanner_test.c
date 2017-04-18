@@ -265,5 +265,6 @@ int main(int argc, char *argv[])
 	if (test_scan_hex())
 		return 1;
 	(void)argc, (void)argv;
+	printf("ok\n");
 	return 0;
 }

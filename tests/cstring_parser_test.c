@@ -343,5 +343,6 @@ int main(int argc, char *argv[])
 	if (!test11())
 		return 1;
 	(void)argc, (void)argv;
+	printf("ok\n");
 	return 0;
 }
