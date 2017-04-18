@@ -9,7 +9,7 @@
 
 /* gtparser_config.h */
 
-/* define needed external functions */
+/* define external functions needed to build gtparser library */
 
 #include <stddef.h>
 #include <stdlib.h>
