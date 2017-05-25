@@ -20,7 +20,7 @@ GTPARSER_EXPORTS const char *gt_scan_uint(const char *s/*<end*/, const char *con
 		if (n > ~0u/10)
 			return (const char*)0; /* integer overflow */
 		n *= 10;
-#ifdef _DEBUG
+#ifdef DEBUG
 		if (n > ~0u - x)
 			return (const char*)0; /* integer overflow */
 #endif
@@ -43,7 +43,7 @@ GTPARSER_EXPORTS const char *gt_scan_uint64(const char *s/*<end*/, const char *c
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0/10)
 			return (const char*)0; /* integer overflow */
 		n *= 10;
-#ifdef _DEBUG
+#ifdef DEBUG
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0 - x)
 			return (const char*)0; /* integer overflow */
 #endif

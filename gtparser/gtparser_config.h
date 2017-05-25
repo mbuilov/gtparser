@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifdef _DEBUG
+#ifdef DEBUG
 #include <assert.h>
 #define ASSERT(cond) assert(cond)
 #else
