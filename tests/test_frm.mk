@@ -4,8 +4,8 @@
 include $(MTOP)/c.mk
 include $(MTOP)/exts/ctest.mk
 
-SRC     := $(GTPARSER_TEST_SRC)
 INCLUDE := ..
+SRC     := $(GTPARSER_TEST_SRC)
 RPATH   := $(LIB_DIR)
 
 # don't test D-variant of static library - this variant is for linking static library to dll
@@ -37,9 +37,7 @@ endef
 # $x - r-lib, r-dll, s-lib, ...
 EXPAND_TEST_TEMPLATE = $(foreach v,$(firstword $(subst -, ,$x)),$(if $(filter %-lib,$x),$(TEST_LIB_TEMPLATE),$(TEST_DLL_TEMPLATE)))
 
-$(foreach x,$(wordlist 2,999999,$(TEST_LIB_VARIANTS) $(TEST_DLL_VARIANTS)),$(eval \
-  $(EXPAND_TEST_TEMPLATE))$(call MAKE_CONTINUE,SRC INCLUDE RPATH))
-
-$(foreach x,$(firstword $(TEST_LIB_VARIANTS) $(TEST_DLL_VARIANTS)),$(eval $(EXPAND_TEST_TEMPLATE)))
+$(foreach x,$(TEST_LIB_VARIANTS) $(TEST_DLL_VARIANTS),$(eval \
+  $(EXPAND_TEST_TEMPLATE))$(call MAKE_CONTINUE,INCLUDE SRC RPATH))
 
 $(DEFINE_TARGETS)

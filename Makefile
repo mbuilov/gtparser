@@ -1,45 +1,18 @@
-include $(dir $(lastword $(MAKEFILE_LIST)))top.mk
-include $(MTOP)/defs.mk
+include $(dir $(lastword $(MAKEFILE_LIST)))project.mk
+include $(MTOP)/parallel.mk
 
-ifeq ($(filter distclean,$(MAKECMDGOALS)),)
+ifeq (,$(filter distclean,$(MAKECMDGOALS)))
 
 TO_MAKE := src
 
-ifdef OS_WINXX
-TO_MAKE += version
+ifeq (WINXX,$(OS))
+TO_MAKE += $(MTOP)/exts/version
 endif
 
-ifneq ($(filter check tests clean,$(MAKECMDGOALS)),)
+ifneq (,$(filter check tests clean,$(MAKECMDGOALS)))
 TO_MAKE += tests
 endif
 
-ifdef OS_LINUX
-
-PREFIX         ?= /usr/local
-EXEC_PREFIX    ?= $(PREFIX)
-INCLUDEDIR     ?= $(PREFIX)/include
-LIBDIR         ?= $(EXEC_PREFIX)/lib
-PKG_CONFIG_DIR ?= $(LIBDIR)/pkgconfig
-INSTALL        ?= install
-LDCONFIG       ?= /sbin/ldconfig
-
-else ifdef OS_SOLARIS
-
-PREFIX         ?= /usr/local
-EXEC_PREFIX    ?= $(PREFIX)
-INCLUDEDIR     ?= $(PREFIX)/include
-LIBDIR         ?= $(EXEC_PREFIX)/lib
-PKG_CONFIG_DIR ?= $(LIBDIR)/pkgconfig
-INSTALL        ?= /usr/ucb/install
-
-else ifdef OS_WINXX
-
-PREFIX     ?= dist
-INCLUDEDIR ?= $(PREFIX)\include
-LIBDIR     ?= $(PREFIX)\lib
-
-endif # WINXX
-
-include $(MTOP)/parallel.mk
+$(call PROCESS_SUBMAKES,$(TO_MAKE))
 
 endif # !distclean
