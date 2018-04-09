@@ -36,3 +36,13 @@ GTPARSER_EXPORTS const char *gt_scan_name(const char *s, const char *const end)
 	}
 	return s; /* s points to non-[_a-zA-Z0-9], may be to end */
 }
+
+/* s points to [_a-zA-Z] */
+GTPARSER_EXPORTS const char *gt_scan_name_z(const char *s)
+{
+	for (;;) {
+		if (!is_next_name(*++s))
+			break;
+	}
+	return s; /* s points to non-[_a-zA-Z0-9], may be to '\0' */
+}

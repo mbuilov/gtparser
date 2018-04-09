@@ -50,6 +50,14 @@ __attribute__ ((pure))
 #endif
 ;
 
+/* input:  s points to [_a-zA-Z] */
+/* output: s points to non-[_a-zA-Z0-9], may be to '\0' */
+GTPARSER_EXPORTS const char *gt_scan_name_z(const char *s/*'\0'-terminated*/)
+#ifdef __GNUC__
+__attribute__ ((pure))
+#endif
+;
+
 #ifdef __cplusplus
 }
 #endif
