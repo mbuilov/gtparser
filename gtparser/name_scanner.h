@@ -19,11 +19,13 @@ extern "C" {
 GTPARSER_EXPORTS
 extern const char gt_is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u];
 
+/* check if c is in [_a-zA-Z] */
 static inline int is_first_name(char c)
 {
 	return gt_is_next_name_lookup_table[(unsigned char)c] >= 20;
 }
 
+/* check if c is in [_a-zA-Z0-9] */
 static inline int is_next_name(char c)
 {
 	return gt_is_next_name_lookup_table[(unsigned char)c];
