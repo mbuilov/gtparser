@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -13,10 +13,77 @@
 extern "C" {
 #endif
 
+/* check basic execution character set: values of digits and latin letters must increase monotonically */
+
+typedef int _bad_digits_[1-2*(
+	'0' + 1 != '1' ||
+	'1' + 1 != '2' ||
+	'2' + 1 != '3' ||
+	'3' + 1 != '4' ||
+	'4' + 1 != '5' ||
+	'5' + 1 != '6' ||
+	'6' + 1 != '7' ||
+	'7' + 1 != '8' ||
+	'8' + 1 != '9')];
+
+typedef int _bad_latin_[1-2*(
+	'a' + 1 != 'b' ||
+	'b' + 1 != 'c' ||
+	'c' + 1 != 'd' ||
+	'd' + 1 != 'e' ||
+	'e' + 1 != 'f' ||
+	'f' + 1 != 'g' ||
+	'g' + 1 != 'h' ||
+	'h' + 1 != 'i' ||
+	'i' + 1 != 'j' ||
+	'j' + 1 != 'k' ||
+	'k' + 1 != 'l' ||
+	'l' + 1 != 'm' ||
+	'm' + 1 != 'n' ||
+	'n' + 1 != 'o' ||
+	'o' + 1 != 'p' ||
+	'p' + 1 != 'q' ||
+	'q' + 1 != 'r' ||
+	'r' + 1 != 's' ||
+	's' + 1 != 't' ||
+	't' + 1 != 'u' ||
+	'u' + 1 != 'v' ||
+	'v' + 1 != 'w' ||
+	'w' + 1 != 'x' ||
+	'x' + 1 != 'y' ||
+	'y' + 1 != 'z')];
+
+typedef int _bad_LATIN_[1-2*(
+	'A' + 1 != 'B' ||
+	'B' + 1 != 'C' ||
+	'C' + 1 != 'D' ||
+	'D' + 1 != 'E' ||
+	'E' + 1 != 'F' ||
+	'F' + 1 != 'G' ||
+	'G' + 1 != 'H' ||
+	'H' + 1 != 'I' ||
+	'I' + 1 != 'J' ||
+	'J' + 1 != 'K' ||
+	'K' + 1 != 'L' ||
+	'L' + 1 != 'M' ||
+	'M' + 1 != 'N' ||
+	'N' + 1 != 'O' ||
+	'O' + 1 != 'P' ||
+	'P' + 1 != 'Q' ||
+	'Q' + 1 != 'R' ||
+	'R' + 1 != 'S' ||
+	'S' + 1 != 'T' ||
+	'T' + 1 != 'U' ||
+	'U' + 1 != 'V' ||
+	'V' + 1 != 'W' ||
+	'W' + 1 != 'X' ||
+	'X' + 1 != 'Y' ||
+	'Y' + 1 != 'Z')];
+
 /* needed for _is_first_name() and _hex_char_value() */
 typedef int _bad_a_A_diff_[1-2*('a' - 'A' != 32 || '_' != 95)];
 
-/* name must be started with a letter or '_' */
+/* name must be started with a latin letter or '_' */
 static inline int _is_first_name(char c)
 {
 	unsigned x = (unsigned char)c;
@@ -28,9 +95,6 @@ static inline int _is_first_name(char c)
 		x -= 'A';
 	return (x & ~32u) <= 'Z' - 'A' || c == '_';
 }
-
-/* needed for digit_value() */
-typedef int _bad_9_0_diff_[1-2*('9' - '0' != 9)];
 
 /* returns decimal digit value or >9 if non-decimal digit char */
 static inline unsigned digit_value(char c)
@@ -72,8 +136,8 @@ static inline unsigned _hex_char_value(char c)
 		else
 #endif
 			x -= d;
-		x &= (~0u >> 1) & ~32u; /* also clear high-order bit to not overflow in next line */
-		x += 10;
+		x &= ~32u;
+		x += 10; /* cannot overflow because 6-th bit was reset by the previous &= ~32u */
 	}
 	return x;
 }
