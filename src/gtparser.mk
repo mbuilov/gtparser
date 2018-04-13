@@ -7,7 +7,8 @@ SRC     := \
   parser_err.c \
   name_scanner.c \
   int_scanner.c \
-  cstring_parser.c
+  cstring_parser.c \
+  int_scanner_w.c
 
 ifndef NO_STATIC
 LIB     := $(GTPARSER_LIB_NAME) $(GTPARSER_LIB_VARIANTS)
