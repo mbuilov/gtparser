@@ -15,7 +15,7 @@ extern "C" {
 
 /* check basic execution character set: values of digits and latin letters must increase monotonically */
 
-typedef int _bad_digits_[1-2*(
+typedef int gt_bad_digits_[1-2*(
 	'0' + 1 != '1' ||
 	'1' + 1 != '2' ||
 	'2' + 1 != '3' ||
@@ -26,7 +26,7 @@ typedef int _bad_digits_[1-2*(
 	'7' + 1 != '8' ||
 	'8' + 1 != '9')];
 
-typedef int _bad_latin_[1-2*(
+typedef int gt_bad_latin_[1-2*(
 	'a' + 1 != 'b' ||
 	'b' + 1 != 'c' ||
 	'c' + 1 != 'd' ||
@@ -53,7 +53,7 @@ typedef int _bad_latin_[1-2*(
 	'x' + 1 != 'y' ||
 	'y' + 1 != 'z')];
 
-typedef int _bad_LATIN_[1-2*(
+typedef int gt_bad_LATIN_[1-2*(
 	'A' + 1 != 'B' ||
 	'B' + 1 != 'C' ||
 	'C' + 1 != 'D' ||
@@ -81,7 +81,7 @@ typedef int _bad_LATIN_[1-2*(
 	'Y' + 1 != 'Z')];
 
 /* needed for _is_first_name() and _hex_char_value() */
-typedef int _bad_a_A_diff_[1-2*('a' - 'A' != 32 || '_' != 95)];
+typedef int gt_bad_a_A_diff_[1-2*('a' - 'A' != 32 || '_' != 95)];
 
 /* name must be started with a latin letter or '_' */
 static inline int _is_first_name(char c)
@@ -122,7 +122,7 @@ static inline int _is_next_name(char c)
 }
 
 /* needed for _hex_char_value() */
-typedef int _bad_A_0_diff_[1-2*('A' - '0' <= 0)];
+typedef int gt_bad_A_0_diff_[1-2*('A' - '0' <= 0)];
 
 /* returns hex char value or >15 if non-hex char */
 static inline unsigned _hex_char_value(char c)

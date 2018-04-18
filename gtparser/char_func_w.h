@@ -15,7 +15,7 @@ extern "C" {
 
 /* check basic execution character set: values of digits and latin letters must increase monotonically */
 
-typedef int _bad_digits_w_[1-2*(
+typedef int gt_bad_digits_w_[1-2*(
 	L'0' + 1 != L'1' ||
 	L'1' + 1 != L'2' ||
 	L'2' + 1 != L'3' ||
@@ -26,7 +26,7 @@ typedef int _bad_digits_w_[1-2*(
 	L'7' + 1 != L'8' ||
 	L'8' + 1 != L'9')];
 
-typedef int _bad_latin_w_[1-2*(
+typedef int gt_bad_latin_w_[1-2*(
 	L'a' + 1 != L'b' ||
 	L'b' + 1 != L'c' ||
 	L'c' + 1 != L'd' ||
@@ -53,7 +53,7 @@ typedef int _bad_latin_w_[1-2*(
 	L'x' + 1 != L'y' ||
 	L'y' + 1 != L'z')];
 
-typedef int _bad_LATIN_w_[1-2*(
+typedef int gt_bad_LATIN_w_[1-2*(
 	L'A' + 1 != L'B' ||
 	L'B' + 1 != L'C' ||
 	L'C' + 1 != L'D' ||
@@ -81,10 +81,10 @@ typedef int _bad_LATIN_w_[1-2*(
 	L'Y' + 1 != L'Z')];
 
 /* check that wchar_t fits in unsigned int */
-typedef int _too_wide_wchar_t_[1-2*(sizeof(unsigned) < sizeof(wchar_t))];
+typedef int gt_too_wide_wchar_t_[1-2*(sizeof(unsigned) < sizeof(wchar_t))];
 
 /* needed for _is_first_name_w() and _hex_char_value_w() */
-typedef int _bad_a_A_diff_w_[1-2*(L'a' - L'A' != 32 || L'_' != 95)];
+typedef int gt_bad_a_A_diff_w_[1-2*(L'a' - L'A' != 32 || L'_' != 95)];
 
 /* name must be started with a latin letter or '_' */
 static inline int _is_first_name_w(wchar_t c)
@@ -125,7 +125,7 @@ static inline int _is_next_name_w(wchar_t c)
 }
 
 /* needed for _hex_char_value_w() */
-typedef int _bad_A_0_diff_w_[1-2*(L'A' - L'0' <= 0)];
+typedef int gt_bad_A_0_diff_w_[1-2*(L'A' - L'0' <= 0)];
 
 /* returns hex char value or >15 if non-hex char */
 static inline unsigned _hex_char_value_w(wchar_t c)
