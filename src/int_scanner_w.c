@@ -21,13 +21,15 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w(const wchar_t *s/*<end*/, const w
 		if (n > ~0u/10)
 			return (const wchar_t*)0; /* integer overflow */
 		n *= 10;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (n > ~0u - x)
 			return (const wchar_t*)0; /* integer overflow */
 #endif
 		n += x;
+#ifndef GTPARSER_NO_UINT_OVERFLOW
 		if (n < x)
 			return (const wchar_t*)0; /* integer overflow */
+#endif
 	}
 	*number = n;
 	return s; /* s points to non-[0-9], may be to end */
@@ -44,13 +46,15 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w(const wchar_t *s/*<end*/, const
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0/10)
 			return (const wchar_t*)0; /* integer overflow */
 		n *= 10;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0 - x)
 			return (const wchar_t*)0; /* integer overflow */
 #endif
 		n += x;
+#ifndef GTPARSER_NO_UINT_OVERFLOW
 		if (n < x)
 			return (const wchar_t*)0; /* integer overflow */
+#endif
 	}
 	*number = n;
 	return s; /* s points to non-[0-9], may be to end */
@@ -99,13 +103,15 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w_z(const wchar_t *s/*'\0'-terminat
 		if (n > ~0u/10)
 			return (const wchar_t*)0; /* integer overflow */
 		n *= 10;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (n > ~0u - x)
 			return (const wchar_t*)0; /* integer overflow */
 #endif
 		n += x;
+#ifndef GTPARSER_NO_UINT_OVERFLOW
 		if (n < x)
 			return (const wchar_t*)0; /* integer overflow */
+#endif
 	}
 	*number = n;
 	return s; /* s points to non-[0-9], may be to '\0' */
@@ -122,13 +128,15 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w_z(const wchar_t *s/*'\0'-termin
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0/10)
 			return (const wchar_t*)0; /* integer overflow */
 		n *= 10;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0 - x)
 			return (const wchar_t*)0; /* integer overflow */
 #endif
 		n += x;
+#ifndef GTPARSER_NO_UINT_OVERFLOW
 		if (n < x)
 			return (const wchar_t*)0; /* integer overflow */
+#endif
 	}
 	*number = n;
 	return s; /* s points to non-[0-9], may be to '\0' */

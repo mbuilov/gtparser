@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -20,13 +20,15 @@ GTPARSER_EXPORTS const char *gt_scan_uint(const char *s/*<end*/, const char *con
 		if (n > ~0u/10)
 			return (const char*)0; /* integer overflow */
 		n *= 10;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (n > ~0u - x)
 			return (const char*)0; /* integer overflow */
 #endif
 		n += x;
+#ifndef GTPARSER_NO_UINT_OVERFLOW
 		if (n < x)
 			return (const char*)0; /* integer overflow */
+#endif
 	}
 	*number = n;
 	return s; /* s points to non-[0-9], may be to end */
@@ -43,13 +45,15 @@ GTPARSER_EXPORTS const char *gt_scan_uint64(const char *s/*<end*/, const char *c
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0/10)
 			return (const char*)0; /* integer overflow */
 		n *= 10;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0 - x)
 			return (const char*)0; /* integer overflow */
 #endif
 		n += x;
+#ifndef GTPARSER_NO_UINT_OVERFLOW
 		if (n < x)
 			return (const char*)0; /* integer overflow */
+#endif
 	}
 	*number = n;
 	return s; /* s points to non-[0-9], may be to end */
@@ -98,13 +102,15 @@ GTPARSER_EXPORTS const char *gt_scan_uint_z(const char *s/*'\0'-terminated*/, un
 		if (n > ~0u/10)
 			return (const char*)0; /* integer overflow */
 		n *= 10;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (n > ~0u - x)
 			return (const char*)0; /* integer overflow */
 #endif
 		n += x;
+#ifndef GTPARSER_NO_UINT_OVERFLOW
 		if (n < x)
 			return (const char*)0; /* integer overflow */
+#endif
 	}
 	*number = n;
 	return s; /* s points to non-[0-9], may be to '\0' */
@@ -121,13 +127,15 @@ GTPARSER_EXPORTS const char *gt_scan_uint64_z(const char *s/*'\0'-terminated*/, 
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0/10)
 			return (const char*)0; /* integer overflow */
 		n *= 10;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (n > (unsigned INT64_TYPE)~(unsigned INT64_TYPE)0 - x)
 			return (const char*)0; /* integer overflow */
 #endif
 		n += x;
+#ifndef GTPARSER_NO_UINT_OVERFLOW
 		if (n < x)
 			return (const char*)0; /* integer overflow */
+#endif
 	}
 	*number = n;
 	return s; /* s points to non-[0-9], may be to '\0' */

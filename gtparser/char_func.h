@@ -87,7 +87,7 @@ typedef int _bad_a_A_diff_[1-2*('a' - 'A' != 32 || '_' != 95)];
 static inline int _is_first_name(char c)
 {
 	unsigned x = (unsigned char)c;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 	if (x < 'A')
 		x += (~0u - 'A') + 1u;
 	else
@@ -100,7 +100,7 @@ static inline int _is_first_name(char c)
 static inline unsigned digit_value(char c)
 {
 	unsigned x = (unsigned char)c;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 	if (x < '0')
 		x += (~0u - '0') + 1u;
 	else
@@ -130,7 +130,7 @@ static inline unsigned _hex_char_value(char c)
 	unsigned x = digit_value(c);
 	if (x > 9) {
 		const unsigned d = 'A' - '0';
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (x < d)
 			x += (~0u - d) + 1u;
 		else

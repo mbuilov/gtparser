@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -35,7 +35,7 @@ static inline int is_next_name(char c)
 static inline unsigned hex_char_value(char c)
 {
 	unsigned x = (unsigned char)gt_is_next_name_lookup_table[(unsigned char)c];
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 	if (x < 10u)
 		x += (~0u - 10u) + 1u;
 	else

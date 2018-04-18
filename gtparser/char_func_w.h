@@ -90,7 +90,7 @@ typedef int _bad_a_A_diff_w_[1-2*(L'a' - L'A' != 32 || L'_' != 95)];
 static inline int _is_first_name_w(wchar_t c)
 {
 	unsigned x = (unsigned)c;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 	if (x < L'A')
 		x += (~0u - L'A') + 1u;
 	else
@@ -103,7 +103,7 @@ static inline int _is_first_name_w(wchar_t c)
 static inline unsigned digit_value_w(wchar_t c)
 {
 	unsigned x = (unsigned)c;
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 	if (x < L'0')
 		x += (~0u - L'0') + 1u;
 	else
@@ -133,7 +133,7 @@ static inline unsigned _hex_char_value_w(wchar_t c)
 	unsigned x = digit_value_w(c);
 	if (x > 9) {
 		const unsigned d = L'A' - L'0';
-#ifdef DEBUG
+#ifdef GTPARSER_NO_UINT_OVERFLOW
 		if (x < d)
 			x += (~0u - d) + 1u;
 		else
