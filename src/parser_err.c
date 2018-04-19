@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -9,12 +9,12 @@
 #include "gtparser/gtparser_config.h"
 #include "gtparser/parser_err.h"
 
-#define __MAX_OF__(a,b) ((a)>(b)?(a):(b))
+#define PE_MAX_OF(a,b) ((a)>(b)?(a):(b))
 #define parse_error_at "parse error at "
 #define pe_reserve1 sizeof(parse_error_at "(4294967295:4294967295):") /* note: take into account terminating '\0' in string constant */
 #define pe_reserve2 sizeof(parse_error_at "line 4294967295:")         /* note: take into account terminating '\0' in string constant */
 #define pe_reserve3 sizeof(parse_error_at "char 4294967295:")         /* note: take into account terminating '\0' in string constant */
-#define PE_RESERVE (__MAX_OF__(pe_reserve1, __MAX_OF__(pe_reserve2, pe_reserve3)))
+#define PE_RESERVE (PE_MAX_OF(pe_reserve1, PE_MAX_OF(pe_reserve2, pe_reserve3)))
 
 GTPARSER_EXPORTS char *parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/)
 {
