@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -27,7 +27,7 @@ __attribute__ ((const))
 #endif
 ;
 
-/* don't reserve space for file name */
+/* don't reserve space for file name (if parsing a buffer instead of a source file) */
 #define parser_err_reserve_(err_buf, err_buf_size) \
 	parser_err_reserve(err_buf, err_buf_size, /*filename_reserve:*/0)
 
@@ -72,7 +72,7 @@ static inline const char *parser_err_prepend_at_char(
 		err, 0, column);
 }
 
-/* don't reserve space for file name */
+/* don't reserve space for file name (if parsing a buffer instead of a source file) */
 #define parser_err_prepend_at_(err_buf, err_buf_size, err, line, column) \
 	parser_err_prepend_at(err_buf, err_buf_size, /*filename_reserve:*/0, /*filename:*/NULL, err, line, column)
 
@@ -85,7 +85,7 @@ static inline const char *parser_err_prepend_at_char(
 /* print formatted message in error buffer,
   trim message tail if necessary to fit it in the buffer,
   returns pointer to next char after printed message or end */
-/* NOTE: error buffer may be not '\0'-terminated after the call */
+/* NOTE: error buffer may be not '\0'-terminated after the call - use parser_err_finish() */
 #if (defined(__GNUC__) && (__GNUC__ > 3 || (3 == __GNUC__ && __GNUC_MINOR__ >= 1))) || \
     (defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 8)))
 __attribute__ ((format(printf, 3, 4)))
@@ -97,18 +97,18 @@ GTPARSER_EXPORTS char *parser_err_print(char *buf/*<=end*/, const char *const en
 /* append string to error buffer,
   trim string tail if necessary to fit it in the buffer,
   returns pointer to next char after appended string or end */
-/* NOTE: error buffer may be not '\0'-terminated after the call */
+/* NOTE: error buffer may be not '\0'-terminated after the call - use parser_err_finish() */
 GTPARSER_EXPORTS char *parser_err_print_string(char *buf/*<=end*/, const char *const end, const char *string/*'\0'-terminated*/);
 
 /* append chars to error buffer,
   trim chars array tail if necessary to fit it in the buffer,
   returns pointer to next char after appended chars or end */
-/* NOTE: error buffer may be not '\0'-terminated after the call */
+/* NOTE: error buffer may be not '\0'-terminated after the call - use parser_err_finish() */
 GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count);
 
 /* append character to error buffer if there is a place for it,
   returns pointer to next char after appended char or end */
-/* NOTE: error buffer may be not '\0'-terminated after the call */
+/* NOTE: error buffer may be not '\0'-terminated after the call - use parser_err_finish() */
 static inline char *parser_err_print_char(char *buf/*<=end*/, const char *const end, char c)
 {
 	if (buf < end)
@@ -119,7 +119,7 @@ static inline char *parser_err_print_char(char *buf/*<=end*/, const char *const 
 /* append string constant to error buffer,
   trim string tail if necessary to fit it in the buffer,
   returns pointer to next char after appended string or end */
-/* NOTE: error buffer may be not '\0'-terminated after the call */
+/* NOTE: error buffer may be not '\0'-terminated after the call - use parser_err_finish() */
 #define parser_err_print_string_constant(buf/*<=end*/, end, s) \
 	parser_err_print_chars(buf, end, s, sizeof("" s) - 1)
 
