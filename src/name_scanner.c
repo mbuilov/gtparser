@@ -8,13 +8,13 @@
 
 #include "gtparser/name_scanner.h"
 
-typedef int _char_0_value[1-2*( 48 != '0')];
-typedef int _char_9_value[1-2*( 57 != '9')];
-typedef int _char_A_value[1-2*( 65 != 'A')];
-typedef int _char_Z_value[1-2*( 90 != 'Z')];
-typedef int _char___value[1-2*( 95 != '_')];
-typedef int _char_a_value[1-2*( 97 != 'a')];
-typedef int _char_z_value[1-2*(122 != 'z')];
+typedef int gt_bad_char_0_value[1-2*( 48 != '0')];
+typedef int gt_bad_char_9_value[1-2*( 57 != '9')];
+typedef int gt_bad_char_A_value[1-2*( 65 != 'A')];
+typedef int gt_bad_char_Z_value[1-2*( 90 != 'Z')];
+typedef int gt_bad_char___value[1-2*( 95 != '_')];
+typedef int gt_bad_char_a_value[1-2*( 97 != 'a')];
+typedef int gt_bad_char_z_value[1-2*(122 != 'z')];
 
 const char gt_is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u] = {
 /*                      \a \b \t \n \v \f \r                                                        */

@@ -83,11 +83,11 @@ typedef int gt_bad_LATIN_w_[1-2*(
 /* check that wchar_t fits in unsigned int */
 typedef int gt_too_wide_wchar_t_[1-2*(sizeof(unsigned) < sizeof(wchar_t))];
 
-/* needed for _is_first_name_w() and _hex_char_value_w() */
+/* needed for is_first_name_w_() and hex_char_value_w_() */
 typedef int gt_bad_a_A_diff_w_[1-2*(L'a' - L'A' != 32 || L'_' != 95)];
 
 /* name must be started with a latin letter or '_' */
-static inline int _is_first_name_w(wchar_t c)
+static inline int is_first_name_w_(wchar_t c)
 {
 	unsigned x = (unsigned)c;
 #ifdef GTPARSER_NO_UINT_OVERFLOW
@@ -119,16 +119,16 @@ static inline int is_digit_w(wchar_t c)
 }
 
 /* name may be continued by a letter, digit or '_' */
-static inline int _is_next_name_w(wchar_t c)
+static inline int is_next_name_w_(wchar_t c)
 {
-	return _is_first_name_w(c) || is_digit_w(c);
+	return is_first_name_w_(c) || is_digit_w(c);
 }
 
-/* needed for _hex_char_value_w() */
+/* needed for hex_char_value_w_() */
 typedef int gt_bad_A_0_diff_w_[1-2*(L'A' - L'0' <= 0)];
 
 /* returns hex char value or >15 if non-hex char */
-static inline unsigned _hex_char_value_w(wchar_t c)
+static inline unsigned hex_char_value_w_(wchar_t c)
 {
 	unsigned x = digit_value_w(c);
 	if (x > 9) {

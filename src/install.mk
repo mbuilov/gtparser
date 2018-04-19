@@ -12,12 +12,18 @@ LIBRARY_HDIR := gtparser
 LIBRARY_HEADERS := $(addprefix $(TOP)/gtparser/,\
   gtparser.h \
   char_func.h \
+  char_func_w.h \
   cstring_parser.h \
   int_parser.h \
+  int_parser_z.h \
   int_scanner.h \
+  int_scanner_w.h \
   name_parser.h \
+  name_parser_z.h \
   name_scanner.h \
+  parser_common.h \
   parser_base.h \
+  parser_z_base.h \
   parser_err.h)
 
 define GTPARSER_PC_COMMENT

@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -9,114 +9,40 @@
 #include "gtparser/gtparser_config.h"
 #include "gtparser/cstring_parser.h"
 #include "gtparser/parser_base.h"
-#include "gtparser/name_scanner.h"
+#include "gtparser/parser_z_base.h"
+//#include "gtparser/name_scanner.h"
+#include "gtparser/char_func.h"
 
-static enum PARSE_CSTRING_ERR _parse_cstring(unsigned *line, const char **current,
-	unsigned *back_column, size_t *removed, const char *const end)
-{
-	const char quote = _src_iter_current_char(*current);
-	while (_src_iter_next(current, end)) {
-		char c = _src_iter_current_char(*current);
-_switch_c:
-		if (quote == c)
-			return PARSE_CSTRING_OK; /* it points to the last quote */
-		if ('\n' == c || '\r' == c)
-			return PARSE_CSTRING_UNESCAPED_NEWLINE; /* unescaped line-feed or carriage-return */
-		if ('\\' == c) {
-			if (!_src_iter_next(current, end))
-				break; /* error: unterminated string */
-			(*removed)++; /* '\' must be removed */
-			c = _src_iter_current_char(*current);
-			if ('\r' == c) {
-				if (!_src_iter_next(current, end))
-					break; /* error: unterminated string */
-				c = _src_iter_current_char(*current);
-				if ('\n' != c)
-					return PARSE_CSTRING_EXPECTING_LINE_FEED; /* expecting line-feed after carriage-return */
-				(*removed) += 2; /* line continuation (split) must be removed */
-			}
-			else if ('\n' == c)
-				(*removed)++; /* line continuation (split) must be removed */
-			else if ('x' == c) {
-				/* hexadecimal constant */
-				if (!_src_iter_next(current, end))
-					break; /* error: unterminated string */
-				c = _src_iter_current_char(*current);
-				{
-					unsigned n = _hex_char_value(c);
-					if (n > 15)
-						return PARSE_CSTRING_EXPECTING_HEX_DIGIT; /* expecting hexadecimal digit in hex escape sequence after \x */
-					if (!_src_iter_next(current, end))
-						break; /* error: unterminated string */
-					c = _src_iter_current_char(*current);
-					{
-						unsigned m = _hex_char_value(c);
-						if (m <= 15 && n + m) {
-							(*removed) += 2; /* xf in "\xff" */
-							continue;
-						}
-					}
-					if (n) {
-						(*removed)++; /* x in "\xf" */
-						goto _switch_c;
-					}
-					(*current)--; /* points to 0 in "\x0?" */
-					c = '\0'; /* error: null inside string */
-				}
-			}
-			else {
-				unsigned n = digit_value(c);
-				if (n <= 7) {
-					/* octal constant */
-					if (!_src_iter_next(current, end))
-						break; /* error: unterminated string */
-					c = _src_iter_current_char(*current);
-					{
-						unsigned m = digit_value(c);
-						if (m <= 7) {
-							if (!_src_iter_next(current, end))
-								break; /* error: unterminated string */
-							n = n*8 + m;
-							c = _src_iter_current_char(*current);
-							m = digit_value(c);
-							if (m <= 7) {
-								if (n*8 + m > 255) {
-									(*current) -= 2; /* points to 777 in "\777" */
-									return PARSE_CSTRING_TOO_BIG_OCTAL; /* too big octal character value > 255 in string */
-								}
-								if (n + m) {
-									(*removed) += 2; /* 12 in "\123" */
-									continue;
-								}
-							}
-							else if (n) {
-								(*removed)++; /* 1 in "\12" */
-								goto _switch_c;
-							}
-							(*current)--; /* error: null inside string */
-						}
-						else if (n)
-							goto _switch_c;
-					}
-					(*current)--; /* points to first 0 in "\000" or in "\00" or in "\0" */
-					c = '\0'; /* error: null inside string */
-				}
-			}
-		}
-		if ('\0' == c)
-			return PARSE_CSTRING_NULL_INSIDE_CSTRING; /* null character (with zero value) inside string is not allowed */
-		_src_iter_check(line, back_column, *current, GTPARSER_TAB_SIZE);
-	}
-	return PARSE_CSTRING_UNTERMINATED; /* unterminated string */
-}
+#define ENDPARAM           , const char *const end
+#define ITER_NEXT(current) src_iter_next_(current, end)
+#include "cstring_parser.inl"
+#undef ENDPARAM
+#undef ITER_NEXT
 
-GTPARSER_EXPORTS enum PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/)
+GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/)
 {
 	const char *current = it->current;
-	size_t _removed = 0;
-	enum PARSE_CSTRING_ERR r = _parse_cstring(&it->line, &current, &it->back_column, &_removed, it->end);
+	size_t removed_ = 0;
+	enum GT_PARSE_CSTRING_ERR r = parse_cstring(&it->line, &current, &it->back_column, &removed_, GTPARSER_TAB_SIZE(it), it->end);
 	it->current = current;
-	*removed = _removed;
+	*removed = removed_;
+	return r;
+}
+
+#define ENDPARAM
+#define ITER_NEXT(current) src_iter_z_next_(current)
+#define parse_cstring parse_cstring_z
+#include "cstring_parser.inl"
+#undef ENDPARAM
+#undef ITER_NEXT
+
+GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z *it, size_t *removed/*out*/)
+{
+	const char *current = it->current;
+	size_t removed_ = 0;
+	enum GT_PARSE_CSTRING_ERR r = parse_cstring_z(&it->line, &current, &it->back_column, &removed_, GTPARSER_TAB_SIZE(it));
+	it->current = current;
+	*removed = removed_;
 	return r;
 }
 
@@ -148,12 +74,12 @@ GTPARSER_EXPORTS void gt_copy_cstring(char dst[]/*out*/, const char *begin, cons
 				case 'x':
 					ASSERT(begin < end && removed); /* otherwise invalid string was parsed */
 					{
-						unsigned n = _hex_char_value(*begin++);
+						unsigned n = hex_char_value_(*begin++);
 						ASSERT(n <= 15); /* otherwise invalid string was parsed */
 						if (--removed) { /* x in "\xF" */
 							ASSERT(begin < end); /* otherwise invalid string was parsed */
 							{
-								unsigned m = _hex_char_value(*begin);
+								unsigned m = hex_char_value_(*begin);
 								if (m <= 15) {
 									begin++;
 									n = n*16 + m;

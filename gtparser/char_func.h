@@ -80,11 +80,11 @@ typedef int gt_bad_LATIN_[1-2*(
 	'X' + 1 != 'Y' ||
 	'Y' + 1 != 'Z')];
 
-/* needed for _is_first_name() and _hex_char_value() */
+/* needed for is_first_name_() and hex_char_value_() */
 typedef int gt_bad_a_A_diff_[1-2*('a' - 'A' != 32 || '_' != 95)];
 
 /* name must be started with a latin letter or '_' */
-static inline int _is_first_name(char c)
+static inline int is_first_name_(char c)
 {
 	unsigned x = (unsigned char)c;
 #ifdef GTPARSER_NO_UINT_OVERFLOW
@@ -116,16 +116,16 @@ static inline int is_digit(char c)
 }
 
 /* name may be continued by a letter, digit or '_' */
-static inline int _is_next_name(char c)
+static inline int is_next_name_(char c)
 {
-	return _is_first_name(c) || is_digit(c);
+	return is_first_name_(c) || is_digit(c);
 }
 
-/* needed for _hex_char_value() */
+/* needed for hex_char_value_() */
 typedef int gt_bad_A_0_diff_[1-2*('A' - '0' <= 0)];
 
 /* returns hex char value or >15 if non-hex char */
-static inline unsigned _hex_char_value(char c)
+static inline unsigned hex_char_value_(char c)
 {
 	unsigned x = digit_value(c);
 	if (x > 9) {

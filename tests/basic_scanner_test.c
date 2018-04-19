@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser tests
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under GPL version 3 or any later version, see COPYING.GPL3
 *******************************************************************************/
 
@@ -16,7 +16,7 @@ static int check_first_name_chars(int t)
 	unsigned char c = 0;
 	unsigned p = 0;
 	for (;;) {
-		if (!t ? _is_first_name((char)c) : is_first_name((char)c)) {
+		if (!t ? is_first_name_((char)c) : is_first_name((char)c)) {
 			if (p == sizeof(first_chars) - 1 || first_chars[p++] != c) {
 				fprintf(stderr, "bad first name char: %d\n", (char)c);
 				return 1;
@@ -39,7 +39,7 @@ static int check_next_name_chars(int t)
 	unsigned char c = 0;
 	unsigned p = 0;
 	for (;;) {
-		if (!t ? _is_next_name((char)c) : is_next_name((char)c)) {
+		if (!t ? is_next_name_((char)c) : is_next_name((char)c)) {
 			if (p == sizeof(next_chars) - 1 || next_chars[p++] != c) {
 				fprintf(stderr, "bad next name char: %d\n", (char)c);
 				return 1;
@@ -62,7 +62,7 @@ static int check_hex_chars(int t)
 	unsigned char c = 0;
 	unsigned p = 0;
 	for (;;) {
-		if ((!t ? _hex_char_value((char)c) : hex_char_value((char)c)) <= 15) {
+		if ((!t ? hex_char_value_((char)c) : hex_char_value((char)c)) <= 15) {
 			if (p == sizeof(hex_chars) - 1 || hex_chars[p++] != c) {
 				fprintf(stderr, "bad hex char: %d\n", (char)c);
 				return 1;

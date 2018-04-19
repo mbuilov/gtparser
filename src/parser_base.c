@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -9,14 +9,15 @@
 #include "gtparser/gtparser_config.h"
 #include "gtparser/parser_base.h"
 
-/* it points to checked char */
+/* it points to checked char, likely '#' */
 GTPARSER_EXPORTS void gt_skip_rest_of_line(struct src_iter *it)
 {
 	const char *s = it->current;
-	while (_src_iter_next(&s, it->end)) {
-		_src_iter_check(&it->line, &it->back_column, s, GTPARSER_TAB_SIZE);
-		if ('\n' == _src_iter_current_char(s)) {
-			_src_iter_step(&s);
+	const char *const e = it->end;
+	while (src_iter_next_(&s, e)) {
+		src_iter_check_(&it->line, &it->back_column, s, GTPARSER_TAB_SIZE(it));
+		if ('\n' == src_iter_current_char_(s)) {
+			src_iter_step_(&s);
 			break;
 		}
 	}
@@ -24,12 +25,12 @@ GTPARSER_EXPORTS void gt_skip_rest_of_line(struct src_iter *it)
 }
 
 /* it points to unchecked char or to eof */
-GTPARSER_EXPORTS char read_non_space_skip_comments(struct src_iter *it, char comment)
+GTPARSER_EXPORTS char gt_read_non_space_skip_comments(struct src_iter *it, char comment)
 {
 	while (!src_iter_eof(it)) {
 		char c = src_iter_current_char(it);
 		if (comment == c) {
-			_skip_comment(it);
+			src_iter_skip_comment(it);
 			continue;
 		}
 		if (!is_space(c))
@@ -41,7 +42,7 @@ GTPARSER_EXPORTS char read_non_space_skip_comments(struct src_iter *it, char com
 }
 
 /* it points to unchecked char or to eof */
-GTPARSER_EXPORTS char read_non_space_stop_eol(struct src_iter *it)
+GTPARSER_EXPORTS char gt_read_non_space_stop_eol(struct src_iter *it)
 {
 	while (!src_iter_eof(it)) {
 		char c = src_iter_current_char(it);

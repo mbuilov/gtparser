@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser tests
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under GPL version 3 or any later version, see COPYING.GPL3
 *******************************************************************************/
 
@@ -18,8 +18,8 @@ static int test1(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_OK != r) {
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_OK != r) {
 			fprintf(stderr, "failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
 		}
@@ -42,8 +42,8 @@ static int test2(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_OK != r) {
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_OK != r) {
 			fprintf(stderr, "failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
 		}
@@ -82,8 +82,8 @@ static int test3(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_OK != r) {
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_OK != r) {
 			fprintf(stderr, "failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
 		}
@@ -123,8 +123,8 @@ static int test4(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_OK != r) {
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_OK != r) {
 			fprintf(stderr, "failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
 		}
@@ -164,8 +164,8 @@ static int test5(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_OK != r) {
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_OK != r) {
 			fprintf(stderr, "failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
 		}
@@ -204,8 +204,8 @@ static int test6(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_OK != r) {
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_OK != r) {
 			fprintf(stderr, "failed to parse test string \"%s\": err = %d\n", src, (int)r);
 			return 0;
 		}
@@ -245,9 +245,9 @@ static int test7(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_TOO_BIG_OCTAL != r) {
-			fprintf(stderr, "expecting PARSE_CSTRING_TOO_BIG_OCTAL error for test string \"%s\", but err = %d\n", src, (int)r);
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_TOO_BIG_OCTAL != r) {
+			fprintf(stderr, "expecting GT_PARSE_CSTRING_TOO_BIG_OCTAL error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
 		}
 	}
@@ -261,9 +261,9 @@ static int test8(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_NULL_INSIDE_CSTRING != r) {
-			fprintf(stderr, "expecting PARSE_CSTRING_NULL_INSIDE_CSTRING error for test string \"%s\", but err = %d\n", src, (int)r);
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_NULL_INSIDE_CSTRING != r) {
+			fprintf(stderr, "expecting GT_PARSE_CSTRING_NULL_INSIDE_CSTRING error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
 		}
 	}
@@ -277,9 +277,9 @@ static int test9(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_NULL_INSIDE_CSTRING != r) {
-			fprintf(stderr, "expecting PARSE_CSTRING_NULL_INSIDE_CSTRING error for test string \"%s\", but err = %d\n", src, (int)r);
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_NULL_INSIDE_CSTRING != r) {
+			fprintf(stderr, "expecting GT_PARSE_CSTRING_NULL_INSIDE_CSTRING error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
 		}
 	}
@@ -293,9 +293,9 @@ static int test10(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_EXPECTING_HEX_DIGIT != r) {
-			fprintf(stderr, "expecting PARSE_CSTRING_EXPECTING_HEX_DIGIT error for test string \"%s\", but err = %d\n", src, (int)r);
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_EXPECTING_HEX_DIGIT != r) {
+			fprintf(stderr, "expecting GT_PARSE_CSTRING_EXPECTING_HEX_DIGIT error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
 		}
 	}
@@ -309,9 +309,9 @@ static int test11(void)
 	src_iter_init(&it, src, sizeof(src) - 1);
 	{
 		size_t removed = 0;
-		enum PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
-		if (PARSE_CSTRING_UNTERMINATED != r) {
-			fprintf(stderr, "expecting PARSE_CSTRING_UNTERMINATED error for test string \"%s\", but err = %d\n", src, (int)r);
+		enum GT_PARSE_CSTRING_ERR r = gt_parse_cstring(&it, &removed);
+		if (GT_PARSE_CSTRING_UNTERMINATED != r) {
+			fprintf(stderr, "expecting GT_PARSE_CSTRING_UNTERMINATED error for test string \"%s\", but err = %d\n", src, (int)r);
 			return 0;
 		}
 	}

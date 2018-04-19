@@ -63,9 +63,9 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w(const wchar_t *s/*<end*/, const
 /* s points to [0-9a-fA-F] */
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned *number/*out*/)
 {
-	unsigned n = _hex_char_value_w(*s);
+	unsigned n = hex_char_value_w_(*s);
 	while (++s != end) {
-		unsigned x = _hex_char_value_w(*s);
+		unsigned x = hex_char_value_w_(*s);
 		if (x > 15)
 			break;
 		if (n > (~0u >> 4))
@@ -79,9 +79,9 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w(const wchar_t *s/*<end*/, const wc
 /* s points to [0-9a-fA-F] */
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex64_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned INT64_TYPE *number/*out*/)
 {
-	unsigned INT64_TYPE n = _hex_char_value_w(*s);
+	unsigned INT64_TYPE n = hex_char_value_w_(*s);
 	while (++s != end) {
-		unsigned x = _hex_char_value_w(*s);
+		unsigned x = hex_char_value_w_(*s);
 		if (x > 15)
 			break;
 		if (n > ((unsigned INT64_TYPE)~(unsigned INT64_TYPE)0 >> 4))
@@ -145,9 +145,9 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w_z(const wchar_t *s/*'\0'-termin
 /* s points to [0-9a-fA-F] */
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w_z(const wchar_t *s/*'\0'-terminated*/, unsigned *number/*out*/)
 {
-	unsigned n = _hex_char_value_w(*s);
+	unsigned n = hex_char_value_w_(*s);
 	for (;;) {
-		unsigned x = _hex_char_value_w(*++s);
+		unsigned x = hex_char_value_w_(*++s);
 		if (x > 15)
 			break;
 		if (n > (~0u >> 4))
@@ -161,9 +161,9 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w_z(const wchar_t *s/*'\0'-terminate
 /* s points to [0-9a-fA-F] */
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex64_w_z(const wchar_t *s/*'\0'-terminated*/, unsigned INT64_TYPE *number/*out*/)
 {
-	unsigned INT64_TYPE n = _hex_char_value_w(*s);
+	unsigned INT64_TYPE n = hex_char_value_w_(*s);
 	for (;;) {
-		unsigned x = _hex_char_value_w(*++s);
+		unsigned x = hex_char_value_w_(*++s);
 		if (x > 15)
 			break;
 		if (n > ((unsigned INT64_TYPE)~(unsigned INT64_TYPE)0 >> 4))

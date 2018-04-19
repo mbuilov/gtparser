@@ -16,7 +16,7 @@
 #define pe_reserve3 sizeof(parse_error_at "char 4294967295:")         /* note: take into account terminating '\0' in string constant */
 #define PE_RESERVE (PE_MAX_OF(pe_reserve1, PE_MAX_OF(pe_reserve2, pe_reserve3)))
 
-GTPARSER_EXPORTS char *parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/)
+GTPARSER_EXPORTS char *gt_parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/)
 {
 	char *buf = err_buf;
 	if (err_buf_size > PE_RESERVE) {
@@ -30,10 +30,10 @@ GTPARSER_EXPORTS char *parser_err_reserve(char err_buf[], size_t err_buf_size, s
 	return buf;
 }
 
-GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/,
+GTPARSER_EXPORTS const char *gt_parser_err_prepend_at(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/,
 	const char *filename/*NULL?,'\0'-terminated*/, const char *err, unsigned line, unsigned column)
 {
-	char *buf = parser_err_reserve(err_buf, err_buf_size, filename_reserve);
+	char *buf = gt_parser_err_reserve(err_buf, err_buf_size, filename_reserve);
 	if (buf != err_buf) {
 		char *err_buf_tail = err_buf;
 		if (buf != err_buf + PE_RESERVE && filename) {
@@ -49,7 +49,7 @@ GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_bu
 			err_buf_tail = err_buf + filename_len;
 		}
 		{
-			/* buf has at least one byte free before err_buf_end - guaranteed by parser_err_reserve() */
+			/* buf has at least one byte free before err_buf_end - guaranteed by gt_parser_err_reserve() */
 			int printed =
 				!line   ? SPRINTF(err_buf_tail, parse_error_at "char %u:", column & 4294967295u) :
 				!column ? SPRINTF(err_buf_tail, parse_error_at "line %u:", line & 4294967295u) :
@@ -80,7 +80,7 @@ GTPARSER_EXPORTS const char *parser_err_prepend_at(char err_buf[], size_t err_bu
 	return err;
 }
 
-GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count)
+GTPARSER_EXPORTS char *gt_parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count)
 {
 	size_t buf_size = (size_t)(end - buf);
 	if (count > buf_size)
@@ -89,9 +89,9 @@ GTPARSER_EXPORTS char *parser_err_print_chars(char *buf/*<=end*/, const char *co
 	return buf + count;
 }
 
-GTPARSER_EXPORTS char *parser_err_print_string(char *buf/*<=end*/, const char *const end, const char *string/*'\0'-terminated*/)
+GTPARSER_EXPORTS char *gt_parser_err_print_string(char *buf/*<=end*/, const char *const end, const char *string/*'\0'-terminated*/)
 {
-	return parser_err_print_chars(buf, end, string, STRLEN(string));
+	return gt_parser_err_print_chars(buf, end, string, STRLEN(string));
 }
 
 #if (defined(__GNUC__) && (__GNUC__ > 3 || (3 == __GNUC__ && __GNUC_MINOR__ >= 1))) || \
@@ -100,7 +100,7 @@ __attribute__ ((format(printf, 3, 4)))
 #elif defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
 _At_(format, _Printf_format_string_)
 #endif
-GTPARSER_EXPORTS char *parser_err_print(char *buf/*<=end*/, const char *const end, const char *format/*'\0'-terminated*/, ...)
+GTPARSER_EXPORTS char *gt_parser_err_print(char *buf/*<=end*/, const char *const end, const char *format/*'\0'-terminated*/, ...)
 {
 	va_list args;
 	va_start(args, format);

@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2017 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -12,19 +12,20 @@
 #include "gtparser/gtparser.h"
 
 struct src_iter;
+struct src_iter_z;
 
-enum PARSE_CSTRING_ERR {
-	PARSE_CSTRING_OK = 0,              /* C-string successfully parsed                                             */
-	PARSE_CSTRING_UNESCAPED_NEWLINE,   /* unescaped line-feed '\n' or carriage-return '\r'                         */
-	PARSE_CSTRING_EXPECTING_LINE_FEED, /* expecting line-feed '\n' after carriage-return '\r'                      */
-	PARSE_CSTRING_EXPECTING_HEX_DIGIT, /* expecting hexadecimal digit in hex escape sequence after '\x'            */
-	PARSE_CSTRING_TOO_BIG_OCTAL,       /* too big octal character value > 255 in string, maximum allowed is '\377' */
-	PARSE_CSTRING_NULL_INSIDE_CSTRING, /* null character '\0' inside C-string is not allowed                       */
-	PARSE_CSTRING_UNTERMINATED         /* unterminated string                                                      */
+enum GT_PARSE_CSTRING_ERR {
+	GT_PARSE_CSTRING_OK = 0,              /* C-string successfully parsed                                             */
+	GT_PARSE_CSTRING_UNESCAPED_NEWLINE,   /* unescaped line-feed '\n' or carriage-return '\r'                         */
+	GT_PARSE_CSTRING_EXPECTING_LINE_FEED, /* expecting line-feed '\n' after carriage-return '\r'                      */
+	GT_PARSE_CSTRING_EXPECTING_HEX_DIGIT, /* expecting hexadecimal digit in hex escape sequence after '\x'            */
+	GT_PARSE_CSTRING_TOO_BIG_OCTAL,       /* too big octal character value > 255 in string, maximum allowed is '\377' */
+	GT_PARSE_CSTRING_NULL_INSIDE_CSTRING, /* null character '\0' inside C-string is not allowed                       */
+	GT_PARSE_CSTRING_UNTERMINATED         /* unterminated string                                                      */
 };
 
-/* input:  it points to first (opening) quote */
-/* output: it points to last (closing) quote */
+/* input:  'it' points to first (opening) quote */
+/* output: 'it' points to last (closing) quote */
 /* removed - number of removed meta-characters:
   - each '\' is removed and next char after it is unescaped (likely converted to some to non-printable char),
   - each line continuation-split (two chars: \<newline>) is removed,
@@ -36,7 +37,8 @@ enum PARSE_CSTRING_ERR {
   hexadecimal-encoded chars (max 2 hexadecimal digits after '\x'):
   \x0..\xf, \x00..\xff */
 /* NOTE: '\0' (null) character is not allowed inside the string, because C-string is '\0'-terminated */
-GTPARSER_EXPORTS enum PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/);
+GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/);
+GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z *it, size_t *removed/*out*/);
 
 /* for static code analysis */
 #ifndef A_Out_writes
@@ -47,10 +49,10 @@ GTPARSER_EXPORTS enum PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, si
 #endif
 
 /* copy previously parsed by gt_parse_cstring() string into supplied
-  dst buffer (which must be large enough) unescaping escape sequences */
-/* begin   - points to next char after first (opening) quote in source C-string */
-/* end     - points to the last (closing) quote in source C-string */
-/* removed - value determined by gt_parse_cstring() */
+  'dst' buffer (which must be large enough) unescaping escape sequences */
+/* begin   - points to next char after the first (opening) quote in the source C-string */
+/* end     - points to the last (closing) quote in the source C-string */
+/* removed - number of meta-characters, value determined by gt_parse_cstring() */
 GTPARSER_EXPORTS void gt_copy_cstring(
 	A_Out_writes(end - begin - removed) char dst[]/*out*/,
 	A_In_reads_to_ptr(end) const char *begin,
