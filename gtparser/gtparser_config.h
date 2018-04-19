@@ -17,11 +17,16 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifdef NDEBUG
-#define ASSERT(cond) ((void)0)
-#else
+#ifndef NDEBUG
 #include <assert.h>
+#endif
+
+#ifndef ASSERT
+#ifndef NDEBUG
 #define ASSERT(cond) assert(cond)
+#else
+#define ASSERT(cond) ((void)0)
+#endif
 #endif
 
 #define STRLEN(str)         strlen(str)
