@@ -83,8 +83,7 @@ typedef int gt_bad_LATIN_[1-2*(
 /* needed for is_first_name_() and hex_char_value_() */
 typedef int gt_bad_a_A_diff_[1-2*('a' - 'A' != 32 || '_' != 95)];
 
-/* name must be started with a latin letter or '_' */
-static inline int is_first_name_(char c)
+static inline int is_latin_letter_(char c)
 {
 	unsigned x = (unsigned char)c;
 #ifdef GTPARSER_NO_UINT_OVERFLOW
@@ -93,7 +92,13 @@ static inline int is_first_name_(char c)
 	else
 #endif
 		x -= 'A';
-	return (x & ~32u) <= 'Z' - 'A' || c == '_';
+	return (x & ~32u) <= 'Z' - 'A';
+}
+
+/* name must be started with a latin letter or '_' */
+static inline int is_first_name_(char c)
+{
+	return is_latin_letter_(c) || c == '_';
 }
 
 /* returns decimal digit value or >9 if non-decimal digit char */
