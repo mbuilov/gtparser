@@ -86,8 +86,7 @@ typedef int gt_too_wide_wchar_t_[1-2*(sizeof(unsigned) < sizeof(wchar_t))];
 /* needed for is_first_name_w_() and hex_char_value_w_() */
 typedef int gt_bad_a_A_diff_w_[1-2*(L'a' - L'A' != 32 || L'_' != 95)];
 
-/* name must be started with a latin letter or '_' */
-static inline int is_first_name_w_(wchar_t c)
+static inline int is_latin_letter_w_(wchar_t c)
 {
 	unsigned x = (unsigned)c;
 #ifdef GTPARSER_NO_UINT_OVERFLOW
@@ -96,7 +95,13 @@ static inline int is_first_name_w_(wchar_t c)
 	else
 #endif
 		x -= L'A';
-	return (x & ~32u) <= L'Z' - L'A' || c == L'_';
+	return (x & ~32u) <= L'Z' - L'A';
+}
+
+/* name must be started with a latin letter or '_' */
+static inline int is_first_name_w_(wchar_t c)
+{
+	return is_latin_letter_w_(c) || c == L'_';
 }
 
 /* returns decimal digit value or >9 if non-decimal digit char */
