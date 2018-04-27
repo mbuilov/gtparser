@@ -48,7 +48,7 @@ static inline struct src_iter *src_iter_init_(struct src_iter *it, const char *i
 {
 	it->current = input;
 	it->end = input;
-	it->back_column = (unsigned)((unsigned long long)(input - (const char*)1) & ~0u);
+	it->back_column = src_iter_get_back_column_(input);
 	it->line = 1;
 	return it;
 }

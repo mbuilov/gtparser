@@ -37,6 +37,12 @@ static inline int is_space(char c)
 	return (unsigned char)c <= ' ';
 }
 
+/* get initial value of 'back_column' */
+static inline unsigned src_iter_get_back_column_(const char *input)
+{
+	return (unsigned)((unsigned long long)(input - (const char*)1) & ~0u);
+}
+
 /* input:  'it' points to checked char */
 /* output: 'it' points to unchecked char, may be to 'eof' */
 static inline void src_iter_step_(const char **current)

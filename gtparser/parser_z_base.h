@@ -47,7 +47,7 @@ struct src_iter_z {
 static inline void src_iter_z_init(struct src_iter_z *it, const char *input)
 {
 	it->current = input;
-	it->back_column = (unsigned)((unsigned long long)(input - (const char*)1) & ~0u);
+	it->back_column = src_iter_get_back_column_(input);
 	it->line = 1;
 }
 
