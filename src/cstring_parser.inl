@@ -8,8 +8,13 @@
 
 /* ENDPARAM           - <empty> or <, const char *const end> */
 /* ITER_NEXT(current) - src_iter_z_next_(current) or src_iter_next_(current, end) */
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 static enum GT_PARSE_CSTRING_ERR parse_cstring(unsigned *line, const char **current,
 	unsigned *back_column, size_t *removed, unsigned tab_size ENDPARAM)
+#else
+static enum GT_PARSE_CSTRING_ERR parse_cstring(unsigned *line, const char **current,
+	const char **line_ptr, unsigned *back_column, size_t *removed, unsigned tab_size ENDPARAM)
+#endif
 {
 	const char quote = src_iter_current_char_(*current);
 	while (ITER_NEXT(current)) {
@@ -102,7 +107,11 @@ switch_c:
 		}
 		if ('\0' == c)
 			return GT_PARSE_CSTRING_NULL_INSIDE_CSTRING; /* null character (with zero value) inside string is not allowed */
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 		src_iter_check_(line, back_column, *current, tab_size);
+#else
+		src_iter_check_(line, line_ptr, back_column, *current, tab_size);
+#endif
 	}
 	return GT_PARSE_CSTRING_UNTERMINATED; /* unterminated string */
 }

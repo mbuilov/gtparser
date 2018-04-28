@@ -19,6 +19,9 @@ extern "C" {
 struct src_iter {
 	const char *current;
 	const char *end;
+#ifndef GTPARSER_FLAT_MEMORY_MODEL
+	const char *line_ptr;
+#endif
 	unsigned back_column;
 	unsigned line;
 #ifdef __cplusplus
@@ -48,7 +51,11 @@ static inline struct src_iter *src_iter_init_(struct src_iter *it, const char *i
 {
 	it->current = input;
 	it->end = input;
-	it->back_column = src_iter_get_back_column_(input);
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+	src_iter_get_back_column_(input, &it->back_column);
+#else
+	src_iter_get_back_column_(input, &it->line_ptr, &it->back_column);
+#endif
 	it->line = 1;
 	return it;
 }
@@ -94,23 +101,39 @@ static inline int src_iter_next(struct src_iter *it)
 
 static inline void src_iter_process_tab(struct src_iter *it)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_process_tab_(&it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+#else
+	src_iter_process_tab_(it->line_ptr, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+#endif
 }
 
 static inline void src_iter_check_tab(struct src_iter *it)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_check_tab_(&it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+#else
+	src_iter_check_tab_(it->line_ptr, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+#endif
 }
 
 static inline void src_iter_inc_line(struct src_iter *it)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_inc_line_(&it->line, &it->back_column, it->current);
+#else
+	src_iter_inc_line_(&it->line, &it->line_ptr, &it->back_column, it->current);
+#endif
 }
 
 /* check current char */
 static inline void src_iter_check(struct src_iter *it)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_check_(&it->line, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+#else
+	src_iter_check_(&it->line, &it->line_ptr, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+#endif
 }
 
 /* get current char the 'it' points to ('it' must not point to 'eof') */
@@ -134,32 +157,56 @@ static inline char src_iter_char_or_eof(const struct src_iter *it)
 /* get column from start of the line */
 static inline unsigned src_iter_get_column(const struct src_iter *it)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	return src_iter_get_column_(it->current, it->back_column);
+#else
+	return src_iter_get_column_(it->current, it->line_ptr, it->back_column);
+#endif
 }
 
 static inline void src_iter_get_pos(const struct src_iter *it, struct src_pos *pos/*out*/)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_get_pos_(it->line, it->current, it->back_column, pos);
+#else
+	src_iter_get_pos_(it->line, it->current, it->line_ptr, it->back_column, pos);
+#endif
 }
 
 static inline struct src_pos src_iter_return_pos(const struct src_iter *it)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	return src_iter_return_pos_(it->line, it->current, it->back_column);
+#else
+	return src_iter_return_pos_(it->line, it->current, it->line_ptr, it->back_column);
+#endif
 }
 
 static inline void src_iter_save_pos(const struct src_iter *it, struct src_save_pos *save_pos/*out*/)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_save_pos_(it->line, it->current, it->back_column, save_pos);
+#else
+	src_iter_save_pos_(it->line, it->current, it->line_ptr, it->back_column, save_pos);
+#endif
 }
 
 static inline struct src_save_pos src_iter_return_save_pos(const struct src_iter *it)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	return src_iter_return_save_pos_(it->line, it->current, it->back_column);
+#else
+	return src_iter_return_save_pos_(it->line, it->current, it->line_ptr, it->back_column);
+#endif
 }
 
 static inline void src_iter_restore_pos(struct src_iter *it, const struct src_save_pos *save_pos/*in*/)
 {
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_restore_pos_(&it->line, &it->current, &it->back_column, save_pos);
+#else
+	src_iter_restore_pos_(&it->line, &it->current, &it->line_ptr, &it->back_column, save_pos);
+#endif
 }
 
 /* input:  'it' points to checked char (like comment beginning) */

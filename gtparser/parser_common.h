@@ -28,6 +28,9 @@ struct src_pos {
 
 struct src_save_pos {
 	const char *current;
+#ifndef GTPARSER_FLAT_MEMORY_MODEL
+	const char *line_ptr;
+#endif
 	unsigned back_column;
 	unsigned line;
 };
@@ -38,45 +41,124 @@ static inline int is_space(char c)
 }
 
 /* get initial value of 'back_column' */
-static inline unsigned src_iter_get_back_column_(const char *input)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline void src_iter_get_back_column_(
+	const char *input/*in*/,
+	unsigned *back_column/*out*/)
 {
-	return (unsigned)((unsigned long long)(input - (const char*)1) & ~0u);
+	/* compute difference with a pointer outside of allocated region, this is UB according to C standard... */
+	*back_column = (unsigned)((unsigned long long)(input - (const char*)1) & ~0u);
 }
+#else
+static inline void src_iter_get_back_column_(
+	const char *input/*in*/,
+	const char **line_ptr/*out*/,
+	unsigned *back_column/*out*/)
+{
+	*line_ptr = input;
+	*back_column = ~0u;
+}
+#endif
 
 /* input:  'it' points to checked char */
 /* output: 'it' points to unchecked char, may be to 'eof' */
-static inline void src_iter_step_(const char **current)
+static inline void src_iter_step_(const char **current/*in,out*/)
 {
 	(*current)++;
 }
 
-static inline void src_iter_process_tab_(unsigned *back_column, const char *current, unsigned tab_size)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline void src_iter_process_tab_(
+	unsigned *back_column/*in,out*/,
+	const char *current/*in*/,
+	unsigned tab_size)
 {
+	/* compute difference with a pointer outside of allocated region, this is UB according to C standard... */
 	unsigned d = (unsigned)((unsigned long long)(current - (const char*)0) & ~0u);
-	d = ~0u - (d - *back_column - 1); /* (*back_column - d) */
-	(*back_column) -= d % tab_size;
+	(*back_column) -= ((*back_column) - d) % tab_size;
 }
+#else
+static inline void src_iter_process_tab_(
+	const char *line_ptr/*in*/,
+	unsigned *back_column/*in,out*/,
+	const char *current/*in*/,
+	unsigned tab_size)
+{
+	unsigned d = (unsigned)((unsigned long long)(current - line_ptr) & ~0u);
+	(*back_column) -= ((*back_column) - d) % tab_size;
+}
+#endif
 
-static inline void src_iter_check_tab_(unsigned *back_column, const char *current, unsigned tab_size)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline void src_iter_check_tab_(
+	unsigned *back_column/*in,out*/,
+	const char *current/*in*/,
+	unsigned tab_size)
 {
 	if ('\t' == *current)
 		src_iter_process_tab_(back_column, current, tab_size);
 }
+#else
+static inline void src_iter_check_tab_(
+	const char *line_ptr/*in*/,
+	unsigned *back_column/*in,out*/,
+	const char *current/*in*/,
+	unsigned tab_size)
+{
+	if ('\t' == *current)
+		src_iter_process_tab_(line_ptr, back_column, current, tab_size);
+}
+#endif
 
-static inline void src_iter_inc_line_(unsigned *line, unsigned *back_column, const char *current)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline void src_iter_inc_line_(
+	unsigned *line/*in,out*/,
+	unsigned *back_column/*out*/,
+	const char *current/*in*/)
 {
 	(*line)++;
 	*back_column = (unsigned)((unsigned long long)(current - (const char*)0) & ~0u);
 }
+#else
+static inline void src_iter_inc_line_(
+	unsigned *line/*in,out*/,
+	const char **line_ptr/*out*/,
+	unsigned *back_column/*out*/,
+	const char *current/*in*/)
+{
+	(*line)++;
+	*line_ptr = current;
+	*back_column = 0;
+}
+#endif
 
 /* check current char */
-static inline void src_iter_check_(unsigned *line, unsigned *back_column, const char *current, unsigned tab_size)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline void src_iter_check_(
+	unsigned *line/*in,out*/,
+	unsigned *back_column/*in,out*/,
+	const char *current/*in*/,
+	unsigned tab_size)
 {
 	if ('\n' == *current)
 		src_iter_inc_line_(line, back_column, current);
 	else
 		src_iter_check_tab_(back_column, current, tab_size);
 }
+#else
+static inline void src_iter_check_(
+	unsigned *line/*in,out*/,
+	const char **line_ptr/*in,out*/,
+	unsigned *back_column/*in,out*/,
+	const char *current/*in*/,
+	unsigned tab_size)
+{
+	if ('\n' == *current)
+		src_iter_inc_line_(line, line_ptr, back_column, current);
+	else
+		src_iter_check_tab_(*line_ptr, back_column, current, tab_size);
+}
+#endif
 
 /* get current char the 'it' points to ('it' must not point to 'eof') */
 static inline char src_iter_current_char_(const char *current)
@@ -85,45 +167,110 @@ static inline char src_iter_current_char_(const char *current)
 }
 
 /* get column from start of the line */
-static inline unsigned src_iter_get_column_(const char *current, unsigned back_column)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline unsigned src_iter_get_column_(
+	const char *current, unsigned back_column)
 {
+	/* compute difference with a pointer outside of allocated region, this is UB according to C standard... */
 	return (unsigned)((unsigned long long)(current - (const char*)0) & ~0u) - back_column;
 }
+#else
+static inline unsigned src_iter_get_column_(
+	const char *current, const char *line_ptr, unsigned back_column)
+{
+	return (unsigned)((unsigned long long)(current - line_ptr) & ~0u) - back_column;
+}
+#endif
 
-static inline void src_iter_get_pos_(unsigned line, const char *current, unsigned back_column, struct src_pos *pos/*out*/)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline void src_iter_get_pos_(unsigned line, const char *current,
+	unsigned back_column, struct src_pos *pos/*out*/)
 {
 	pos->line = line;
 	pos->column = src_iter_get_column_(current, back_column);
 }
+#else
+static inline void src_iter_get_pos_(unsigned line, const char *current,
+	const char *line_ptr, unsigned back_column, struct src_pos *pos/*out*/)
+{
+	pos->line = line;
+	pos->column = src_iter_get_column_(current, line_ptr, back_column);
+}
+#endif
 
-static inline struct src_pos src_iter_return_pos_(unsigned line, const char *current, unsigned back_column)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline struct src_pos src_iter_return_pos_(
+	unsigned line, const char *current, unsigned back_column)
 {
 	struct src_pos pos;
 	src_iter_get_pos_(line, current, back_column, &pos);
 	return pos;
 }
+#else
+static inline struct src_pos src_iter_return_pos_(
+	unsigned line, const char *current, const char *line_ptr, unsigned back_column)
+{
+	struct src_pos pos;
+	src_iter_get_pos_(line, current, line_ptr, back_column, &pos);
+	return pos;
+}
+#endif
 
-static inline void src_iter_save_pos_(unsigned line, const char *current, unsigned back_column, struct src_save_pos *save_pos/*out*/)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline void src_iter_save_pos_(unsigned line, const char *current,
+	unsigned back_column, struct src_save_pos *save_pos/*out*/)
 {
 	save_pos->line = line;
 	save_pos->current = current;
 	save_pos->back_column = back_column;
 }
+#else
+static inline void src_iter_save_pos_(unsigned line, const char *current,
+	const char *line_ptr, unsigned back_column, struct src_save_pos *save_pos/*out*/)
+{
+	save_pos->line = line;
+	save_pos->current = current;
+	save_pos->line_ptr = line_ptr;
+	save_pos->back_column = back_column;
+}
+#endif
 
-static inline struct src_save_pos src_iter_return_save_pos_(unsigned line, const char *current, unsigned back_column)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline struct src_save_pos src_iter_return_save_pos_(
+	unsigned line, const char *current, unsigned back_column)
 {
 	struct src_save_pos save_pos;
 	src_iter_save_pos_(line, current, back_column, &save_pos);
 	return save_pos;
 }
+#else
+static inline struct src_save_pos src_iter_return_save_pos_(
+	unsigned line, const char *current, const char *line_ptr, unsigned back_column)
+{
+	struct src_save_pos save_pos;
+	src_iter_save_pos_(line, current, line_ptr, back_column, &save_pos);
+	return save_pos;
+}
+#endif
 
-static inline void src_iter_restore_pos_(unsigned *line, const char **current,
-	unsigned *back_column, const struct src_save_pos *save_pos/*in*/)
+#ifdef GTPARSER_FLAT_MEMORY_MODEL
+static inline void src_iter_restore_pos_(unsigned *line/*out*/, const char **current/*out*/,
+	unsigned *back_column/*out*/, const struct src_save_pos *save_pos/*in*/)
 {
 	*line = save_pos->line;
 	*current = save_pos->current;
 	*back_column = save_pos->back_column;
 }
+#else
+static inline void src_iter_restore_pos_(unsigned *line/*out*/, const char **current/*out*/,
+	const char **line_ptr/*out*/, unsigned *back_column/*out*/, const struct src_save_pos *save_pos/*in*/)
+{
+	*line = save_pos->line;
+	*current = save_pos->current;
+	*line_ptr = save_pos->line_ptr;
+	*back_column = save_pos->back_column;
+}
+#endif
 
 #ifdef __cplusplus
 }
