@@ -98,7 +98,7 @@ static inline int is_latin_letter_w_(wchar_t c)
 	return (x & ~32u) <= L'Z' - L'A';
 }
 
-static inline wchar_t latin_to_lower_w(wchar_t c)
+static inline wchar_t latin_letter_to_lower_w(wchar_t c)
 {
 #ifdef ASSERT
 	ASSERT(is_latin_letter_w_(c));
@@ -109,7 +109,7 @@ static inline wchar_t latin_to_lower_w(wchar_t c)
 	}
 }
 
-static inline wchar_t latin_to_upper_w(wchar_t c)
+static inline wchar_t latin_letter_to_upper_w(wchar_t c)
 {
 #ifdef ASSERT
 	ASSERT(is_latin_letter_w_(c));
@@ -118,6 +118,22 @@ static inline wchar_t latin_to_upper_w(wchar_t c)
 		unsigned x = (unsigned)c;
 		return (wchar_t)(x & ~32u);
 	}
+}
+
+static inline wchar_t latin_to_lower_w(wchar_t c)
+{
+	unsigned x = 32u | (unsigned)c;
+	if (x < L'a')
+		return c;
+	return x <= L'z' ? (wchar_t)x : c;
+}
+
+static inline wchar_t latin_to_upper(wchar_t c)
+{
+	unsigned x = ~32u & (unsigned)c;
+	if (x < L'A')
+		return c;
+	return x <= L'Z' ? (wchar_t)x : c;
 }
 
 /* name must be started with a latin letter or '_' */

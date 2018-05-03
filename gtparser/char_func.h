@@ -95,7 +95,7 @@ static inline int is_latin_letter_(char c)
 	return (x & ~32u) <= 'Z' - 'A';
 }
 
-static inline char latin_to_lower(char c)
+static inline char latin_letter_to_lower(char c)
 {
 #ifdef ASSERT
 	ASSERT(is_latin_letter_(c));
@@ -106,7 +106,7 @@ static inline char latin_to_lower(char c)
 	}
 }
 
-static inline char latin_to_upper(char c)
+static inline char latin_letter_to_upper(char c)
 {
 #ifdef ASSERT
 	ASSERT(is_latin_letter_(c));
@@ -115,6 +115,22 @@ static inline char latin_to_upper(char c)
 		unsigned x = (unsigned char)c;
 		return (char)(unsigned char)(x & ~32u);
 	}
+}
+
+static inline char latin_to_lower(char c)
+{
+	unsigned x = 32u | (unsigned char)c;
+	if (x < 'a')
+		return c;
+	return x <= 'z' ? (char)(unsigned char)x : c;
+}
+
+static inline char latin_to_upper(char c)
+{
+	unsigned x = ~32u & (unsigned char)c;
+	if (x < 'A')
+		return c;
+	return x <= 'Z' ? (char)(unsigned char)x : c;
 }
 
 /* name must be started with a latin letter or '_' */
