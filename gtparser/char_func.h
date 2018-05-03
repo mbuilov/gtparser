@@ -95,6 +95,28 @@ static inline int is_latin_letter_(char c)
 	return (x & ~32u) <= 'Z' - 'A';
 }
 
+static inline char latin_to_lower(char c)
+{
+#ifdef ASSERT
+	ASSERT(is_latin_letter_(c));
+#endif
+	{
+		unsigned x = (unsigned char)c;
+		return (char)(unsigned char)(x | 32u);
+	}
+}
+
+static inline char latin_to_upper(char c)
+{
+#ifdef ASSERT
+	ASSERT(is_latin_letter_(c));
+#endif
+	{
+		unsigned x = (unsigned char)c;
+		return (char)(unsigned char)(x & ~32u);
+	}
+}
+
 /* name must be started with a latin letter or '_' */
 static inline int is_first_name_(char c)
 {
