@@ -98,6 +98,7 @@ static inline int is_latin_letter_w_(wchar_t c)
 	return (x & ~32u) <= L'Z' - L'A';
 }
 
+/* convert [A-Z] -> [a-z] */
 static inline wchar_t latin_letter_to_lower_w(wchar_t c)
 {
 #ifdef ASSERT
@@ -109,6 +110,7 @@ static inline wchar_t latin_letter_to_lower_w(wchar_t c)
 	}
 }
 
+/* convert [a-z] -> [A-Z] */
 static inline wchar_t latin_letter_to_upper_w(wchar_t c)
 {
 #ifdef ASSERT

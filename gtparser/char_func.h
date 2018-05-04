@@ -95,6 +95,7 @@ static inline int is_latin_letter_(char c)
 	return (x & ~32u) <= 'Z' - 'A';
 }
 
+/* convert [A-Z] -> [a-z] */
 static inline char latin_letter_to_lower(char c)
 {
 #ifdef ASSERT
@@ -106,6 +107,7 @@ static inline char latin_letter_to_lower(char c)
 	}
 }
 
+/* convert [a-z] -> [A-Z] */
 static inline char latin_letter_to_upper(char c)
 {
 #ifdef ASSERT
