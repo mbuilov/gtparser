@@ -130,7 +130,7 @@ static inline wchar_t latin_to_lower_w(wchar_t c)
 	return x <= L'z' ? (wchar_t)x : c;
 }
 
-static inline wchar_t latin_to_upper(wchar_t c)
+static inline wchar_t latin_to_upper_w(wchar_t c)
 {
 	unsigned x = ~32u & (unsigned)c;
 	if (x < L'A')
