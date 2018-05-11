@@ -35,7 +35,7 @@ static inline int is_next_name(char c)
 static inline unsigned hex_char_value(char c)
 {
 	unsigned x = (unsigned char)gt_is_next_name_lookup_table[(unsigned char)c];
-#ifdef GTPARSER_NO_UINT_OVERFLOW
+#ifdef UBSAN_UNSIGNED_OVERFLOW
 	if (x < 10u)
 		x += (~0u - 10u) + 1u;
 	else
