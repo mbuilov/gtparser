@@ -130,6 +130,8 @@ GTPARSER_EXPORTS void gt_copy_cstring(char dst[]/*out*/, const char *begin, cons
 					c = (char)n; /* < 256 */
 					break;
 				}
+				default:
+					break;
 			}
 		}
 		ASSERT(c); /* zero character inside string is not allowed */
