@@ -38,9 +38,9 @@ struct src_iter_z {
 	inline unsigned get_column() const;
 	inline void get_pos(struct src_pos &pos/*out*/) const;
 	inline struct src_pos get_pos() const;
-	inline void save_pos(struct src_save_pos &save_pos/*out*/) const;
+	inline void save_pos(struct src_save_pos &save_pos_/*out*/) const;
 	inline struct src_save_pos save_pos() const;
-	inline void restore_pos(const struct src_save_pos &save_pos);
+	inline void restore_pos(const struct src_save_pos &save_pos_);
 	inline void skip_comment();
 	inline char read_non_space_skip_comments(char comment/*#*/);
 	inline char read_non_space_stop_eol();
@@ -288,9 +288,9 @@ inline struct src_pos src_iter_z::get_pos() const
 	return src_iter_z_return_pos(this);
 }
 
-inline void src_iter_z::save_pos(struct src_save_pos &save_pos/*out*/) const
+inline void src_iter_z::save_pos(struct src_save_pos &save_pos_/*out*/) const
 {
-	src_iter_z_save_pos(this, &save_pos/*out*/);
+	src_iter_z_save_pos(this, &save_pos_/*out*/);
 }
 
 inline struct src_save_pos src_iter_z::save_pos() const
@@ -298,9 +298,9 @@ inline struct src_save_pos src_iter_z::save_pos() const
 	return src_iter_z_return_save_pos(this);
 }
 
-inline void src_iter_z::restore_pos(const struct src_save_pos &save_pos)
+inline void src_iter_z::restore_pos(const struct src_save_pos &save_pos_)
 {
-	src_iter_z_restore_pos(this, &save_pos/*in*/);
+	src_iter_z_restore_pos(this, &save_pos_/*in*/);
 }
 
 inline void src_iter_z::skip_comment()
