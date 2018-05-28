@@ -75,7 +75,7 @@ A_At(begin, A_In_reads_to_ptr(end))
 A_At(end, A_Notnull)
 A_At(removed, A_Pre_satisfies(removed <= end - begin))
 #endif
-GTPARSER_EXPORTS void gt_copy_cstring(char A_Restrict dst[]/*out*/, const char *A_Restrict begin, const char *end, size_t removed);
+GTPARSER_EXPORTS void gt_copy_cstring(char *A_Restrict dst/*out*/, const char *A_Restrict begin, const char *end, size_t removed);
 
 #ifndef SAL_DEFS_H_INCLUDED
 #undef A_Restrict

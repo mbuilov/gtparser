@@ -6,10 +6,15 @@
 
 /* parser_base.c */
 
-#include "gtparser/gtparser_config.h"
+#include "gtparser/gtparser_system.h"
 #include "gtparser/parser_base.h"
 
+#ifndef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+#define A_Use_decl_annotations
+#endif
+
 /* it points to checked char, likely '#' */
+A_Use_decl_annotations
 GTPARSER_EXPORTS void gt_skip_rest_of_line(struct src_iter *it)
 {
 	const char *s = it->current;
@@ -29,6 +34,7 @@ GTPARSER_EXPORTS void gt_skip_rest_of_line(struct src_iter *it)
 }
 
 /* it points to unchecked char or to eof */
+A_Use_decl_annotations
 GTPARSER_EXPORTS char gt_read_non_space_skip_comments(struct src_iter *it, char comment)
 {
 	while (!src_iter_eof(it)) {
@@ -46,6 +52,7 @@ GTPARSER_EXPORTS char gt_read_non_space_skip_comments(struct src_iter *it, char 
 }
 
 /* it points to unchecked char or to eof */
+A_Use_decl_annotations
 GTPARSER_EXPORTS char gt_read_non_space_stop_eol(struct src_iter *it)
 {
 	while (!src_iter_eof(it)) {

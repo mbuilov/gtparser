@@ -6,11 +6,15 @@
 
 /* cstring_parser.c */
 
-#include "gtparser/gtparser_config.h"
+#include "gtparser/gtparser_system.h"
 #include "gtparser/cstring_parser.h"
 #include "gtparser/parser_base.h"
 #include "gtparser/parser_z_base.h"
 #include "gtparser/char_func.h"
+
+#ifndef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+#define A_Use_decl_annotations
+#endif
 
 #if defined(__GNUC__) && (__GNUC__ >= 7)
 #define FALLTHROUGH __attribute__ ((fallthrough));
@@ -30,6 +34,7 @@
 #undef ENDPARAM
 #undef ITER_NEXT
 
+A_Use_decl_annotations
 GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/)
 {
 	const char *current = it->current;
@@ -53,6 +58,7 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it,
 #undef ENDPARAM
 #undef ITER_NEXT
 
+A_Use_decl_annotations
 GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z *it, size_t *removed/*out*/)
 {
 	const char *current = it->current;
@@ -69,7 +75,8 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z 
 	return r;
 }
 
-GTPARSER_EXPORTS void gt_copy_cstring(char dst[]/*out*/, const char *begin, const char *end, size_t removed)
+A_Use_decl_annotations
+GTPARSER_EXPORTS void gt_copy_cstring(char *dst/*out*/, const char *begin, const char *end, size_t removed)
 {
 	/* copy char-by-char unescaping escape sequences */
 	while (removed) {

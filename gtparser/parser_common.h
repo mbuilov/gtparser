@@ -35,6 +35,9 @@ struct src_save_pos {
 	unsigned line;
 };
 
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+#endif
 static inline int is_space(char c)
 {
 	return (unsigned char)c <= ' ';
@@ -42,6 +45,11 @@ static inline int is_space(char c)
 
 /* get initial value of 'back_column' */
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(input, A_In)
+A_At(back_column, A_Out)
+#endif
 static inline void src_iter_get_back_column_(
 	const char *input/*in*/,
 	unsigned *back_column/*out*/)
@@ -50,24 +58,39 @@ static inline void src_iter_get_back_column_(
 	*back_column = (unsigned)((unsigned long long)(input - (const char*)1) & ~0u);
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(input, A_In)
+A_At(line_ptr, A_Out)
+A_At(back_column, A_Out)
+#endif
 static inline void src_iter_get_back_column_(
 	const char *input/*in*/,
 	const char **line_ptr/*out*/,
 	unsigned *back_column/*out*/)
 {
 	*line_ptr = input;
-	*back_column = ~0u;
+	*back_column = (unsigned)-1;
 }
 #endif
 
 /* input:  'it' points to checked char */
 /* output: 'it' points to unchecked char, may be to 'eof' */
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(current, A_Inout)
+#endif
 static inline void src_iter_step_(const char **current/*in,out*/)
 {
 	(*current)++;
 }
 
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(back_column, A_Inout)
+A_At(current, A_In)
+#endif
 static inline void src_iter_process_tab_(
 	unsigned *back_column/*in,out*/,
 	const char *current/*in*/,
@@ -78,6 +101,12 @@ static inline void src_iter_process_tab_(
 	(*back_column) -= ((*back_column) - d) % tab_size;
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(line_ptr, A_In)
+A_At(back_column, A_Inout)
+A_At(current, A_In)
+#endif
 static inline void src_iter_process_tab_(
 	const char *line_ptr/*in*/,
 	unsigned *back_column/*in,out*/,
@@ -90,6 +119,11 @@ static inline void src_iter_process_tab_(
 #endif
 
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(back_column, A_Inout)
+A_At(current, A_In)
+#endif
 static inline void src_iter_check_tab_(
 	unsigned *back_column/*in,out*/,
 	const char *current/*in*/,
@@ -99,6 +133,12 @@ static inline void src_iter_check_tab_(
 		src_iter_process_tab_(back_column, current, tab_size);
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(line_ptr, A_In)
+A_At(back_column, A_Inout)
+A_At(current, A_In)
+#endif
 static inline void src_iter_check_tab_(
 	const char *line_ptr/*in*/,
 	unsigned *back_column/*in,out*/,
@@ -111,6 +151,12 @@ static inline void src_iter_check_tab_(
 #endif
 
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(line, A_Inout)
+A_At(back_column, A_Out)
+A_At(current, A_In)
+#endif
 static inline void src_iter_inc_line_(
 	unsigned *line/*in,out*/,
 	unsigned *back_column/*out*/,
@@ -120,6 +166,13 @@ static inline void src_iter_inc_line_(
 	*back_column = (unsigned)((unsigned long long)(current - (const char*)0) & ~0u);
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(line, A_Inout)
+A_At(line_ptr, A_Out)
+A_At(back_column, A_Out)
+A_At(current, A_In)
+#endif
 static inline void src_iter_inc_line_(
 	unsigned *line/*in,out*/,
 	const char **line_ptr/*out*/,
@@ -134,6 +187,12 @@ static inline void src_iter_inc_line_(
 
 /* check current char */
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(line, A_Inout)
+A_At(back_column, A_Inout)
+A_At(current, A_In)
+#endif
 static inline void src_iter_check_(
 	unsigned *line/*in,out*/,
 	unsigned *back_column/*in,out*/,
@@ -146,6 +205,13 @@ static inline void src_iter_check_(
 		src_iter_check_tab_(back_column, current, tab_size);
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(line, A_Inout)
+A_At(line_ptr, A_Inout)
+A_At(back_column, A_Inout)
+A_At(current, A_In)
+#endif
 static inline void src_iter_check_(
 	unsigned *line/*in,out*/,
 	const char **line_ptr/*in,out*/,
@@ -161,6 +227,11 @@ static inline void src_iter_check_(
 #endif
 
 /* get current char the 'it' points to ('it' must not point to 'eof') */
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_At(current, A_In)
+#endif
 static inline char src_iter_current_char_(const char *current)
 {
 	return *current;
@@ -168,6 +239,11 @@ static inline char src_iter_current_char_(const char *current)
 
 /* get column from start of the line */
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_At(current, A_In)
+#endif
 static inline unsigned src_iter_get_column_(
 	const char *current, unsigned back_column)
 {
@@ -175,6 +251,12 @@ static inline unsigned src_iter_get_column_(
 	return (unsigned)((unsigned long long)(current - (const char*)0) & ~0u) - back_column;
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_At(current, A_In)
+A_At(line_ptr, A_In)
+#endif
 static inline unsigned src_iter_get_column_(
 	const char *current, const char *line_ptr, unsigned back_column)
 {
@@ -183,6 +265,11 @@ static inline unsigned src_iter_get_column_(
 #endif
 
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(current, A_In)
+A_At(pos, A_Out)
+#endif
 static inline void src_iter_get_pos_(unsigned line, const char *current,
 	unsigned back_column, struct src_pos *pos/*out*/)
 {
@@ -190,6 +277,12 @@ static inline void src_iter_get_pos_(unsigned line, const char *current,
 	pos->column = src_iter_get_column_(current, back_column);
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(current, A_In)
+A_At(line_ptr, A_In)
+A_At(pos, A_Out)
+#endif
 static inline void src_iter_get_pos_(unsigned line, const char *current,
 	const char *line_ptr, unsigned back_column, struct src_pos *pos/*out*/)
 {
@@ -199,6 +292,11 @@ static inline void src_iter_get_pos_(unsigned line, const char *current,
 #endif
 
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_At(current, A_In)
+#endif
 static inline struct src_pos src_iter_return_pos_(
 	unsigned line, const char *current, unsigned back_column)
 {
@@ -207,6 +305,12 @@ static inline struct src_pos src_iter_return_pos_(
 	return pos;
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_At(current, A_In)
+A_At(line_ptr, A_In)
+#endif
 static inline struct src_pos src_iter_return_pos_(
 	unsigned line, const char *current, const char *line_ptr, unsigned back_column)
 {
@@ -217,6 +321,11 @@ static inline struct src_pos src_iter_return_pos_(
 #endif
 
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(current, A_In)
+A_At(save_pos, A_Out)
+#endif
 static inline void src_iter_save_pos_(unsigned line, const char *current,
 	unsigned back_column, struct src_save_pos *save_pos/*out*/)
 {
@@ -225,6 +334,12 @@ static inline void src_iter_save_pos_(unsigned line, const char *current,
 	save_pos->back_column = back_column;
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(current, A_In)
+A_At(line_ptr, A_In)
+A_At(save_pos, A_Out)
+#endif
 static inline void src_iter_save_pos_(unsigned line, const char *current,
 	const char *line_ptr, unsigned back_column, struct src_save_pos *save_pos/*out*/)
 {
@@ -236,6 +351,11 @@ static inline void src_iter_save_pos_(unsigned line, const char *current,
 #endif
 
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_At(current, A_In)
+#endif
 static inline struct src_save_pos src_iter_return_save_pos_(
 	unsigned line, const char *current, unsigned back_column)
 {
@@ -244,6 +364,12 @@ static inline struct src_save_pos src_iter_return_save_pos_(
 	return save_pos;
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_At(current, A_In)
+A_At(line_ptr, A_In)
+#endif
 static inline struct src_save_pos src_iter_return_save_pos_(
 	unsigned line, const char *current, const char *line_ptr, unsigned back_column)
 {
@@ -254,6 +380,13 @@ static inline struct src_save_pos src_iter_return_save_pos_(
 #endif
 
 #ifdef GTPARSER_FLAT_MEMORY_MODEL
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(line, A_Out)
+A_At(current, A_Out)
+A_At(back_column, A_Out)
+A_At(save_pos, A_In)
+#endif
 static inline void src_iter_restore_pos_(unsigned *line/*out*/, const char **current/*out*/,
 	unsigned *back_column/*out*/, const struct src_save_pos *save_pos/*in*/)
 {
@@ -262,6 +395,14 @@ static inline void src_iter_restore_pos_(unsigned *line/*out*/, const char **cur
 	*back_column = save_pos->back_column;
 }
 #else
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(line, A_Out)
+A_At(current, A_Out)
+A_At(line_ptr, A_Out)
+A_At(back_column, A_Out)
+A_At(save_pos, A_In)
+#endif
 static inline void src_iter_restore_pos_(unsigned *line/*out*/, const char **current/*out*/,
 	const char **line_ptr/*out*/, unsigned *back_column/*out*/, const struct src_save_pos *save_pos/*in*/)
 {

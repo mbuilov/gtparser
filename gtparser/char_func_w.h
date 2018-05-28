@@ -91,7 +91,7 @@ static inline int is_latin_letter_w_(wchar_t c)
 	unsigned x = (unsigned)c;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	if (x < L'A')
-		x += (~0u - L'A') + 1u;
+		x += ((unsigned)-1 - L'A') + 1u;
 	else
 #endif
 		x -= L'A';
@@ -150,7 +150,7 @@ static inline unsigned digit_value_w(wchar_t c)
 	unsigned x = (unsigned)c;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	if (x < L'0')
-		x += (~0u - L'0') + 1u;
+		x += ((unsigned)-1 - L'0') + 1u;
 	else
 #endif
 		x -= L'0';
@@ -180,7 +180,7 @@ static inline unsigned hex_char_value_w_(wchar_t c)
 		const unsigned d = L'A' - L'0';
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 		if (x < d)
-			x += (~0u - d) + 1u;
+			x += ((unsigned)-1 - d) + 1u;
 		else
 #endif
 			x -= d;

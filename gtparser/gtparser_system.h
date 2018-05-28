@@ -1,5 +1,5 @@
-#ifndef GTPARSER_CONFIG_H_INCLUDED
-#define GTPARSER_CONFIG_H_INCLUDED
+#ifndef GTPARSER_SYSTEM_H_INCLUDED
+#define GTPARSER_SYSTEM_H_INCLUDED
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
@@ -7,9 +7,9 @@
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
-/* gtparser_config.h */
+/* gtparser_system.h */
 
-/* define external functions needed to build gtparser library */
+/* define external system functions needed to build gtparser library */
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -39,4 +39,4 @@
 #define VSNPRINTF(buf,sz,format,ap) vsnprintf(buf,sz,format,ap)
 #endif
 
-#endif /* GTPARSER_CONFIG_H_INCLUDED */
+#endif /* GTPARSER_SYSTEM_H_INCLUDED */

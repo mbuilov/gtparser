@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 GTPARSER_EXPORTS
-extern const char gt_is_next_name_lookup_table[1u + (unsigned char)~(unsigned char)0u];
+extern const char gt_is_next_name_lookup_table[1u + (unsigned char)-1];
 
 /* check if c is in [_a-zA-Z] */
 static inline int is_first_name(char c)
@@ -37,7 +37,7 @@ static inline unsigned hex_char_value(char c)
 	unsigned x = (unsigned char)gt_is_next_name_lookup_table[(unsigned char)c];
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	if (x < 10u)
-		x += (~0u - 10u) + 1u;
+		x += ((unsigned)-1 - 10u) + 1u;
 	else
 #endif
 		x -= 10u;

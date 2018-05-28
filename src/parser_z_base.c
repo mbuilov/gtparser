@@ -6,10 +6,15 @@
 
 /* parser_z_base.c */
 
-#include "gtparser/gtparser_config.h"
+#include "gtparser/gtparser_system.h"
 #include "gtparser/parser_z_base.h"
 
+#ifndef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+#define A_Use_decl_annotations
+#endif
+
 /* it points to checked char, likely '#' */
+A_Use_decl_annotations
 GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *it)
 {
 	const char *s = it->current;
@@ -28,6 +33,7 @@ GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *it)
 }
 
 /* it points to unchecked char or to '\0' */
+A_Use_decl_annotations
 GTPARSER_EXPORTS char gt_read_non_space_skip_comments_z(struct src_iter_z *it, char comment)
 {
 	while (!src_iter_z_eof(it)) {
@@ -45,6 +51,7 @@ GTPARSER_EXPORTS char gt_read_non_space_skip_comments_z(struct src_iter_z *it, c
 }
 
 /* it points to unchecked char or to '\0' */
+A_Use_decl_annotations
 GTPARSER_EXPORTS char gt_read_non_space_stop_eol_z(struct src_iter_z *it)
 {
 	while (!src_iter_z_eof(it)) {

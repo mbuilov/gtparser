@@ -88,7 +88,7 @@ static int test3(void)
 			return 0;
 		}
 		if (removed != 3) {
-			fprintf(stderr, "wrong count of removed characters in test string \"%s\" -> %u\n", src, 0u + (unsigned)(removed & ~0u));
+			fprintf(stderr, "wrong count of removed characters in test string \"%s\" -> %u\n", src, (unsigned)(removed & ~0u));
 			return 0;
 		}
 		if (src + sizeof(src) - 2 != it.current) {
@@ -129,7 +129,7 @@ static int test4(void)
 			return 0;
 		}
 		if (removed != 3) {
-			fprintf(stderr, "wrong count of removed characters in test string \"%s\" -> %u\n", src, 0u + (unsigned)(removed & ~0u));
+			fprintf(stderr, "wrong count of removed characters in test string \"%s\" -> %u\n", src, (unsigned)(removed & ~0u));
 			return 0;
 		}
 		if (src + sizeof(src) - 2 != it.current) {
@@ -170,7 +170,7 @@ static int test5(void)
 			return 0;
 		}
 		if (removed != 3) {
-			fprintf(stderr, "wrong count of removed characters in test string \"%s\" -> %u\n", src, 0u + (unsigned)(removed & ~0u));
+			fprintf(stderr, "wrong count of removed characters in test string \"%s\" -> %u\n", src, (unsigned)(removed & ~0u));
 			return 0;
 		}
 		if (src + sizeof(src) - 2 != it.current) {
@@ -210,7 +210,7 @@ static int test6(void)
 			return 0;
 		}
 		if (removed != 11) {
-			fprintf(stderr, "wrong count of removed characters in test string \"%s\" -> %u\n", src, 0u + (unsigned)(removed & ~0u));
+			fprintf(stderr, "wrong count of removed characters in test string \"%s\" -> %u\n", src, (unsigned)(removed & ~0u));
 			return 0;
 		}
 		if (src + sizeof(src) - 2 != it.current) {

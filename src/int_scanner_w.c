@@ -22,11 +22,11 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w(const wchar_t *s/*<end*/, const w
 		unsigned x = digit_value_w(*s);
 		if (x > 9)
 			break;
-		if (n > ~0u/10)
+		if (n > (unsigned)-1/10)
 			return NULL; /* integer overflow */
 		n *= 10;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
-		if (n > ~0u - x)
+		if (n > (unsigned)-1 - x)
 			return NULL; /* integer overflow */
 #endif
 		n += x;
@@ -72,7 +72,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w(const wchar_t *s/*<end*/, const wc
 		unsigned x = hex_char_value_w_(*s);
 		if (x > 15)
 			break;
-		if (n > (~0u >> 4))
+		if (n > ((unsigned)-1 >> 4))
 			return NULL; /* integer overflow */
 		n = (n << 4) + x;
 	}
@@ -104,11 +104,11 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w_z(const wchar_t *s/*'\0'-terminat
 		unsigned x = digit_value_w(*++s);
 		if (x > 9)
 			break;
-		if (n > ~0u/10)
+		if (n > (unsigned)-1/10)
 			return NULL; /* integer overflow */
 		n *= 10;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
-		if (n > ~0u - x)
+		if (n > (unsigned)-1 - x)
 			return NULL; /* integer overflow */
 #endif
 		n += x;
@@ -154,7 +154,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w_z(const wchar_t *s/*'\0'-terminate
 		unsigned x = hex_char_value_w_(*++s);
 		if (x > 15)
 			break;
-		if (n > (~0u >> 4))
+		if (n > ((unsigned)-1 >> 4))
 			return NULL; /* integer overflow */
 		n = (n << 4) + x;
 	}

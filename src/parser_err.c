@@ -6,16 +6,33 @@
 
 /* parser_err.c */
 
-#include "gtparser/gtparser_config.h"
+#include "gtparser/gtparser_system.h"
 #include "gtparser/parser_err.h"
 
 #define PE_MAX_OF(a,b) ((a)>(b)?(a):(b))
-#define parse_error_at "parse error at "
-#define pe_reserve1 sizeof(parse_error_at "(4294967295:4294967295):") /* note: take into account terminating '\0' in string constant */
-#define pe_reserve2 sizeof(parse_error_at "line 4294967295:")         /* note: take into account terminating '\0' in string constant */
-#define pe_reserve3 sizeof(parse_error_at "char 4294967295:")         /* note: take into account terminating '\0' in string constant */
+
+#ifndef GTPARSER_ERROR_AT
+#define GTPARSER_ERROR_AT "parse error at "
+#endif
+
+#ifndef GTPARSER_ERROR_LINE
+#define GTPARSER_ERROR_LINE "line"
+#endif
+
+#ifndef GTPARSER_ERROR_COLUMN
+#define GTPARSER_ERROR_COLUMN "char"
+#endif
+
+#define pe_reserve1 sizeof(GTPARSER_ERROR_AT "(4294967295:4294967295):")           /* note: take into account terminating '\0' */
+#define pe_reserve2 sizeof(GTPARSER_ERROR_AT GTPARSER_ERROR_LINE   " 4294967295:") /* note: take into account terminating '\0' */
+#define pe_reserve3 sizeof(GTPARSER_ERROR_AT GTPARSER_ERROR_COLUMN " 4294967295:") /* note: take into account terminating '\0' */
 #define PE_RESERVE (PE_MAX_OF(pe_reserve1, PE_MAX_OF(pe_reserve2, pe_reserve3)))
 
+#ifndef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+#define A_Use_decl_annotations
+#endif
+
+A_Use_decl_annotations
 GTPARSER_EXPORTS char *gt_parser_err_reserve(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/)
 {
 	char *buf = err_buf;
@@ -30,6 +47,7 @@ GTPARSER_EXPORTS char *gt_parser_err_reserve(char err_buf[], size_t err_buf_size
 	return buf;
 }
 
+A_Use_decl_annotations
 GTPARSER_EXPORTS const char *gt_parser_err_prepend_at(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/,
 	const char *filename/*NULL?,'\0'-terminated*/, const char *err, unsigned line, unsigned column)
 {
@@ -51,9 +69,9 @@ GTPARSER_EXPORTS const char *gt_parser_err_prepend_at(char err_buf[], size_t err
 		{
 			/* buf has at least one byte free before err_buf_end - guaranteed by gt_parser_err_reserve() */
 			int printed =
-				!line   ? SPRINTF(err_buf_tail, parse_error_at "char %u:", column & 4294967295u) :
-				!column ? SPRINTF(err_buf_tail, parse_error_at "line %u:", line & 4294967295u) :
-				          SPRINTF(err_buf_tail, parse_error_at "(%u:%u):", line & 4294967295u, column & 4294967295u);
+				!line   ? SPRINTF(err_buf_tail, GTPARSER_ERROR_AT "char %u:", column & 4294967295u) :
+				!column ? SPRINTF(err_buf_tail, GTPARSER_ERROR_AT "line %u:", line & 4294967295u) :
+				          SPRINTF(err_buf_tail, GTPARSER_ERROR_AT "(%u:%u):", line & 4294967295u, column & 4294967295u);
 			err_buf_tail[printed++] = ' '; /* eat one byte reserved by '\0' in PE_RESERVE */
 			if (err != buf) {
 				char *dst = err_buf_tail + printed; /* (dst < err_buf + err_buf_size) because (err_buf_size > PE_RESERVE) */
@@ -80,6 +98,7 @@ GTPARSER_EXPORTS const char *gt_parser_err_prepend_at(char err_buf[], size_t err
 	return err;
 }
 
+A_Use_decl_annotations
 GTPARSER_EXPORTS char *gt_parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count)
 {
 	size_t buf_size = (size_t)(end - buf);
@@ -89,15 +108,13 @@ GTPARSER_EXPORTS char *gt_parser_err_print_chars(char *buf/*<=end*/, const char 
 	return buf + count;
 }
 
+A_Use_decl_annotations
 GTPARSER_EXPORTS char *gt_parser_err_print_string(char *buf/*<=end*/, const char *const end, const char *string/*'\0'-terminated*/)
 {
 	return gt_parser_err_print_chars(buf, end, string, STRLEN(string));
 }
 
-#if (defined(__GNUC__) && (__GNUC__ > 3 || (3 == __GNUC__ && __GNUC_MINOR__ >= 1))) || \
-    (defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 8)))
-__attribute__ ((format(printf, 3, 4)))
-#elif defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
+#if !defined(SAL_DEFS_H_INCLUDED) && defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
 _At_(format, _Printf_format_string_)
 #endif
 GTPARSER_EXPORTS char *gt_parser_err_print(char *buf/*<=end*/, const char *const end, const char *format/*'\0'-terminated*/, ...)

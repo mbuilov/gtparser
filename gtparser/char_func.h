@@ -88,7 +88,7 @@ static inline int is_latin_letter_(char c)
 	unsigned x = (unsigned char)c;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	if (x < 'A')
-		x += (~0u - 'A') + 1u;
+		x += ((unsigned)-1 - 'A') + 1u;
 	else
 #endif
 		x -= 'A';
@@ -147,7 +147,7 @@ static inline unsigned digit_value(char c)
 	unsigned x = (unsigned char)c;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	if (x < '0')
-		x += (~0u - '0') + 1u;
+		x += ((unsigned)-1 - '0') + 1u;
 	else
 #endif
 		x -= '0';
@@ -177,7 +177,7 @@ static inline unsigned hex_char_value_(char c)
 		const unsigned d = 'A' - '0';
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 		if (x < d)
-			x += (~0u - d) + 1u;
+			x += ((unsigned)-1 - d) + 1u;
 		else
 #endif
 			x -= d;
