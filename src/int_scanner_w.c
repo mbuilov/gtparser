@@ -14,7 +14,12 @@
 #define NULL ((const wchar_t*)0)
 #endif
 
+#ifndef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+#define A_Use_decl_annotations
+#endif
+
 /* s points to [0-9] */
+A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned *number/*out*/)
 {
 	unsigned n = digit_value_w(*s);
@@ -40,6 +45,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w(const wchar_t *s/*<end*/, const w
 }
 
 /* s points to [0-9] */
+A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned INT64_TYPE *number/*out*/)
 {
 	unsigned INT64_TYPE n = digit_value_w(*s);
@@ -65,6 +71,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w(const wchar_t *s/*<end*/, const
 }
 
 /* s points to [0-9a-fA-F] */
+A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned *number/*out*/)
 {
 	unsigned n = hex_char_value_w_(*s);
@@ -81,6 +88,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w(const wchar_t *s/*<end*/, const wc
 }
 
 /* s points to [0-9a-fA-F] */
+A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex64_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned INT64_TYPE *number/*out*/)
 {
 	unsigned INT64_TYPE n = hex_char_value_w_(*s);
@@ -97,6 +105,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_hex64_w(const wchar_t *s/*<end*/, const 
 }
 
 /* s points to [0-9] */
+A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w_z(const wchar_t *s/*'\0'-terminated*/, unsigned *number/*out*/)
 {
 	unsigned n = digit_value_w(*s);
@@ -122,6 +131,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w_z(const wchar_t *s/*'\0'-terminat
 }
 
 /* s points to [0-9] */
+A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w_z(const wchar_t *s/*'\0'-terminated*/, unsigned INT64_TYPE *number/*out*/)
 {
 	unsigned INT64_TYPE n = digit_value_w(*s);
@@ -147,6 +157,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w_z(const wchar_t *s/*'\0'-termin
 }
 
 /* s points to [0-9a-fA-F] */
+A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w_z(const wchar_t *s/*'\0'-terminated*/, unsigned *number/*out*/)
 {
 	unsigned n = hex_char_value_w_(*s);
@@ -163,6 +174,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w_z(const wchar_t *s/*'\0'-terminate
 }
 
 /* s points to [0-9a-fA-F] */
+A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex64_w_z(const wchar_t *s/*'\0'-terminated*/, unsigned INT64_TYPE *number/*out*/)
 {
 	unsigned INT64_TYPE n = hex_char_value_w_(*s);

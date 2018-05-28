@@ -14,6 +14,7 @@
 
 #ifndef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 #define A_Use_decl_annotations
+#define A_Restrict
 #endif
 
 #if defined(__GNUC__) && (__GNUC__ >= 7)
@@ -76,7 +77,7 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z 
 }
 
 A_Use_decl_annotations
-GTPARSER_EXPORTS void gt_copy_cstring(char *dst/*out*/, const char *begin, const char *end, size_t removed)
+GTPARSER_EXPORTS void gt_copy_cstring(char *A_Restrict dst/*out*/, const char *A_Restrict begin, const char *end, size_t removed)
 {
 	/* copy char-by-char unescaping escape sequences */
 	while (removed) {

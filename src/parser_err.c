@@ -114,7 +114,9 @@ GTPARSER_EXPORTS char *gt_parser_err_print_string(char *buf/*<=end*/, const char
 	return gt_parser_err_print_chars(buf, end, string, STRLEN(string));
 }
 
-#if !defined(SAL_DEFS_H_INCLUDED) && defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
+#ifdef SAL_DEFS_H_INCLUDED
+A_Use_decl_annotations
+#elif defined(_MSC_VER) && defined(_SAL_VERSION) && (_SAL_VERSION >= 20)
 _At_(format, _Printf_format_string_)
 #endif
 GTPARSER_EXPORTS char *gt_parser_err_print(char *buf/*<=end*/, const char *const end, const char *format/*'\0'-terminated*/, ...)
