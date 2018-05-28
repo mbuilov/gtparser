@@ -46,6 +46,12 @@ static inline unsigned hex_char_value(char c)
 
 /* input:  s points to [_a-zA-Z] */
 /* output: s points to non-[_a-zA-Z0-9], may be to end */
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Ret_notnull
+A_Nonnull_all_args
+A_At(s, A_In_reads_to_ptr(end))
+A_At(end, A_Notnull)
+#endif
 GTPARSER_EXPORTS const char *gt_scan_name(const char *s/*<end*/, const char *const end)
 #ifdef __GNUC__
 __attribute__ ((pure))
@@ -54,6 +60,11 @@ __attribute__ ((pure))
 
 /* input:  s points to [_a-zA-Z] */
 /* output: s points to non-[_a-zA-Z0-9], may be to '\0' */
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Ret_notnull
+A_Nonnull_all_args
+A_At(s, A_In_z)
+#endif
 GTPARSER_EXPORTS const char *gt_scan_name_z(const char *s/*'\0'-terminated*/)
 #ifdef __GNUC__
 __attribute__ ((pure))

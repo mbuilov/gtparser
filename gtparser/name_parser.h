@@ -19,6 +19,13 @@ extern "C" {
 /* assume (*current) points to first name character,
   returns scanned name */
 /* NOTE: after return (*current) points to non-[_a-zA-Z0-9], may be to end */
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Ret_notnull
+A_Nonnull_all_args
+A_At(current, A_Inout)
+A_At(*current, A_In_reads_to_ptr(end))
+A_At(end, A_Notnull)
+#endif
 static inline const char *read_name_(const char **current, const char *end)
 {
 	const char *name = *current;
@@ -29,6 +36,11 @@ static inline const char *read_name_(const char **current, const char *end)
 /* assume it->current points to first name character,
   returns scanned name */
 /* NOTE: after return it->current points to non-[_a-zA-Z0-9], may be to end */
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Ret_notnull
+A_Nonnull_all_args
+A_At(it, A_Inout)
+#endif
 static inline const char *src_iter_read_name(struct src_iter *it)
 {
 	return read_name_(&it->current, it->end);

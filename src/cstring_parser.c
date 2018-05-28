@@ -10,8 +10,19 @@
 #include "gtparser/cstring_parser.h"
 #include "gtparser/parser_base.h"
 #include "gtparser/parser_z_base.h"
-//#include "gtparser/name_scanner.h"
 #include "gtparser/char_func.h"
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#define FALLTHROUGH __attribute__ ((fallthrough));
+#elif defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 7))
+#ifdef __cplusplus
+#define FALLTHROUGH [[clang::fallthrough]];
+#endif
+#endif
+
+#ifndef FALLTHROUGH
+#define FALLTHROUGH /* fallthrough */
+#endif
 
 #define ENDPARAM           , const char *const end
 #define ITER_NEXT(current) src_iter_next_(current, end)
@@ -71,7 +82,7 @@ GTPARSER_EXPORTS void gt_copy_cstring(char dst[]/*out*/, const char *begin, cons
 				case '\r':
 					ASSERT(removed > 1); /* otherwise invalid string was parsed */
 					removed--;
-					/* fall through */
+					FALLTHROUGH
 				case '\n':
 					ASSERT(removed); /* otherwise invalid string was parsed */
 					removed--;

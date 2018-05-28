@@ -11,6 +11,10 @@
 
 #include "gtparser/gtparser.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct src_iter;
 struct src_iter_z;
 
@@ -37,15 +41,26 @@ enum GT_PARSE_CSTRING_ERR {
   hexadecimal-encoded chars (max 2 hexadecimal digits after '\x'):
   \x0..\xf, \x00..\xff */
 /* NOTE: '\0' (null) character is not allowed inside the string, because C-string is '\0'-terminated */
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_Success(return == GT_PARSE_CSTRING_OK)
+A_At(it, A_Inout)
+A_At(removed, A_Out)
+#endif
 GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/);
+
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Check_return
+A_Nonnull_all_args
+A_Success(return == GT_PARSE_CSTRING_OK)
+A_At(it, A_Inout)
+A_At(removed, A_Out)
+#endif
 GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z *it, size_t *removed/*out*/);
 
-/* for static code analysis */
-#ifndef A_Out_writes
-#define A_Out_writes(s)
-#define A_In_reads_to_ptr(end)
-#define A_Notnull
-#define A_Pre_satisfies(cond)
+#ifndef SAL_DEFS_H_INCLUDED
+#define A_Restrict
 #endif
 
 /* copy previously parsed by gt_parse_cstring() string into supplied
@@ -53,10 +68,21 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z 
 /* begin   - points to next char after the first (opening) quote in the source C-string */
 /* end     - points to the last (closing) quote in the source C-string */
 /* removed - number of meta-characters, value determined by gt_parse_cstring() */
-GTPARSER_EXPORTS void gt_copy_cstring(
-	A_Out_writes(end - begin - removed) char dst[]/*out*/,
-	A_In_reads_to_ptr(end) const char *begin,
-	A_Notnull const char *end,
-	A_Pre_satisfies(removed <= end - begin) size_t removed);
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(dst, A_Out_writes(end - begin - removed))
+A_At(begin, A_In_reads_to_ptr(end))
+A_At(end, A_Notnull)
+A_At(removed, A_Pre_satisfies(removed <= end - begin))
+#endif
+GTPARSER_EXPORTS void gt_copy_cstring(char A_Restrict dst[]/*out*/, const char *A_Restrict begin, const char *end, size_t removed);
+
+#ifndef SAL_DEFS_H_INCLUDED
+#undef A_Restrict
+#endif
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CSTRING_PARSER_H_INCLUDED */
