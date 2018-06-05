@@ -40,13 +40,8 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it,
 {
 	const char *current = it->current;
 	size_t removed_ = 0;
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	enum GT_PARSE_CSTRING_ERR r = parse_cstring(&it->line, &current,
 		&it->back_column, &removed_, GTPARSER_TAB_SIZE(it), it->end);
-#else
-	enum GT_PARSE_CSTRING_ERR r = parse_cstring(&it->line, &current,
-		&it->line_ptr, &it->back_column, &removed_, GTPARSER_TAB_SIZE(it), it->end);
-#endif
 	it->current = current;
 	*removed = removed_;
 	return r;
@@ -64,13 +59,8 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z 
 {
 	const char *current = it->current;
 	size_t removed_ = 0;
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	enum GT_PARSE_CSTRING_ERR r = parse_cstring_z(&it->line, &current,
 		&it->back_column, &removed_, GTPARSER_TAB_SIZE(it));
-#else
-	enum GT_PARSE_CSTRING_ERR r = parse_cstring_z(&it->line, &current,
-		&it->line_ptr, &it->back_column, &removed_, GTPARSER_TAB_SIZE(it));
-#endif
 	it->current = current;
 	*removed = removed_;
 	return r;

@@ -19,9 +19,6 @@ extern "C" {
 /* for parsing '\0'-terminated text */
 struct src_iter_z {
 	const char *current;
-#ifndef GTPARSER_FLAT_MEMORY_MODEL
-	const char *line_ptr;
-#endif
 	unsigned back_column;
 	unsigned line;
 #ifdef __cplusplus
@@ -73,11 +70,7 @@ A_At(input, A_In_z)
 static inline void src_iter_z_init(struct src_iter_z *it, const char *input/*'\0'-terminated*/)
 {
 	it->current = input;
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_get_back_column_(input, &it->back_column);
-#else
-	src_iter_get_back_column_(input, &it->line_ptr, &it->back_column);
-#endif
 	it->line = 1;
 }
 
@@ -146,11 +139,7 @@ A_At(it, A_Inout)
 #endif
 static inline void src_iter_z_process_tab(struct src_iter_z *it)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_process_tab_(&it->back_column, it->current, GTPARSER_TAB_SIZE(it));
-#else
-	src_iter_process_tab_(it->line_ptr, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
-#endif
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -159,11 +148,7 @@ A_At(it, A_Inout)
 #endif
 static inline void src_iter_z_check_tab(struct src_iter_z *it)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_check_tab_(&it->back_column, it->current, GTPARSER_TAB_SIZE(it));
-#else
-	src_iter_check_tab_(it->line_ptr, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
-#endif
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -172,11 +157,7 @@ A_At(it, A_Inout)
 #endif
 static inline void src_iter_z_inc_line(struct src_iter_z *it)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_inc_line_(&it->line, &it->back_column, it->current);
-#else
-	src_iter_inc_line_(&it->line, &it->line_ptr, &it->back_column, it->current);
-#endif
 }
 
 /* check current char - adjust iterator */
@@ -186,11 +167,7 @@ A_At(it, A_Inout)
 #endif
 static inline void src_iter_z_check(struct src_iter_z *it)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_check_(&it->line, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
-#else
-	src_iter_check_(&it->line, &it->line_ptr, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
-#endif
 }
 
 /* get current char the 'it' points to ('it' _may_ point to '\0') */
@@ -234,11 +211,7 @@ A_At(it, A_In)
 #endif
 static inline unsigned src_iter_z_get_column(const struct src_iter_z *it)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	return src_iter_get_column_(it->current, it->back_column);
-#else
-	return src_iter_get_column_(it->current, it->line_ptr, it->back_column);
-#endif
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -248,11 +221,7 @@ A_At(pos, A_Out)
 #endif
 static inline void src_iter_z_get_pos(const struct src_iter_z *it, struct src_pos *pos/*out*/)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_get_pos_(it->line, it->current, it->back_column, pos);
-#else
-	src_iter_get_pos_(it->line, it->current, it->line_ptr, it->back_column, pos);
-#endif
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -262,11 +231,7 @@ A_At(it, A_In)
 #endif
 static inline struct src_pos src_iter_z_return_pos(const struct src_iter_z *it)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	return src_iter_return_pos_(it->line, it->current, it->back_column);
-#else
-	return src_iter_return_pos_(it->line, it->current, it->line_ptr, it->back_column);
-#endif
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -276,11 +241,7 @@ A_At(save_pos, A_Out)
 #endif
 static inline void src_iter_z_save_pos(const struct src_iter_z *it, struct src_save_pos *save_pos/*out*/)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_save_pos_(it->line, it->current, it->back_column, save_pos);
-#else
-	src_iter_save_pos_(it->line, it->current, it->line_ptr, it->back_column, save_pos);
-#endif
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -290,11 +251,7 @@ A_At(it, A_In)
 #endif
 static inline struct src_save_pos src_iter_z_return_save_pos(const struct src_iter_z *it)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	return src_iter_return_save_pos_(it->line, it->current, it->back_column);
-#else
-	return src_iter_return_save_pos_(it->line, it->current, it->line_ptr, it->back_column);
-#endif
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -304,11 +261,7 @@ A_At(save_pos, A_In)
 #endif
 static inline void src_iter_z_restore_pos(struct src_iter_z *it, const struct src_save_pos *save_pos/*in*/)
 {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
 	src_iter_restore_pos_(&it->line, &it->current, &it->back_column, save_pos);
-#else
-	src_iter_restore_pos_(&it->line, &it->current, &it->line_ptr, &it->back_column, save_pos);
-#endif
 }
 
 /* input:  'it' points to checked char (like comment beginning) */

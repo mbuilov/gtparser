@@ -18,12 +18,9 @@ A_Use_decl_annotations
 GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *it)
 {
 	const char *s = it->current;
+	unsigned tab_size = GTPARSER_TAB_SIZE(it);
 	while (src_iter_z_next_(&s)) {
-#ifdef GTPARSER_FLAT_MEMORY_MODEL
-		src_iter_check_(&it->line, &it->back_column, s, GTPARSER_TAB_SIZE(it));
-#else
-		src_iter_check_(&it->line, &it->line_ptr, &it->back_column, s, GTPARSER_TAB_SIZE(it));
-#endif
+		src_iter_check_(&it->line, &it->back_column, s, tab_size);
 		if ('\n' == src_iter_current_char_(s)) {
 			src_iter_step_(&s);
 			break;
