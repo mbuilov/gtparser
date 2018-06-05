@@ -32,6 +32,19 @@ struct src_save_pos {
 	unsigned line;
 };
 
+/* convert pointer to unsigned integer */
+static inline unsigned gtparser_ptr_to_uint(const char *p)
+{
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4826) /* Conversion from 'const char *' to 'unsigned __int64' is sign-extended */
+#endif
+	return (unsigned)(unsigned long long)p;
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+}
+
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Check_return
 #endif
@@ -50,7 +63,7 @@ static inline void src_iter_get_back_column_(
 	const char *input/*in*/,
 	unsigned *back_column/*out*/)
 {
-	unsigned i = (unsigned)(~0u & (input - (const char*)0));
+	unsigned i = gtparser_ptr_to_uint(input);
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	*back_column = i ? i - 1u : (unsigned)-1;
 #else
@@ -81,7 +94,7 @@ static inline void src_iter_process_tab_(
 	unsigned tab_size/*>0*/)
 {
 	unsigned c = *back_column;
-	unsigned d = (unsigned)(~0u & (current - (const char*)0));
+	unsigned d = gtparser_ptr_to_uint(current);
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	d = (c >= d) ? c - d : ~0u - (d - c) + 1u;
 #else
@@ -122,7 +135,7 @@ static inline void src_iter_inc_line_(
 	const char *current/*in*/)
 {
 	(*line)++;
-	*back_column = (unsigned)(~0u & (current - (const char*)0));
+	*back_column = gtparser_ptr_to_uint(current);
 }
 
 /* check current char */
@@ -165,7 +178,7 @@ A_At(current, A_In)
 static inline unsigned src_iter_get_column_(
 	const char *current, unsigned back_column)
 {
-	unsigned c = (unsigned)(~0u & (current - (const char*)0));
+	unsigned c = gtparser_ptr_to_uint(current);
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	return (c >= back_column) ? c - back_column : ~0u - (back_column - c) + 1u;
 #else
