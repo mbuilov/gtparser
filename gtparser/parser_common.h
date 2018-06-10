@@ -97,13 +97,13 @@ static inline void src_iter_process_tab_(
 	unsigned c = *back_column;
 	unsigned d = gtparser_ptr_to_uint(current);
 #ifdef UBSAN_UNSIGNED_OVERFLOW
-	d = (c >= d) ? c - d : ~0u - (d - c) + 1u;
+	d = (c >= d) ? c - d : ((unsigned)-1 - (d - c)) + 1u;
 #else
 	d = c - d;
 #endif
 	d %= tab_size;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
-	*back_column = (c >= d) ? c - d : ~0u - (d - c) + 1u;
+	*back_column = (c >= d) ? c - d : ((unsigned)-1 - (d - c)) + 1u;
 #else
 	*back_column = c - d;
 #endif
@@ -181,7 +181,7 @@ static inline unsigned src_iter_get_column_(
 {
 	unsigned c = gtparser_ptr_to_uint(current);
 #ifdef UBSAN_UNSIGNED_OVERFLOW
-	return (c >= back_column) ? c - back_column : ~0u - (back_column - c) + 1u;
+	return (c >= back_column) ? c - back_column : ((unsigned)-1 - (back_column - c)) + 1u;
 #else
 	return c - back_column;
 #endif
