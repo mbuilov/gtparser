@@ -30,6 +30,13 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w(const wchar_t *s/*<end*/, const w
 		if (n > (unsigned)-1/10)
 			return NULL; /* integer overflow */
 		n *= 10;
+		/* gcc optimizes well __builtin_mul_overflow() starting with version 5,
+		   gcc optimizes well __builtin_add_overflow() starting with version 6,
+		   clang optimizes well __builtin_mul_overflow(), starting with version 6 */
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && __GNUC__ >= 6
+		if (__builtin_add_overflow(n, x, &n))
+			return NULL; /* integer overflow */
+#else
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 		if (n > (unsigned)-1 - x)
 			return NULL; /* integer overflow */
@@ -38,6 +45,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w(const wchar_t *s/*<end*/, const w
 #ifndef UBSAN_UNSIGNED_OVERFLOW
 		if (n < x)
 			return NULL; /* integer overflow */
+#endif
 #endif
 	}
 	*number = n;
@@ -56,6 +64,13 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w(const wchar_t *s/*<end*/, const
 		if (n > (unsigned INT64_TYPE)-1/10)
 			return NULL; /* integer overflow */
 		n *= 10;
+		/* gcc optimizes well __builtin_mul_overflow() starting with version 5,
+		   gcc optimizes well __builtin_add_overflow() starting with version 6,
+		   clang optimizes well __builtin_mul_overflow(), starting with version 6 */
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && __GNUC__ >= 6
+		if (__builtin_add_overflow(n, x, &n))
+			return NULL; /* integer overflow */
+#else
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 		if (n > (unsigned INT64_TYPE)-1 - x)
 			return NULL; /* integer overflow */
@@ -64,6 +79,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w(const wchar_t *s/*<end*/, const
 #ifndef UBSAN_UNSIGNED_OVERFLOW
 		if (n < x)
 			return NULL; /* integer overflow */
+#endif
 #endif
 	}
 	*number = n;
@@ -116,6 +132,13 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w_z(const wchar_t *s/*'\0'-terminat
 		if (n > (unsigned)-1/10)
 			return NULL; /* integer overflow */
 		n *= 10;
+		/* gcc optimizes well __builtin_mul_overflow() starting with version 5,
+		   gcc optimizes well __builtin_add_overflow() starting with version 6,
+		   clang optimizes well __builtin_mul_overflow(), starting with version 6 */
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && __GNUC__ >= 6
+		if (__builtin_add_overflow(n, x, &n))
+			return NULL; /* integer overflow */
+#else
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 		if (n > (unsigned)-1 - x)
 			return NULL; /* integer overflow */
@@ -124,6 +147,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w_z(const wchar_t *s/*'\0'-terminat
 #ifndef UBSAN_UNSIGNED_OVERFLOW
 		if (n < x)
 			return NULL; /* integer overflow */
+#endif
 #endif
 	}
 	*number = n;
@@ -142,6 +166,13 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w_z(const wchar_t *s/*'\0'-termin
 		if (n > (unsigned INT64_TYPE)-1/10)
 			return NULL; /* integer overflow */
 		n *= 10;
+		/* gcc optimizes well __builtin_mul_overflow() starting with version 5,
+		   gcc optimizes well __builtin_add_overflow() starting with version 6,
+		   clang optimizes well __builtin_mul_overflow(), starting with version 6 */
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && __GNUC__ >= 6
+		if (__builtin_add_overflow(n, x, &n))
+			return NULL; /* integer overflow */
+#else
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 		if (n > (unsigned INT64_TYPE)-1 - x)
 			return NULL; /* integer overflow */
@@ -150,6 +181,7 @@ GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w_z(const wchar_t *s/*'\0'-termin
 #ifndef UBSAN_UNSIGNED_OVERFLOW
 		if (n < x)
 			return NULL; /* integer overflow */
+#endif
 #endif
 	}
 	*number = n;
