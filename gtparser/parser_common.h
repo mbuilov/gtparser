@@ -40,7 +40,7 @@ static inline unsigned gtparser_ptr_to_uint(const char *p)
 #pragma warning(disable:4826) /* Conversion from 'const char *' to 'unsigned __int64' is sign-extended */
 #endif
 	return (unsigned)(unsigned long long)p +
-		0*sizeof(int(*)[1-2*(sizeof(const char*) > sizeof(unsigned long long))]);
+		0*sizeof(int[1-2*(sizeof(const char*) > sizeof(unsigned long long))]);
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
