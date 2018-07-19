@@ -23,7 +23,7 @@ A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_uint_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned *number/*out*/)
 {
 	unsigned n = digit_value_w(*s);
-	while (++s != end) {
+	while (++s < end) {
 		unsigned x = digit_value_w(*s);
 		if (x > 9)
 			break;
@@ -57,7 +57,7 @@ A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_uint64_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned INT64_TYPE *number/*out*/)
 {
 	unsigned INT64_TYPE n = digit_value_w(*s);
-	while (++s != end) {
+	while (++s < end) {
 		unsigned x = digit_value_w(*s);
 		if (x > 9)
 			break;
@@ -91,7 +91,7 @@ A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned *number/*out*/)
 {
 	unsigned n = hex_char_value_w_(*s);
-	while (++s != end) {
+	while (++s < end) {
 		unsigned x = hex_char_value_w_(*s);
 		if (x > 15)
 			break;
@@ -108,7 +108,7 @@ A_Use_decl_annotations
 GTPARSER_EXPORTS const wchar_t *gt_scan_hex64_w(const wchar_t *s/*<end*/, const wchar_t *const end, unsigned INT64_TYPE *number/*out*/)
 {
 	unsigned INT64_TYPE n = hex_char_value_w_(*s);
-	while (++s != end) {
+	while (++s < end) {
 		unsigned x = hex_char_value_w_(*s);
 		if (x > 15)
 			break;
