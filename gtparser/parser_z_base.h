@@ -19,8 +19,7 @@ extern "C" {
 /* for parsing '\0'-terminated text */
 struct src_iter_z {
 	const char *current;
-	unsigned back_column;
-	unsigned line;
+	struct src_iter_loc loc;
 #ifdef __cplusplus
 	inline void init(const char *input/*'\0'-terminated*/);
 	inline void step();
@@ -70,8 +69,7 @@ A_At(input, A_In_z)
 static inline void src_iter_z_init(struct src_iter_z *it, const char *input/*'\0'-terminated*/)
 {
 	it->current = input;
-	src_iter_get_back_column_(input, &it->back_column);
-	it->line = 1;
+	src_iter_loc_init(&it->loc, input);
 }
 
 /* input:  'it' points to checked char */
@@ -139,7 +137,7 @@ A_At(it, A_Inout)
 #endif
 static inline void src_iter_z_process_tab(struct src_iter_z *it)
 {
-	src_iter_process_tab_(&it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+	src_iter_process_tab_(&it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -148,7 +146,7 @@ A_At(it, A_Inout)
 #endif
 static inline void src_iter_z_check_tab(struct src_iter_z *it)
 {
-	src_iter_check_tab_(&it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+	src_iter_check_tab_(&it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -157,7 +155,7 @@ A_At(it, A_Inout)
 #endif
 static inline void src_iter_z_inc_line(struct src_iter_z *it)
 {
-	src_iter_inc_line_(&it->line, &it->back_column, it->current);
+	src_iter_inc_line_(&it->loc.line, &it->loc.back_column, it->current);
 }
 
 /* check current char - adjust iterator */
@@ -167,7 +165,7 @@ A_At(it, A_Inout)
 #endif
 static inline void src_iter_z_check(struct src_iter_z *it)
 {
-	src_iter_check_(&it->line, &it->back_column, it->current, GTPARSER_TAB_SIZE(it));
+	src_iter_check_(&it->loc.line, &it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
 
 /* get current char the 'it' points to ('it' _may_ point to '\0') */
@@ -211,7 +209,7 @@ A_At(it, A_In)
 #endif
 static inline unsigned src_iter_z_get_column(const struct src_iter_z *it)
 {
-	return src_iter_get_column_(it->current, it->back_column);
+	return src_iter_get_column_(it->current, it->loc.back_column);
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -221,7 +219,7 @@ A_At(pos, A_Out)
 #endif
 static inline void src_iter_z_get_pos(const struct src_iter_z *it, struct src_pos *pos/*out*/)
 {
-	src_iter_get_pos_(it->line, it->current, it->back_column, pos);
+	src_iter_get_pos_(it->loc.line, it->current, it->loc.back_column, pos);
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -231,7 +229,7 @@ A_At(it, A_In)
 #endif
 static inline struct src_pos src_iter_z_return_pos(const struct src_iter_z *it)
 {
-	return src_iter_return_pos_(it->line, it->current, it->back_column);
+	return src_iter_return_pos_(it->loc.line, it->current, it->loc.back_column);
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -241,7 +239,7 @@ A_At(save_pos, A_Out)
 #endif
 static inline void src_iter_z_save_pos(const struct src_iter_z *it, struct src_save_pos *save_pos/*out*/)
 {
-	src_iter_save_pos_(it->line, it->current, it->back_column, save_pos);
+	src_iter_save_pos_(it->loc.line, it->current, it->loc.back_column, save_pos);
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -251,7 +249,7 @@ A_At(it, A_In)
 #endif
 static inline struct src_save_pos src_iter_z_return_save_pos(const struct src_iter_z *it)
 {
-	return src_iter_return_save_pos_(it->line, it->current, it->back_column);
+	return src_iter_return_save_pos_(it->loc.line, it->current, it->loc.back_column);
 }
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -261,7 +259,7 @@ A_At(save_pos, A_In)
 #endif
 static inline void src_iter_z_restore_pos(struct src_iter_z *it, const struct src_save_pos *save_pos/*in*/)
 {
-	src_iter_restore_pos_(&it->line, &it->current, &it->back_column, save_pos);
+	src_iter_restore_pos_(&it->loc.line, &it->current, &it->loc.back_column, save_pos);
 }
 
 /* input:  'it' points to checked char (like comment beginning) */

@@ -21,6 +21,11 @@ extern unsigned source_tab_size(const struct src_iter *iter);
 extern "C" {
 #endif
 
+struct src_iter_loc {
+	unsigned back_column;
+	unsigned line;
+};
+
 struct src_pos {
 	unsigned column;
 	unsigned line;
@@ -70,6 +75,17 @@ static inline void src_iter_get_back_column_(
 #else
 	*back_column = i - 1u;
 #endif
+}
+
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(loc, A_Out)
+A_At(input, A_In)
+#endif
+static inline void src_iter_loc_init(struct src_iter_loc *loc, const char *input)
+{
+	src_iter_get_back_column_(input, &loc->back_column);
+	loc->line = 1;
 }
 
 /* input:  'it' points to checked char */
