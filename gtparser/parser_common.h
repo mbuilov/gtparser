@@ -79,13 +79,27 @@ static inline void src_iter_get_back_column_(
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
+A_At(line, A_Out)
+A_At(back_column, A_Out)
+A_At(input, A_In)
+#endif
+static inline void src_iter_loc_init_(
+	unsigned *line/*out*/,
+	unsigned *back_column/*out*/,
+	const char *input/*in*/)
+{
+	*line = 1;
+	src_iter_get_back_column_(input, back_column);
+}
+
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
 A_At(loc, A_Out)
 A_At(input, A_In)
 #endif
 static inline void src_iter_loc_init(struct src_iter_loc *loc, const char *input)
 {
-	src_iter_get_back_column_(input, &loc->back_column);
-	loc->line = 1;
+	src_iter_loc_init_(&loc->line, &loc->back_column, input);
 }
 
 /* input:  'it' points to checked char */
