@@ -95,6 +95,30 @@ static inline int is_latin_letter_(char c)
 	return (x & ~32u) <= 'Z' - 'A';
 }
 
+static inline int is_latin_upper_letter_(char c)
+{
+	unsigned x = (unsigned char)c;
+#ifdef UBSAN_UNSIGNED_OVERFLOW
+	if (x < 'A')
+		x += ((unsigned)-1 - 'A') + 1u;
+	else
+#endif
+		x -= 'A';
+	return x <= 'Z' - 'A';
+}
+
+static inline int is_latin_lower_letter_(char c)
+{
+	unsigned x = (unsigned char)c;
+#ifdef UBSAN_UNSIGNED_OVERFLOW
+	if (x < 'a')
+		x += ((unsigned)-1 - 'a') + 1u;
+	else
+#endif
+		x -= 'a';
+	return x <= 'z' - 'a';
+}
+
 /* convert [A-Z] -> [a-z] */
 static inline char latin_letter_to_lower(char c)
 {
@@ -123,7 +147,7 @@ static inline char latin_to_lower(char c)
 {
 	unsigned x = 32u | (unsigned char)c;
 	if (x < 'a')
-		return c;
+		return c; /* not a letter */
 	return x <= 'z' ? (char)(unsigned char)x : c;
 }
 
@@ -131,7 +155,7 @@ static inline char latin_to_upper(char c)
 {
 	unsigned x = ~32u & (unsigned char)c;
 	if (x < 'A')
-		return c;
+		return c; /* not a letter */
 	return x <= 'Z' ? (char)(unsigned char)x : c;
 }
 

@@ -98,6 +98,30 @@ static inline int is_latin_letter_w_(wchar_t c)
 	return (x & ~32u) <= L'Z' - L'A';
 }
 
+static inline int is_latin_upper_letter_w_(wchar_t c)
+{
+	unsigned x = (unsigned)c;
+#ifdef UBSAN_UNSIGNED_OVERFLOW
+	if (x < L'A')
+		x += ((unsigned)-1 - L'A') + 1u;
+	else
+#endif
+		x -= L'A';
+	return x <= L'Z' - L'A';
+}
+
+static inline int is_latin_lower_letter_w_(wchar_t c)
+{
+	unsigned x = (unsigned)c;
+#ifdef UBSAN_UNSIGNED_OVERFLOW
+	if (x < L'a')
+		x += ((unsigned)-1 - L'a') + 1u;
+	else
+#endif
+		x -= L'a';
+	return x <= L'z' - L'a';
+}
+
 /* convert [A-Z] -> [a-z] */
 static inline wchar_t latin_letter_to_lower_w(wchar_t c)
 {
@@ -126,7 +150,7 @@ static inline wchar_t latin_to_lower_w(wchar_t c)
 {
 	unsigned x = 32u | (unsigned)c;
 	if (x < L'a')
-		return c;
+		return c; /* not a letter */
 	return x <= L'z' ? (wchar_t)x : c;
 }
 
@@ -134,7 +158,7 @@ static inline wchar_t latin_to_upper_w(wchar_t c)
 {
 	unsigned x = ~32u & (unsigned)c;
 	if (x < L'A')
-		return c;
+		return c; /* not a letter */
 	return x <= L'Z' ? (wchar_t)x : c;
 }
 
