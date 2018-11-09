@@ -149,17 +149,13 @@ static inline wchar_t latin_letter_to_upper_w(wchar_t c)
 static inline wchar_t latin_to_lower_w(wchar_t c)
 {
 	unsigned x = 32u | (unsigned)c;
-	if (x < L'a')
-		return c; /* not a letter */
-	return x <= L'z' ? (wchar_t)x : c;
+	return L'a' <= x && x <= L'z' ? (wchar_t)x : c;
 }
 
 static inline wchar_t latin_to_upper_w(wchar_t c)
 {
 	unsigned x = ~32u & (unsigned)c;
-	if (x < L'A')
-		return c; /* not a letter */
-	return x <= L'Z' ? (wchar_t)x : c;
+	return L'A' <= x && x <= L'Z' ? (wchar_t)x : c;
 }
 
 /* name must be started with a latin letter or '_' */

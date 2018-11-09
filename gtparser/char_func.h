@@ -146,17 +146,13 @@ static inline char latin_letter_to_upper(char c)
 static inline char latin_to_lower(char c)
 {
 	unsigned x = 32u | (unsigned char)c;
-	if (x < 'a')
-		return c; /* not a letter */
-	return x <= 'z' ? (char)(unsigned char)x : c;
+	return ('a' <= x && x <= 'z') ? (char)(unsigned char)x : c;
 }
 
 static inline char latin_to_upper(char c)
 {
 	unsigned x = ~32u & (unsigned char)c;
-	if (x < 'A')
-		return c; /* not a letter */
-	return x <= 'Z' ? (char)(unsigned char)x : c;
+	return ('A' <= x && x <= 'Z') ? (char)(unsigned char)x : c;
 }
 
 /* name must be started with a latin letter or '_' */
