@@ -113,6 +113,7 @@ static inline void src_iter_step_(const char **current/*in,out*/)
 	(*current)++;
 }
 
+/* assume 'current' points to '\t' */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(back_column, A_Inout)
@@ -139,21 +140,28 @@ static inline void src_iter_process_tab_(
 #endif
 }
 
+/* check if current char is a tab:
+  if current char is a tab - process it and return '\t'
+  else                     - return 0 */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(back_column, A_Inout)
 A_At(current, A_In)
 A_At(tab_size, A_In_range(>,0))
 #endif
-static inline void src_iter_check_tab_(
+static inline int src_iter_check_tab_(
 	unsigned *back_column/*in,out*/,
 	const char *current/*in*/,
 	unsigned tab_size/*>0*/)
 {
-	if ('\t' == *current)
+	if ('\t' == *current) {
 		src_iter_process_tab_(back_column, current, tab_size);
+		return '\t';
+	}
+	return 0;
 }
 
+/* assume 'current' points to '\n' */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(line, A_Inout)
@@ -169,7 +177,10 @@ static inline void src_iter_inc_line_(
 	*back_column = gtparser_ptr_to_uint(current);
 }
 
-/* check current char */
+/* check current char:
+  if current char is a tab      - process it and return '\t'
+  if current char is a new line - process it and return '\n'
+  else                          - return 0 */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(line, A_Inout)
@@ -177,16 +188,17 @@ A_At(back_column, A_Inout)
 A_At(current, A_In)
 A_At(tab_size, A_In_range(>,0))
 #endif
-static inline void src_iter_check_(
+static inline int src_iter_check_(
 	unsigned *line/*in,out*/,
 	unsigned *back_column/*in,out*/,
 	const char *current/*in*/,
 	unsigned tab_size/*>0*/)
 {
-	if ('\n' == *current)
+	if ('\n' == *current) {
 		src_iter_inc_line_(line, back_column, current);
-	else
-		src_iter_check_tab_(back_column, current, tab_size);
+		return '\n';
+	}
+	return src_iter_check_tab_(back_column, current, tab_size);
 }
 
 /* get current char the 'it' points to ('it' must not point to 'eof') */

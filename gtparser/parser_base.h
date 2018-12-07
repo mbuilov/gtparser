@@ -140,6 +140,7 @@ static inline int src_iter_next(struct src_iter *it)
 	return src_iter_next_(&it->current, it->end);
 }
 
+/* assume 'it->current' points to '\t' */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(it, A_Inout)
@@ -149,15 +150,19 @@ static inline void src_iter_process_tab(struct src_iter *it)
 	src_iter_process_tab_(&it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
 
+/* check if current char is a tab:
+  if current char is a tab - process it and return '\t'
+  else                     - return 0 */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-static inline void src_iter_check_tab(struct src_iter *it)
+static inline int src_iter_check_tab(struct src_iter *it)
 {
-	src_iter_check_tab_(&it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
+	return src_iter_check_tab_(&it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
 
+/* assume 'it->current' points to '\n' */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(it, A_Inout)
@@ -167,14 +172,17 @@ static inline void src_iter_inc_line(struct src_iter *it)
 	src_iter_inc_line_(&it->loc.line, &it->loc.back_column, it->current);
 }
 
-/* check current char - adjust iterator */
+/* check current char:
+  if current char is a tab      - process it and return '\t'
+  if current char is a new line - process it and return '\n'
+  else                          - return 0 */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-static inline void src_iter_check(struct src_iter *it)
+static inline int src_iter_check(struct src_iter *it)
 {
-	src_iter_check_(&it->loc.line, &it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
+	return src_iter_check_(&it->loc.line, &it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
 
 /* get current char the 'it' points to ('it' must not point to 'eof') */
