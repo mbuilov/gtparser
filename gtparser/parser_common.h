@@ -51,7 +51,7 @@ static inline unsigned gtparser_ptr_to_uint(const char *p)
 		0*sizeof(int[1-2*(sizeof(const char*) > sizeof(unsigned long long))]);
 #ifdef _MSC_VER
 #pragma warning(pop)
-#elif !defined __cplusplus && defined __GNUC__ && __GNUC__ >= 8
+#elif !defined __cplusplus && defined __GNUC__ && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
 #pragma GCC diagnostic pop
 #endif
 }
