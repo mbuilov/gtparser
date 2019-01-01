@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -17,18 +17,6 @@
 #define A_Restrict
 #endif
 
-#if defined(__GNUC__) && (__GNUC__ >= 7)
-#define FALLTHROUGH __attribute__ ((fallthrough));
-#elif defined(__clang__) && (__clang_major__ > 3 || (3 == __clang_major__  && __clang_minor__ >= 7))
-#ifdef __cplusplus
-#define FALLTHROUGH [[clang::fallthrough]];
-#endif
-#endif
-
-#ifndef FALLTHROUGH
-#define FALLTHROUGH /* fallthrough */
-#endif
-
 #define ENDPARAM           , const char *const end
 #define ITER_NEXT(current) src_iter_next_(current, end)
 #include "cstring_parser.inl"
@@ -40,8 +28,7 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it,
 {
 	const char *current = it->current;
 	size_t removed_ = 0;
-	enum GT_PARSE_CSTRING_ERR r = parse_cstring(&it->line, &current,
-		&it->back_column, &removed_, GTPARSER_TAB_SIZE(it), it->end);
+	enum GT_PARSE_CSTRING_ERR r = parse_cstring(&it->loc, &current, &removed_, GTPARSER_TAB_SIZE(it), it->end);
 	it->current = current;
 	*removed = removed_;
 	return r;
@@ -59,8 +46,7 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z 
 {
 	const char *current = it->current;
 	size_t removed_ = 0;
-	enum GT_PARSE_CSTRING_ERR r = parse_cstring_z(&it->line, &current,
-		&it->back_column, &removed_, GTPARSER_TAB_SIZE(it));
+	enum GT_PARSE_CSTRING_ERR r = parse_cstring_z(&it->loc, &current, &removed_, GTPARSER_TAB_SIZE(it));
 	it->current = current;
 	*removed = removed_;
 	return r;
@@ -80,8 +66,9 @@ GTPARSER_EXPORTS void gt_copy_cstring(char *A_Restrict dst/*out*/, const char *A
 				case '\r':
 					ASSERT(removed > 1); /* otherwise invalid string was parsed */
 					removed--;
-					FALLTHROUGH
+					goto cr_after_lf;
 				case '\n':
+cr_after_lf:
 					ASSERT(removed); /* otherwise invalid string was parsed */
 					removed--;
 					continue; /* skip line continuation (split) */

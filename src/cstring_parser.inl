@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2018-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -8,8 +8,8 @@
 
 /* ENDPARAM           - <empty> or <, const char *const end> */
 /* ITER_NEXT(current) - src_iter_z_next_(current) or src_iter_next_(current, end) */
-static enum GT_PARSE_CSTRING_ERR parse_cstring(unsigned *line, const char **current,
-	unsigned *back_column, size_t *removed, unsigned tab_size ENDPARAM)
+static enum GT_PARSE_CSTRING_ERR parse_cstring(struct src_iter_loc *loc,
+	const char **current, size_t *removed, unsigned tab_size ENDPARAM)
 {
 	const char quote = src_iter_current_char_(*current);
 	while (ITER_NEXT(current)) {
@@ -102,7 +102,7 @@ switch_c:
 		}
 		if ('\0' == c)
 			return GT_PARSE_CSTRING_NULL_INSIDE_CSTRING; /* null character (with zero value) inside string is not allowed */
-		src_iter_check_(line, back_column, *current, tab_size);
+		src_iter_check_(&loc->line, &loc->back_column, *current, tab_size);
 	}
 	return GT_PARSE_CSTRING_UNTERMINATED; /* unterminated string */
 }

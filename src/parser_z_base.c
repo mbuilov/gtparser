@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2018-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -20,7 +20,7 @@ GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *it)
 	const char *s = it->current;
 	unsigned tab_size = GTPARSER_TAB_SIZE(it);
 	while (src_iter_z_next_(&s)) {
-		src_iter_check_(&it->line, &it->back_column, s, tab_size);
+		src_iter_check_(&it->loc.line, &it->loc.back_column, s, tab_size);
 		if ('\n' == src_iter_current_char_(s)) {
 			src_iter_step_(&s);
 			break;
