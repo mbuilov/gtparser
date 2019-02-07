@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2018-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -38,7 +38,7 @@ struct src_save_pos {
 };
 
 /* convert pointer to unsigned integer */
-static inline unsigned gtparser_ptr_to_uint(const char *p)
+static inline unsigned gtparser_ptr_to_uint(const char *const p)
 {
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -59,7 +59,7 @@ static inline unsigned gtparser_ptr_to_uint(const char *p)
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Check_return
 #endif
-static inline int is_space(char c)
+static inline int is_space(const char c)
 {
 	return (unsigned char)c <= ' ';
 }
@@ -71,10 +71,10 @@ A_At(input, A_In)
 A_At(back_column, A_Out)
 #endif
 static inline void src_iter_get_back_column_(
-	const char *input/*in*/,
-	unsigned *back_column/*out*/)
+	const char *const input/*in*/,
+	unsigned *const back_column/*out*/)
 {
-	unsigned i = gtparser_ptr_to_uint(input);
+	const unsigned i = gtparser_ptr_to_uint(input);
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	*back_column = i ? i - 1u : (unsigned)-1;
 #else
@@ -89,9 +89,9 @@ A_At(back_column, A_Out)
 A_At(input, A_In)
 #endif
 static inline void src_iter_loc_init_(
-	unsigned *line/*out*/,
-	unsigned *back_column/*out*/,
-	const char *input/*in*/)
+	unsigned *const line/*out*/,
+	unsigned *const back_column/*out*/,
+	const char *const input/*in*/)
 {
 	*line = 1;
 	src_iter_get_back_column_(input, back_column);
@@ -102,7 +102,9 @@ A_Nonnull_all_args
 A_At(loc, A_Out)
 A_At(input, A_In)
 #endif
-static inline void src_iter_loc_init(struct src_iter_loc *loc, const char *input)
+static inline void src_iter_loc_init(
+	struct src_iter_loc *const loc,
+	const char *const input)
 {
 	src_iter_loc_init_(&loc->line, &loc->back_column, input);
 }
@@ -113,7 +115,7 @@ static inline void src_iter_loc_init(struct src_iter_loc *loc, const char *input
 A_Nonnull_all_args
 A_At(current, A_Inout)
 #endif
-static inline void src_iter_step_(const char **current/*in,out*/)
+static inline void src_iter_step_(const char **const current/*in,out*/)
 {
 	(*current)++;
 }
@@ -126,11 +128,11 @@ A_At(current, A_In)
 A_At(tab_size, A_In_range(>,0))
 #endif
 static inline void src_iter_process_tab_(
-	unsigned *back_column/*in,out*/,
-	const char *current/*in*/,
-	unsigned tab_size/*>0*/)
+	unsigned *const back_column/*in,out*/,
+	const char *const current/*in*/,
+	const unsigned tab_size/*>0*/)
 {
-	unsigned c = *back_column;
+	const unsigned c = *back_column;
 	unsigned d = gtparser_ptr_to_uint(current);
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	d = (c >= d) ? c - d : ((unsigned)-1 - (d - c)) + 1u;
@@ -155,9 +157,9 @@ A_At(current, A_In)
 A_At(tab_size, A_In_range(>,0))
 #endif
 static inline int src_iter_check_tab_(
-	unsigned *back_column/*in,out*/,
-	const char *current/*in*/,
-	unsigned tab_size/*>0*/)
+	unsigned *const back_column/*in,out*/,
+	const char *const current/*in*/,
+	const unsigned tab_size/*>0*/)
 {
 	if ('\t' == *current) {
 		src_iter_process_tab_(back_column, current, tab_size);
@@ -174,9 +176,9 @@ A_At(back_column, A_Out)
 A_At(current, A_In)
 #endif
 static inline void src_iter_inc_line_(
-	unsigned *line/*in,out*/,
-	unsigned *back_column/*out*/,
-	const char *current/*in*/)
+	unsigned *const line/*in,out*/,
+	unsigned *const back_column/*out*/,
+	const char *const current/*in*/)
 {
 	(*line)++;
 	*back_column = gtparser_ptr_to_uint(current);
@@ -194,10 +196,10 @@ A_At(current, A_In)
 A_At(tab_size, A_In_range(>,0))
 #endif
 static inline int src_iter_check_(
-	unsigned *line/*in,out*/,
-	unsigned *back_column/*in,out*/,
-	const char *current/*in*/,
-	unsigned tab_size/*>0*/)
+	unsigned *const line/*in,out*/,
+	unsigned *const back_column/*in,out*/,
+	const char *const current/*in*/,
+	const unsigned tab_size/*>0*/)
 {
 	if ('\n' == *current) {
 		src_iter_inc_line_(line, back_column, current);
@@ -212,7 +214,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(current, A_In)
 #endif
-static inline char src_iter_current_char_(const char *current)
+static inline char src_iter_current_char_(const char *const current)
 {
 	return *current;
 }
@@ -221,12 +223,13 @@ static inline char src_iter_current_char_(const char *current)
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Check_return
 A_Nonnull_all_args
-A_At(current, A_In)
+A_At(current, A_Notnull)
 #endif
 static inline unsigned src_iter_get_column_(
-	const char *current, unsigned back_column)
+	const char *const current,
+	const unsigned back_column)
 {
-	unsigned c = gtparser_ptr_to_uint(current);
+	const unsigned c = gtparser_ptr_to_uint(current);
 #ifdef UBSAN_UNSIGNED_OVERFLOW
 	return (c >= back_column) ? c - back_column : ((unsigned)-1 - (back_column - c)) + 1u;
 #else
@@ -236,11 +239,14 @@ static inline unsigned src_iter_get_column_(
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
-A_At(current, A_In)
+A_At(current, A_Notnull)
 A_At(pos, A_Out)
 #endif
-static inline void src_iter_get_pos_(unsigned line, const char *current,
-	unsigned back_column, struct src_pos *pos/*out*/)
+static inline void src_iter_get_pos_(
+	const unsigned line,
+	const char *const current,
+	const unsigned back_column,
+	struct src_pos *const pos/*out*/)
 {
 	pos->line = line;
 	pos->column = src_iter_get_column_(current, back_column);
@@ -249,10 +255,12 @@ static inline void src_iter_get_pos_(unsigned line, const char *current,
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Check_return
 A_Nonnull_all_args
-A_At(current, A_In)
+A_At(current, A_Notnull)
 #endif
 static inline struct src_pos src_iter_return_pos_(
-	unsigned line, const char *current, unsigned back_column)
+	const unsigned line,
+	const char *const current,
+	const unsigned back_column)
 {
 	struct src_pos pos;
 	src_iter_get_pos_(line, current, back_column, &pos);
@@ -261,11 +269,14 @@ static inline struct src_pos src_iter_return_pos_(
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
-A_At(current, A_In)
+A_At(current, A_Notnull)
 A_At(save_pos, A_Out)
 #endif
-static inline void src_iter_save_pos_(unsigned line, const char *current,
-	unsigned back_column, struct src_save_pos *save_pos/*out*/)
+static inline void src_iter_save_pos_(
+	const unsigned line,
+	const char *const current,
+	const unsigned back_column,
+	struct src_save_pos *const save_pos/*out*/)
 {
 	save_pos->line = line;
 	save_pos->current = current;
@@ -275,10 +286,12 @@ static inline void src_iter_save_pos_(unsigned line, const char *current,
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Check_return
 A_Nonnull_all_args
-A_At(current, A_In)
+A_At(current, A_Notnull)
 #endif
 static inline struct src_save_pos src_iter_return_save_pos_(
-	unsigned line, const char *current, unsigned back_column)
+	const unsigned line,
+	const char *const current,
+	const unsigned back_column)
 {
 	struct src_save_pos save_pos;
 	src_iter_save_pos_(line, current, back_column, &save_pos);
@@ -292,8 +305,11 @@ A_At(current, A_Out)
 A_At(back_column, A_Out)
 A_At(save_pos, A_In)
 #endif
-static inline void src_iter_restore_pos_(unsigned *line/*out*/, const char **current/*out*/,
-	unsigned *back_column/*out*/, const struct src_save_pos *save_pos/*in*/)
+static inline void src_iter_restore_pos_(
+	unsigned *const line/*out*/,
+	const char **const current/*out*/,
+	unsigned *const back_column/*out*/,
+	const struct src_save_pos *const save_pos/*in*/)
 {
 	*line = save_pos->line;
 	*current = save_pos->current;
