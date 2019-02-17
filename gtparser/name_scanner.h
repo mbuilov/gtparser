@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -44,28 +44,43 @@ static inline unsigned hex_char_value(char c)
 	return x;
 }
 
-/* input:  s points to [_a-zA-Z] */
+/* input:  s points to first name character (likely [_a-zA-Z]) */
 /* output: s points to non-[_a-zA-Z0-9], may be to end */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Ret_notnull
 A_Nonnull_all_args
 A_At(s, A_In_reads_to_ptr(end))
-A_At(end, A_Notnull)
+A_At(end, A_Notnull A_Pre_deref_invalid)
+A_Pre_satisfies(s < end)
+A_Post_satisfies(return == end ||
+	!('_' == *return ||
+	('0' <= *return && *return <= '9') ||
+	('a' <= *return && *return <= 'z') ||
+	('A' <= *return && *return <= 'Z')))
 #endif
-GTPARSER_EXPORTS const char *gt_scan_name(const char *s/*<end*/, const char *const end)
+GTPARSER_EXPORTS const char *gt_scan_name(
+	const char *s/*<end*/,
+	const char *const end/*>s*/)
 #ifdef __GNUC__
 __attribute__ ((pure))
 #endif
 ;
 
-/* input:  s points to [_a-zA-Z] */
+/* input:  s points to first name character (likely [_a-zA-Z]) */
 /* output: s points to non-[_a-zA-Z0-9], may be to '\0' */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Ret_notnull
 A_Nonnull_all_args
 A_At(s, A_In_z)
+A_Pre_satisfies(!!*s)
+A_Post_satisfies(
+	!('_' == *return ||
+	('0' <= *return && *return <= '9') ||
+	('a' <= *return && *return <= 'z') ||
+	('A' <= *return && *return <= 'Z')))
 #endif
-GTPARSER_EXPORTS const char *gt_scan_name_z(const char *s/*'\0'-terminated*/)
+GTPARSER_EXPORTS const char *gt_scan_name_z(
+	const char *s/*'\0'-terminated*/)
 #ifdef __GNUC__
 __attribute__ ((pure))
 #endif

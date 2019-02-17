@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -25,12 +25,19 @@ A_Nonnull_all_args
 A_Success(return)
 A_At(current, A_Inout)
 A_At(*current, A_In_reads_to_ptr(end))
-A_At(end, A_Notnull)
+A_At(**current, A_In_range('0','9'))
+A_At(end, A_Notnull A_Pre_deref_invalid)
 A_At(number, A_Out)
+A_Pre_satisfies(*current < end)
+A_Post_satisfies(*current == end || !('0' <= **current && **current <= '9'))
+A_On_failure(A_Post_satisfies(*current == A_Old(*current)))
 #endif
-static inline int read_uint_(const char **current, const char *end, unsigned *number/*out*/)
+static inline int read_uint_(
+	const char **const current,
+	const char *const end/*>(*current)*/,
+	unsigned *const number/*out*/)
 {
-	const char *s = gt_scan_uint(*current, end, number/*out*/);
+	const char *const s = gt_scan_uint(*current, end, number/*out*/);
 	if (!s)
 		return 0; /* integer overflow */
 	*current = s;
@@ -43,12 +50,19 @@ A_Nonnull_all_args
 A_Success(return)
 A_At(current, A_Inout)
 A_At(*current, A_In_reads_to_ptr(end))
-A_At(end, A_Notnull)
+A_At(**current, A_In_range('0','9'))
+A_At(end, A_Notnull A_Pre_deref_invalid)
 A_At(number, A_Out)
+A_Pre_satisfies(*current < end)
+A_Post_satisfies(*current == end || !('0' <= **current && **current <= '9'))
+A_On_failure(A_Post_satisfies(*current == A_Old(*current)))
 #endif
-static inline int read_uint64_(const char **current, const char *end, unsigned INT64_TYPE *number/*out*/)
+static inline int read_uint64_(
+	const char **const current,
+	const char *const end,
+	unsigned INT64_TYPE *const number/*out*/)
 {
-	const char *s = gt_scan_uint64(*current, end, number/*out*/);
+	const char *const s = gt_scan_uint64(*current, end, number/*out*/);
 	if (!s)
 		return 0; /* integer overflow */
 	*current = s;
@@ -63,9 +77,15 @@ A_Check_return
 A_Nonnull_all_args
 A_Success(return)
 A_At(it, A_Inout)
+A_At(*it->current, A_In_range('0','9'))
 A_At(number, A_Out)
+A_Pre_satisfies(it->current < it->end)
+A_Post_satisfies(it->current == it->end || !('0' <= *it->current && *it->current <= '9'))
+A_On_failure(A_Post_satisfies(it->current == A_Old(it->current)))
 #endif
-static inline int src_iter_read_uint(struct src_iter *it, unsigned *number/*out*/)
+static inline int src_iter_read_uint(
+	struct src_iter *const it,
+	unsigned *const number/*out*/)
 {
 	return read_uint_(&it->current, it->end, number/*out*/);
 }
@@ -75,9 +95,15 @@ A_Check_return
 A_Nonnull_all_args
 A_Success(return)
 A_At(it, A_Inout)
+A_At(*it->current, A_In_range('0','9'))
 A_At(number, A_Out)
+A_Pre_satisfies(it->current < it->end)
+A_Post_satisfies(it->current == it->end || !('0' <= *it->current && *it->current <= '9'))
+A_On_failure(A_Post_satisfies(it->current == A_Old(it->current)))
 #endif
-static inline int src_iter_read_uint64(struct src_iter *it, unsigned INT64_TYPE *number/*out*/)
+static inline int src_iter_read_uint64(
+	struct src_iter *const it,
+	unsigned INT64_TYPE *const number/*out*/)
 {
 	return read_uint64_(&it->current, it->end, number/*out*/);
 }
@@ -91,12 +117,25 @@ A_Nonnull_all_args
 A_Success(return)
 A_At(current, A_Inout)
 A_At(*current, A_In_reads_to_ptr(end))
-A_At(end, A_Notnull)
+A_At(end, A_Notnull A_Pre_deref_invalid)
 A_At(number, A_Out)
+A_Pre_satisfies(*current < end)
+A_Pre_satisfies(
+	('0' <= **current && **current <= '9') ||
+	('a' <= **current && **current <= 'f') ||
+	('A' <= **current && **current <= 'F'))
+A_Post_satisfies(*current == end || !(
+	('0' <= **current && **current <= '9') ||
+	('a' <= **current && **current <= 'f') ||
+	('A' <= **current && **current <= 'F')))
+A_On_failure(A_Post_satisfies(*current == A_Old(*current)))
 #endif
-static inline int read_hex_(const char **current, const char *end, unsigned *number/*out*/)
+static inline int read_hex_(
+	const char **const current,
+	const char *const end,
+	unsigned *const number/*out*/)
 {
-	const char *s = gt_scan_hex(*current, end, number/*out*/);
+	const char *const s = gt_scan_hex(*current, end, number/*out*/);
 	if (!s)
 		return 0; /* integer overflow */
 	*current = s;
@@ -109,12 +148,25 @@ A_Nonnull_all_args
 A_Success(return)
 A_At(current, A_Inout)
 A_At(*current, A_In_reads_to_ptr(end))
-A_At(end, A_Notnull)
+A_At(end, A_Notnull A_Pre_deref_invalid)
 A_At(number, A_Out)
+A_Pre_satisfies(*current < end)
+A_Pre_satisfies(
+	('0' <= **current && **current <= '9') ||
+	('a' <= **current && **current <= 'f') ||
+	('A' <= **current && **current <= 'F'))
+A_Post_satisfies(*current == end || !(
+	('0' <= **current && **current <= '9') ||
+	('a' <= **current && **current <= 'f') ||
+	('A' <= **current && **current <= 'F')))
+A_On_failure(A_Post_satisfies(*current == A_Old(*current)))
 #endif
-static inline int read_hex64_(const char **current, const char *end, unsigned INT64_TYPE *number/*out*/)
+static inline int read_hex64_(
+	const char **const current,
+	const char *const end,
+	unsigned INT64_TYPE *const number/*out*/)
 {
-	const char *s = gt_scan_hex64(*current, end, number/*out*/);
+	const char *const s = gt_scan_hex64(*current, end, number/*out*/);
 	if (!s)
 		return 0; /* integer overflow */
 	*current = s;
@@ -130,8 +182,20 @@ A_Nonnull_all_args
 A_Success(return)
 A_At(it, A_Inout)
 A_At(number, A_Out)
+A_Pre_satisfies(it->current < it->end)
+A_Pre_satisfies(
+	('0' <= *it->current && *it->current <= '9') ||
+	('a' <= *it->current && *it->current <= 'f') ||
+	('A' <= *it->current && *it->current <= 'F'))
+A_Post_satisfies(it->current == it->end || !(
+	('0' <= *it->current && *it->current <= '9') ||
+	('a' <= *it->current && *it->current <= 'f') ||
+	('A' <= *it->current && *it->current <= 'F')))
+A_On_failure(A_Post_satisfies(it->current == A_Old(it->current)))
 #endif
-static inline int src_iter_read_hex(struct src_iter *it, unsigned *number/*out*/)
+static inline int src_iter_read_hex(
+	struct src_iter *const it,
+	unsigned *const number/*out*/)
 {
 	return read_hex_(&it->current, it->end, number/*out*/);
 }
@@ -142,8 +206,20 @@ A_Nonnull_all_args
 A_Success(return)
 A_At(it, A_Inout)
 A_At(number, A_Out)
+A_Pre_satisfies(it->current < it->end)
+A_Pre_satisfies(
+	('0' <= *it->current && *it->current <= '9') ||
+	('a' <= *it->current && *it->current <= 'f') ||
+	('A' <= *it->current && *it->current <= 'F'))
+A_Post_satisfies(it->current == it->end || !(
+	('0' <= *it->current && *it->current <= '9') ||
+	('a' <= *it->current && *it->current <= 'f') ||
+	('A' <= *it->current && *it->current <= 'F')))
+A_On_failure(A_Post_satisfies(it->current == A_Old(it->current)))
 #endif
-static inline int src_iter_read_hex64(struct src_iter *it, unsigned INT64_TYPE *number/*out*/)
+static inline int src_iter_read_hex64(
+	struct src_iter *const it,
+	unsigned INT64_TYPE *const number/*out*/)
 {
 	return read_hex64_(&it->current, it->end, number/*out*/);
 }

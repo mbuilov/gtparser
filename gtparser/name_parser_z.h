@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2018-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-/* assume (*current) points to first name character,
+/* assume (*current) points to first name character (likely [_a-zA-Z]),
   returns scanned name */
 /* NOTE: after return (*current) points to non-[_a-zA-Z0-9], may be to '\0' */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
@@ -24,23 +24,37 @@ A_Ret_notnull
 A_Nonnull_all_args
 A_At(current, A_Inout)
 A_At(*current, A_In_z)
+A_Pre_satisfies(!!**current)
+A_Post_satisfies(
+	!('_' == **current ||
+	('0' <= **current && **current <= '9') ||
+	('a' <= **current && **current <= 'z') ||
+	('A' <= **current && **current <= 'Z')))
 #endif
-static inline const char *read_name_z_(const char **current)
+static inline const char *read_name_z_(
+	const char **const current)
 {
-	const char *name = *current;
+	const char *const name = *current;
 	*current = gt_scan_name_z(*current, end);
 	return name;
 }
 
-/* assume it->current points to first name character,
+/* assume it->current points to first name character (likely [_a-zA-Z]),
   returns scanned name */
 /* NOTE: after return it->current points to non-[_a-zA-Z0-9], may be to '\0' */
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Ret_notnull
 A_Nonnull_all_args
 A_At(it, A_Inout)
+A_Pre_satisfies(!!*it->current)
+A_Post_satisfies(
+	!('_' == *it->current ||
+	('0' <= *it->current && *it->current <= '9') ||
+	('a' <= *it->current && *it->current <= 'z') ||
+	('A' <= *it->current && *it->current <= 'Z')))
 #endif
-static inline const char *src_iter_z_read_name(struct src_iter_z *it)
+static inline const char *src_iter_z_read_name(
+	struct src_iter_z *const it)
 {
 	return read_name_z_(&it->current);
 }
