@@ -1,6 +1,6 @@
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -19,11 +19,14 @@
 
 /* s points to [0-9] */
 A_Use_decl_annotations
-GTPARSER_EXPORTS const char *gt_scan_uint(const char *s/*<end*/, const char *const end, unsigned *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_uint(
+	const char *s/*<end*/,
+	const char *const end,
+	unsigned *const number/*out*/)
 {
 	unsigned n = digit_value(*s);
 	while (++s != end) {
-		unsigned x = digit_value(*s);
+		const unsigned x = digit_value(*s);
 		if (x > 9)
 			break;
 		if (n > (unsigned)-1/10)
@@ -53,11 +56,14 @@ GTPARSER_EXPORTS const char *gt_scan_uint(const char *s/*<end*/, const char *con
 
 /* s points to [0-9] */
 A_Use_decl_annotations
-GTPARSER_EXPORTS const char *gt_scan_uint64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_uint64(
+	const char *s/*<end*/,
+	const char *const end,
+	unsigned INT64_TYPE *const number/*out*/)
 {
 	unsigned INT64_TYPE n = digit_value(*s);
 	while (++s != end) {
-		unsigned x = digit_value(*s);
+		const unsigned x = digit_value(*s);
 		if (x > 9)
 			break;
 		if (n > (unsigned INT64_TYPE)-1/10)
@@ -87,11 +93,14 @@ GTPARSER_EXPORTS const char *gt_scan_uint64(const char *s/*<end*/, const char *c
 
 /* s points to [0-9a-fA-F] */
 A_Use_decl_annotations
-GTPARSER_EXPORTS const char *gt_scan_hex(const char *s/*<end*/, const char *const end, unsigned *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_hex(
+	const char *s/*<end*/,
+	const char *const end,
+	unsigned *const number/*out*/)
 {
 	unsigned n = hex_char_value(*s);
 	while (++s != end) {
-		unsigned x = hex_char_value(*s);
+		const unsigned x = hex_char_value(*s);
 		if (x > 15)
 			break;
 		if (n > ((unsigned)-1 >> 4))
@@ -104,11 +113,14 @@ GTPARSER_EXPORTS const char *gt_scan_hex(const char *s/*<end*/, const char *cons
 
 /* s points to [0-9a-fA-F] */
 A_Use_decl_annotations
-GTPARSER_EXPORTS const char *gt_scan_hex64(const char *s/*<end*/, const char *const end, unsigned INT64_TYPE *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_hex64(
+	const char *s/*<end*/,
+	const char *const end,
+	unsigned INT64_TYPE *const number/*out*/)
 {
 	unsigned INT64_TYPE n = hex_char_value(*s);
 	while (++s != end) {
-		unsigned x = hex_char_value(*s);
+		const unsigned x = hex_char_value(*s);
 		if (x > 15)
 			break;
 		if (n > ((unsigned INT64_TYPE)-1 >> 4))
@@ -121,11 +133,13 @@ GTPARSER_EXPORTS const char *gt_scan_hex64(const char *s/*<end*/, const char *co
 
 /* s points to [0-9] */
 A_Use_decl_annotations
-GTPARSER_EXPORTS const char *gt_scan_uint_z(const char *s/*'\0'-terminated*/, unsigned *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_uint_z(
+	const char *s/*'\0'-terminated*/,
+	unsigned *const number/*out*/)
 {
 	unsigned n = digit_value(*s);
 	for (;;) {
-		unsigned x = digit_value(*++s);
+		const unsigned x = digit_value(*++s);
 		if (x > 9)
 			break;
 		if (n > (unsigned)-1/10)
@@ -155,11 +169,13 @@ GTPARSER_EXPORTS const char *gt_scan_uint_z(const char *s/*'\0'-terminated*/, un
 
 /* s points to [0-9] */
 A_Use_decl_annotations
-GTPARSER_EXPORTS const char *gt_scan_uint64_z(const char *s/*'\0'-terminated*/, unsigned INT64_TYPE *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_uint64_z(
+	const char *s/*'\0'-terminated*/,
+	unsigned INT64_TYPE *const number/*out*/)
 {
 	unsigned INT64_TYPE n = digit_value(*s);
 	for (;;) {
-		unsigned x = digit_value(*++s);
+		const unsigned x = digit_value(*++s);
 		if (x > 9)
 			break;
 		if (n > (unsigned INT64_TYPE)-1/10)
@@ -189,11 +205,13 @@ GTPARSER_EXPORTS const char *gt_scan_uint64_z(const char *s/*'\0'-terminated*/, 
 
 /* s points to [0-9a-fA-F] */
 A_Use_decl_annotations
-GTPARSER_EXPORTS const char *gt_scan_hex_z(const char *s/*'\0'-terminated*/, unsigned *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_hex_z(
+	const char *s/*'\0'-terminated*/,
+	unsigned *const number/*out*/)
 {
 	unsigned n = hex_char_value(*s);
 	for (;;) {
-		unsigned x = hex_char_value(*++s);
+		const unsigned x = hex_char_value(*++s);
 		if (x > 15)
 			break;
 		if (n > ((unsigned)-1 >> 4))
@@ -206,11 +224,13 @@ GTPARSER_EXPORTS const char *gt_scan_hex_z(const char *s/*'\0'-terminated*/, uns
 
 /* s points to [0-9a-fA-F] */
 A_Use_decl_annotations
-GTPARSER_EXPORTS const char *gt_scan_hex64_z(const char *s/*'\0'-terminated*/, unsigned INT64_TYPE *number/*out*/)
+GTPARSER_EXPORTS const char *gt_scan_hex64_z(
+	const char *s/*'\0'-terminated*/,
+	unsigned INT64_TYPE *const number/*out*/)
 {
 	unsigned INT64_TYPE n = hex_char_value(*s);
 	for (;;) {
-		unsigned x = hex_char_value(*++s);
+		const unsigned x = hex_char_value(*++s);
 		if (x > 15)
 			break;
 		if (n > ((unsigned INT64_TYPE)-1 >> 4))

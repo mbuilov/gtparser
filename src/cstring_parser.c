@@ -24,11 +24,13 @@
 #undef ITER_NEXT
 
 A_Use_decl_annotations
-GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/)
+GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(
+	struct src_iter *const it,
+	size_t *const removed/*out*/)
 {
 	const char *current = it->current;
 	size_t removed_ = 0;
-	enum GT_PARSE_CSTRING_ERR r = parse_cstring(&it->loc, &current, &removed_, GTPARSER_TAB_SIZE(it), it->end);
+	const enum GT_PARSE_CSTRING_ERR r = parse_cstring(&it->loc, &current, &removed_, GTPARSER_TAB_SIZE(it), it->end);
 	it->current = current;
 	*removed = removed_;
 	return r;
@@ -42,18 +44,24 @@ GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it,
 #undef ITER_NEXT
 
 A_Use_decl_annotations
-GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z *it, size_t *removed/*out*/)
+GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(
+	struct src_iter_z *const it,
+	size_t *const removed/*out*/)
 {
 	const char *current = it->current;
 	size_t removed_ = 0;
-	enum GT_PARSE_CSTRING_ERR r = parse_cstring_z(&it->loc, &current, &removed_, GTPARSER_TAB_SIZE(it));
+	const enum GT_PARSE_CSTRING_ERR r = parse_cstring_z(&it->loc, &current, &removed_, GTPARSER_TAB_SIZE(it));
 	it->current = current;
 	*removed = removed_;
 	return r;
 }
 
 A_Use_decl_annotations
-GTPARSER_EXPORTS void gt_copy_cstring(char *A_Restrict dst/*out*/, const char *A_Restrict begin, const char *end, size_t removed)
+GTPARSER_EXPORTS void gt_copy_cstring(
+	char *A_Restrict dst/*out*/,
+	const char *A_Restrict begin,
+	const char *const end,
+	size_t removed)
 {
 	/* copy char-by-char unescaping escape sequences */
 	while (removed) {
@@ -87,7 +95,7 @@ cr_after_lf:
 						if (--removed) { /* x in "\xF" */
 							ASSERT(begin < end); /* otherwise invalid string was parsed */
 							{
-								unsigned m = hex_char_value_(*begin);
+								const unsigned m = hex_char_value_(*begin);
 								if (m <= 15) {
 									begin++;
 									n = n*16 + m;

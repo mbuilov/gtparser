@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -48,7 +48,9 @@ A_Success(return == GT_PARSE_CSTRING_OK)
 A_At(it, A_Inout)
 A_At(removed, A_Out)
 #endif
-GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(struct src_iter *it, size_t *removed/*out*/);
+GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring(
+	struct src_iter *const it,
+	size_t *const removed/*out*/);
 
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Check_return
@@ -57,7 +59,9 @@ A_Success(return == GT_PARSE_CSTRING_OK)
 A_At(it, A_Inout)
 A_At(removed, A_Out)
 #endif
-GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(struct src_iter_z *it, size_t *removed/*out*/);
+GTPARSER_EXPORTS enum GT_PARSE_CSTRING_ERR gt_parse_cstring_z(
+	struct src_iter_z *const it,
+	size_t *const removed/*out*/);
 
 #ifndef SAL_DEFS_H_INCLUDED
 #define A_Restrict
@@ -75,7 +79,11 @@ A_At(begin, A_In_reads_to_ptr(end))
 A_At(end, A_Notnull)
 A_At(removed, A_Pre_satisfies(removed <= end - begin))
 #endif
-GTPARSER_EXPORTS void gt_copy_cstring(char *A_Restrict dst/*out*/, const char *A_Restrict begin, const char *end, size_t removed);
+GTPARSER_EXPORTS void gt_copy_cstring(
+	char *A_Restrict dst/*out*/,
+	const char *A_Restrict begin,
+	const char *const end,
+	size_t removed);
 
 #ifndef SAL_DEFS_H_INCLUDED
 #undef A_Restrict

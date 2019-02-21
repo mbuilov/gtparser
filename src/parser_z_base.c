@@ -15,10 +15,10 @@
 
 /* it points to checked char, likely '#' */
 A_Use_decl_annotations
-GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *it)
+GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *const it)
 {
 	const char *s = it->current;
-	unsigned tab_size = GTPARSER_TAB_SIZE(it);
+	const unsigned tab_size = GTPARSER_TAB_SIZE(it);
 	while (src_iter_z_next_(&s)) {
 		src_iter_check_(&it->loc.line, &it->loc.back_column, s, tab_size);
 		if ('\n' == src_iter_current_char_(s)) {
@@ -31,10 +31,10 @@ GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *it)
 
 /* it points to unchecked char or to '\0' */
 A_Use_decl_annotations
-GTPARSER_EXPORTS char gt_read_non_space_skip_comments_z(struct src_iter_z *it, char comment)
+GTPARSER_EXPORTS char gt_read_non_space_skip_comments_z(struct src_iter_z *const it, const char comment)
 {
 	while (!src_iter_z_eof(it)) {
-		char c = src_iter_z_current_char(it);
+		const char c = src_iter_z_current_char(it);
 		if (comment == c) {
 			src_iter_z_skip_comment(it);
 			continue;
@@ -49,10 +49,10 @@ GTPARSER_EXPORTS char gt_read_non_space_skip_comments_z(struct src_iter_z *it, c
 
 /* it points to unchecked char or to '\0' */
 A_Use_decl_annotations
-GTPARSER_EXPORTS char gt_read_non_space_stop_eol_z(struct src_iter_z *it)
+GTPARSER_EXPORTS char gt_read_non_space_stop_eol_z(struct src_iter_z *const it)
 {
 	while (!src_iter_z_eof(it)) {
-		char c = src_iter_z_current_char(it);
+		const char c = src_iter_z_current_char(it);
 		if ('\n' == c || !is_space(c))
 			return c;
 		src_iter_z_check_tab(it);

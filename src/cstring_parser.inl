@@ -8,8 +8,11 @@
 
 /* ENDPARAM           - <empty> or <, const char *const end> */
 /* ITER_NEXT(current) - src_iter_z_next_(current) or src_iter_next_(current, end) */
-static enum GT_PARSE_CSTRING_ERR parse_cstring(struct src_iter_loc *loc,
-	const char **current, size_t *removed, unsigned tab_size ENDPARAM)
+static enum GT_PARSE_CSTRING_ERR parse_cstring(
+	struct src_iter_loc *const loc,
+	const char **const current,
+	size_t *const removed,
+	const unsigned tab_size ENDPARAM)
 {
 	const char quote = src_iter_current_char_(*current);
 	while (ITER_NEXT(current)) {
@@ -40,14 +43,14 @@ switch_c:
 					break; /* error: unterminated string */
 				c = src_iter_current_char_(*current);
 				{
-					unsigned n = hex_char_value_(c);
+					const unsigned n = hex_char_value_(c);
 					if (n > 15)
 						return GT_PARSE_CSTRING_EXPECTING_HEX_DIGIT; /* expecting hexadecimal digit in hex escape sequence after \x */
 					if (!ITER_NEXT(current))
 						break; /* error: unterminated string */
 					c = src_iter_current_char_(*current);
 					{
-						unsigned m = hex_char_value_(c);
+						const unsigned m = hex_char_value_(c);
 						if (m <= 15 && n + m) {
 							(*removed) += 2; /* xf in "\xff" */
 							continue;

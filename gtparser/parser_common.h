@@ -43,7 +43,7 @@ static inline unsigned gtparser_ptr_to_uint(const char *const p)
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4826) /* Conversion from 'const char *' to 'unsigned __int64' is sign-extended */
-#elif !defined __cplusplus && defined __GNUC__ && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
+#elif !defined __cplusplus && defined __GNUC__ && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-to-int-cast" /* warning: cast from pointer to integer of different size */
 #endif
@@ -51,7 +51,7 @@ static inline unsigned gtparser_ptr_to_uint(const char *const p)
 		0*sizeof(int[1-2*(sizeof(const char*) > sizeof(unsigned long long))]);
 #ifdef _MSC_VER
 #pragma warning(pop)
-#elif !defined __cplusplus && defined __GNUC__ && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
+#elif !defined __cplusplus && defined __GNUC__ && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 #pragma GCC diagnostic pop
 #endif
 }

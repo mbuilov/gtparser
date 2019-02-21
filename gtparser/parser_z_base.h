@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2018-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -21,7 +21,7 @@ struct src_iter_z {
 	const char *current;
 	struct src_iter_loc loc;
 #ifdef __cplusplus
-	inline void init(const char *input/*'\0'-terminated*/);
+	inline void init(const char *const input/*'\0'-terminated*/);
 	inline void step();
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Check_return
@@ -66,7 +66,7 @@ A_Nonnull_all_args
 A_At(it, A_Out)
 A_At(input, A_In_z)
 #endif
-static inline void src_iter_z_init(struct src_iter_z *it, const char *input/*'\0'-terminated*/)
+static inline void src_iter_z_init(struct src_iter_z *const it, const char *const input/*'\0'-terminated*/)
 {
 	it->current = input;
 	src_iter_loc_init(&it->loc, input);
@@ -78,7 +78,7 @@ static inline void src_iter_z_init(struct src_iter_z *it, const char *input/*'\0
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-static inline void src_iter_z_step(struct src_iter_z *it)
+static inline void src_iter_z_step(struct src_iter_z *const it)
 {
 	src_iter_step_(&it->current);
 }
@@ -89,7 +89,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(current, A_In_z)
 #endif
-static inline int src_iter_z_eof_(const char *current)
+static inline int src_iter_z_eof_(const char *const current)
 {
 	return !*current;
 }
@@ -100,7 +100,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(it, A_In)
 #endif
-static inline int src_iter_z_eof(const struct src_iter_z *it)
+static inline int src_iter_z_eof(const struct src_iter_z *const it)
 {
 	return src_iter_z_eof_(it->current);
 }
@@ -113,7 +113,7 @@ A_Nonnull_all_args
 A_At(current, A_Inout)
 A_At(*current, A_In_z)
 #endif
-static inline int src_iter_z_next_(const char **current)
+static inline int src_iter_z_next_(const char **const current)
 {
 	src_iter_step_(current);
 	return !src_iter_z_eof_(*current);
@@ -126,7 +126,7 @@ static inline int src_iter_z_next_(const char **current)
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-static inline int src_iter_z_next(struct src_iter_z *it)
+static inline int src_iter_z_next(struct src_iter_z *const it)
 {
 	return src_iter_z_next_(&it->current);
 }
@@ -136,7 +136,7 @@ static inline int src_iter_z_next(struct src_iter_z *it)
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-static inline void src_iter_z_process_tab(struct src_iter_z *it)
+static inline void src_iter_z_process_tab(struct src_iter_z *const it)
 {
 	src_iter_process_tab_(&it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
@@ -148,7 +148,7 @@ static inline void src_iter_z_process_tab(struct src_iter_z *it)
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-static inline int src_iter_z_check_tab(struct src_iter_z *it)
+static inline int src_iter_z_check_tab(struct src_iter_z *const it)
 {
 	return src_iter_check_tab_(&it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
@@ -158,7 +158,7 @@ static inline int src_iter_z_check_tab(struct src_iter_z *it)
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-static inline void src_iter_z_inc_line(struct src_iter_z *it)
+static inline void src_iter_z_inc_line(struct src_iter_z *const it)
 {
 	src_iter_inc_line_(&it->loc.line, &it->loc.back_column, it->current);
 }
@@ -171,7 +171,7 @@ static inline void src_iter_z_inc_line(struct src_iter_z *it)
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-static inline int src_iter_z_check(struct src_iter_z *it)
+static inline int src_iter_z_check(struct src_iter_z *const it)
 {
 	return src_iter_check_(&it->loc.line, &it->loc.back_column, it->current, GTPARSER_TAB_SIZE(it));
 }
@@ -182,7 +182,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(it, A_In)
 #endif
-static inline char src_iter_z_current_char(const struct src_iter_z *it)
+static inline char src_iter_z_current_char(const struct src_iter_z *const it)
 {
 	return src_iter_current_char_(it->current);
 }
@@ -193,7 +193,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(current, A_In_z)
 #endif
-static inline char src_iter_z_char_or_eof_(const char *current)
+static inline char src_iter_z_char_or_eof_(const char *const current)
 {
 	return *current;
 }
@@ -204,7 +204,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(it, A_In)
 #endif
-static inline char src_iter_z_char_or_eof(const struct src_iter_z *it)
+static inline char src_iter_z_char_or_eof(const struct src_iter_z *const it)
 {
 	return src_iter_z_char_or_eof_(it->current);
 }
@@ -215,7 +215,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(it, A_In)
 #endif
-static inline unsigned src_iter_z_get_column(const struct src_iter_z *it)
+static inline unsigned src_iter_z_get_column(const struct src_iter_z *const it)
 {
 	return src_iter_get_column_(it->current, it->loc.back_column);
 }
@@ -225,7 +225,7 @@ A_Nonnull_all_args
 A_At(it, A_In)
 A_At(pos, A_Out)
 #endif
-static inline void src_iter_z_get_pos(const struct src_iter_z *it, struct src_pos *pos/*out*/)
+static inline void src_iter_z_get_pos(const struct src_iter_z *const it, struct src_pos *const pos/*out*/)
 {
 	src_iter_get_pos_(it->loc.line, it->current, it->loc.back_column, pos);
 }
@@ -235,7 +235,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(it, A_In)
 #endif
-static inline struct src_pos src_iter_z_return_pos(const struct src_iter_z *it)
+static inline struct src_pos src_iter_z_return_pos(const struct src_iter_z *const it)
 {
 	return src_iter_return_pos_(it->loc.line, it->current, it->loc.back_column);
 }
@@ -245,7 +245,7 @@ A_Nonnull_all_args
 A_At(it, A_In)
 A_At(save_pos, A_Out)
 #endif
-static inline void src_iter_z_save_pos(const struct src_iter_z *it, struct src_save_pos *save_pos/*out*/)
+static inline void src_iter_z_save_pos(const struct src_iter_z *const it, struct src_save_pos *const save_pos/*out*/)
 {
 	src_iter_save_pos_(it->loc.line, it->current, it->loc.back_column, save_pos);
 }
@@ -255,7 +255,7 @@ A_Check_return
 A_Nonnull_all_args
 A_At(it, A_In)
 #endif
-static inline struct src_save_pos src_iter_z_return_save_pos(const struct src_iter_z *it)
+static inline struct src_save_pos src_iter_z_return_save_pos(const struct src_iter_z *const it)
 {
 	return src_iter_return_save_pos_(it->loc.line, it->current, it->loc.back_column);
 }
@@ -265,7 +265,7 @@ A_Nonnull_all_args
 A_At(it, A_Inout)
 A_At(save_pos, A_In)
 #endif
-static inline void src_iter_z_restore_pos(struct src_iter_z *it, const struct src_save_pos *save_pos/*in*/)
+static inline void src_iter_z_restore_pos(struct src_iter_z *const it, const struct src_save_pos *const save_pos/*in*/)
 {
 	src_iter_restore_pos_(&it->loc.line, &it->current, &it->loc.back_column, save_pos);
 }
@@ -276,7 +276,7 @@ static inline void src_iter_z_restore_pos(struct src_iter_z *it, const struct sr
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *it);
+GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *const it);
 #define src_iter_z_skip_comment(it) gt_skip_rest_of_line_z(it)
 
 /* input:  'it' points to unchecked char or to '\0' */
@@ -286,7 +286,7 @@ GTPARSER_EXPORTS void gt_skip_rest_of_line_z(struct src_iter_z *it);
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-GTPARSER_EXPORTS char gt_read_non_space_skip_comments_z(struct src_iter_z *it, char comment/*'#'*/);
+GTPARSER_EXPORTS char gt_read_non_space_skip_comments_z(struct src_iter_z *const it, const char comment/*'#'*/);
 #define src_iter_z_read_non_space_skip_comments(it, comment) gt_read_non_space_skip_comments_z(it, comment)
 
 /* input:  'it' points to unchecked char or to '\0' */
@@ -296,12 +296,12 @@ GTPARSER_EXPORTS char gt_read_non_space_skip_comments_z(struct src_iter_z *it, c
 A_Nonnull_all_args
 A_At(it, A_Inout)
 #endif
-GTPARSER_EXPORTS char gt_read_non_space_stop_eol_z(struct src_iter_z *it);
+GTPARSER_EXPORTS char gt_read_non_space_stop_eol_z(struct src_iter_z *const it);
 #define src_iter_z_read_non_space_stop_eol(it) gt_read_non_space_stop_eol_z(it)
 
 #ifdef __cplusplus
 
-inline void src_iter_z::init(const char *input/*'\0'-terminated*/)
+inline void src_iter_z::init(const char *const input/*'\0'-terminated*/)
 {
 	src_iter_z_init(this, input);
 }
