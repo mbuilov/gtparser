@@ -237,6 +237,26 @@ static inline unsigned src_iter_get_column_(
 #endif
 }
 
+/* convert back-column <-> column */
+/* note: assume 'current' is not changed between conversions */
+#ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
+A_Nonnull_all_args
+A_At(current, A_Notnull)
+A_At(xcolumn, A_Inout)
+#endif
+static inline void src_iter_convert_column_(
+	const char *const current,
+	unsigned *const xcolumn)
+{
+	/* 1) first call - get column from back-column:
+	  column = (unsigned)current1 - back_column;
+	   2) next call - convert column back to back-column:
+	  back_column = (unsigned)current2 - column =
+	   (unsigned)current2 - ((unsigned)current1 - back_column) =
+	   (unsigned)current2 - (unsigned)current1 + back_column */
+	*xcolumn = src_iter_get_column_(current, *xcolumn);
+}
+
 #ifdef SAL_DEFS_H_INCLUDED /* include "sal_defs.h" for the annotations */
 A_Nonnull_all_args
 A_At(current, A_Notnull)
