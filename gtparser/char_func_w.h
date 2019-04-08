@@ -129,7 +129,7 @@ static inline wchar_t latin_letter_to_lower_w(wchar_t c)
 	ASSERT(is_latin_letter_w_(c));
 #endif
 	{
-		unsigned x = (unsigned)c;
+		const unsigned x = (unsigned)c;
 		return (wchar_t)(x | 32u);
 	}
 }
@@ -141,20 +141,20 @@ static inline wchar_t latin_letter_to_upper_w(wchar_t c)
 	ASSERT(is_latin_letter_w_(c));
 #endif
 	{
-		unsigned x = (unsigned)c;
+		const unsigned x = (unsigned)c;
 		return (wchar_t)(x & ~32u);
 	}
 }
 
 static inline wchar_t latin_to_lower_w(wchar_t c)
 {
-	unsigned x = 32u | (unsigned)c;
+	const unsigned x = 32u | (unsigned)c;
 	return L'a' <= x && x <= L'z' ? (wchar_t)x : c;
 }
 
 static inline wchar_t latin_to_upper_w(wchar_t c)
 {
-	unsigned x = ~32u & (unsigned)c;
+	const unsigned x = ~32u & (unsigned)c;
 	return L'A' <= x && x <= L'Z' ? (wchar_t)x : c;
 }
 

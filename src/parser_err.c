@@ -51,7 +51,7 @@ A_Use_decl_annotations
 GTPARSER_EXPORTS const char *gt_parser_err_prepend_at(char err_buf[], size_t err_buf_size, size_t filename_reserve/*0?*/,
 	const char *filename/*NULL?,'\0'-terminated*/, const char *err, unsigned line, unsigned column)
 {
-	char *buf = gt_parser_err_reserve(err_buf, err_buf_size, filename_reserve);
+	const char *const buf = gt_parser_err_reserve(err_buf, err_buf_size, filename_reserve);
 	if (buf != err_buf) {
 		char *err_buf_tail = err_buf;
 		if (buf != err_buf + PE_RESERVE && filename) {
@@ -75,7 +75,7 @@ GTPARSER_EXPORTS const char *gt_parser_err_prepend_at(char err_buf[], size_t err
 			err_buf_tail[printed++] = ' '; /* eat one byte reserved by '\0' in PE_RESERVE */
 			if (err != buf) {
 				char *dst = err_buf_tail + printed; /* (dst < err_buf + err_buf_size) because (err_buf_size > PE_RESERVE) */
-				size_t free = (size_t)(err_buf + err_buf_size - dst) - 1/*for terminating '\0'*/; /* >= 0 */
+				const size_t free = (size_t)(err_buf + err_buf_size - dst) - 1/*for terminating '\0'*/; /* >= 0 */
 				if (free) {
 					size_t len = STRLEN(err);
 					if (len > free)
@@ -88,7 +88,7 @@ GTPARSER_EXPORTS const char *gt_parser_err_prepend_at(char err_buf[], size_t err
 			else {
 				/* [filename][printed]<-gap->[err]
 				   ^err_buf  ^err_buf_tail   ^err  */
-				size_t gap = (size_t)(err - printed - err_buf_tail);
+				const size_t gap = (size_t)(err - printed - err_buf_tail);
 				if (gap)
 					MEMMOVE(err_buf + gap, err_buf, (size_t)(err_buf_tail + printed - err_buf)); /* move forward */
 				err = err_buf + gap;
@@ -101,7 +101,7 @@ GTPARSER_EXPORTS const char *gt_parser_err_prepend_at(char err_buf[], size_t err
 A_Use_decl_annotations
 GTPARSER_EXPORTS char *gt_parser_err_print_chars(char *buf/*<=end*/, const char *const end, const char chars[], size_t count)
 {
-	size_t buf_size = (size_t)(end - buf);
+	const size_t buf_size = (size_t)(end - buf);
 	if (count > buf_size)
 		count = buf_size; /* trim chars array tail */
 	MEMCPY(buf, chars, count);
@@ -125,7 +125,7 @@ GTPARSER_EXPORTS char *gt_parser_err_print(char *buf/*<=end*/, const char *const
 	va_start(args, format);
 	{
 		size_t buf_size = (size_t)(end - buf);
-		int n = VSNPRINTF(buf, buf_size, format, args);
+		const int n = VSNPRINTF(buf, buf_size, format, args);
 		if (n < 0 || (size_t)n > buf_size)
 			buf += buf_size;
 		else

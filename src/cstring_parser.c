@@ -74,9 +74,8 @@ GTPARSER_EXPORTS void gt_copy_cstring(
 				case '\r':
 					ASSERT(removed > 1); /* otherwise invalid string was parsed */
 					removed--;
-					goto cr_after_lf;
+					FALLTHROUGH;
 				case '\n':
-cr_after_lf:
 					ASSERT(removed); /* otherwise invalid string was parsed */
 					removed--;
 					continue; /* skip line continuation (split) */

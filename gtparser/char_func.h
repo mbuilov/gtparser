@@ -126,7 +126,7 @@ static inline char latin_letter_to_lower(char c)
 	ASSERT(is_latin_letter_(c));
 #endif
 	{
-		unsigned x = (unsigned char)c;
+		const unsigned x = (unsigned char)c;
 		return (char)(unsigned char)(x | 32u);
 	}
 }
@@ -138,20 +138,20 @@ static inline char latin_letter_to_upper(char c)
 	ASSERT(is_latin_letter_(c));
 #endif
 	{
-		unsigned x = (unsigned char)c;
+		const unsigned x = (unsigned char)c;
 		return (char)(unsigned char)(x & ~32u);
 	}
 }
 
 static inline char latin_to_lower(char c)
 {
-	unsigned x = 32u | (unsigned char)c;
+	const unsigned x = 32u | (unsigned char)c;
 	return ('a' <= x && x <= 'z') ? (char)(unsigned char)x : c;
 }
 
 static inline char latin_to_upper(char c)
 {
-	unsigned x = ~32u & (unsigned char)c;
+	const unsigned x = ~32u & (unsigned char)c;
 	return ('A' <= x && x <= 'Z') ? (char)(unsigned char)x : c;
 }
 
