@@ -3,7 +3,7 @@
 
 /*******************************************************************************
 * gtparser - Generic Text parsing functions library
-* Copyright (C) 2008-2018 Michael M. Builov, https://github.com/mbuilov/gtparser
+* Copyright (C) 2008-2019 Michael M. Builov, https://github.com/mbuilov/gtparser
 * Licensed under LGPL version 2.1 or any later version, see COPYING
 *******************************************************************************/
 
@@ -83,7 +83,7 @@ typedef int gt_bad_LATIN_[1-2*(
 /* needed for is_first_name_() and hex_char_value_() */
 typedef int gt_bad_a_A_diff_[1-2*('a' - 'A' != 32 || '_' != 95)];
 
-static inline int is_latin_letter_(char c)
+static inline int is_latin_letter_(const char c)
 {
 	unsigned x = (unsigned char)c;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
@@ -95,7 +95,7 @@ static inline int is_latin_letter_(char c)
 	return (x & ~32u) <= 'Z' - 'A';
 }
 
-static inline int is_latin_upper_letter_(char c)
+static inline int is_latin_upper_letter_(const char c)
 {
 	unsigned x = (unsigned char)c;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
@@ -107,7 +107,7 @@ static inline int is_latin_upper_letter_(char c)
 	return x <= 'Z' - 'A';
 }
 
-static inline int is_latin_lower_letter_(char c)
+static inline int is_latin_lower_letter_(const char c)
 {
 	unsigned x = (unsigned char)c;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
@@ -120,7 +120,7 @@ static inline int is_latin_lower_letter_(char c)
 }
 
 /* convert [A-Z] -> [a-z] */
-static inline char latin_letter_to_lower(char c)
+static inline char latin_letter_to_lower(const char c)
 {
 #ifdef ASSERT
 	ASSERT(is_latin_letter_(c));
@@ -132,7 +132,7 @@ static inline char latin_letter_to_lower(char c)
 }
 
 /* convert [a-z] -> [A-Z] */
-static inline char latin_letter_to_upper(char c)
+static inline char latin_letter_to_upper(const char c)
 {
 #ifdef ASSERT
 	ASSERT(is_latin_letter_(c));
@@ -143,26 +143,26 @@ static inline char latin_letter_to_upper(char c)
 	}
 }
 
-static inline char latin_to_lower(char c)
+static inline char latin_to_lower(const char c)
 {
 	const unsigned x = 32u | (unsigned char)c;
 	return ('a' <= x && x <= 'z') ? (char)(unsigned char)x : c;
 }
 
-static inline char latin_to_upper(char c)
+static inline char latin_to_upper(const char c)
 {
 	const unsigned x = ~32u & (unsigned char)c;
 	return ('A' <= x && x <= 'Z') ? (char)(unsigned char)x : c;
 }
 
 /* name must be started with a latin letter or '_' */
-static inline int is_first_name_(char c)
+static inline int is_first_name_(const char c)
 {
 	return is_latin_letter_(c) || c == '_';
 }
 
 /* returns decimal digit value or >9 if non-decimal digit char */
-static inline unsigned digit_value(char c)
+static inline unsigned digit_value(const char c)
 {
 	unsigned x = (unsigned char)c;
 #ifdef UBSAN_UNSIGNED_OVERFLOW
@@ -175,13 +175,13 @@ static inline unsigned digit_value(char c)
 }
 
 /* returns non-zero if c is a decimal digit */
-static inline int is_digit(char c)
+static inline int is_digit(const char c)
 {
 	return digit_value(c) <= 9;
 }
 
 /* name may be continued by a letter, digit or '_' */
-static inline int is_next_name_(char c)
+static inline int is_next_name_(const char c)
 {
 	return is_first_name_(c) || is_digit(c);
 }
@@ -190,7 +190,7 @@ static inline int is_next_name_(char c)
 typedef int gt_bad_A_0_diff_[1-2*('A' - '0' <= 0)];
 
 /* returns hex char value or >15 if non-hex char */
-static inline unsigned hex_char_value_(char c)
+static inline unsigned hex_char_value_(const char c)
 {
 	unsigned x = digit_value(c);
 	if (x > 9) {
