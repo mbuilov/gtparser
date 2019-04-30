@@ -9,6 +9,9 @@
 
 /* char_func_w.h */
 
+/* helper macros */
+#include "int_char.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -86,40 +89,25 @@ typedef int gt_too_wide_wchar_t_[1-2*(sizeof(unsigned) < sizeof(wchar_t))];
 /* needed for is_first_name_w_() and hex_char_value_w_() */
 typedef int gt_bad_a_A_diff_w_[1-2*(L'a' - L'A' != 32 || L'_' != 95)];
 
-static inline int is_latin_letter_w_(const wchar_t c)
-{
-	unsigned x = (unsigned)c;
-#ifdef UBSAN_UNSIGNED_OVERFLOW
-	if (x < L'A')
-		x += ((unsigned)-1 - L'A') + 1u;
-	else
-#endif
-		x -= L'A';
-	return (x & ~32u) <= L'Z' - L'A';
-}
-
+/* check that 'c' in [A-Z] */
 static inline int is_latin_upper_letter_w_(const wchar_t c)
 {
-	unsigned x = (unsigned)c;
-#ifdef UBSAN_UNSIGNED_OVERFLOW
-	if (x < L'A')
-		x += ((unsigned)-1 - L'A') + 1u;
-	else
-#endif
-		x -= L'A';
+	const unsigned x = GT_UINT_DIFF(unsigned, (unsigned)c, L'A');
 	return x <= L'Z' - L'A';
 }
 
+/* check that 'c' in [a-z] */
 static inline int is_latin_lower_letter_w_(const wchar_t c)
 {
-	unsigned x = (unsigned)c;
-#ifdef UBSAN_UNSIGNED_OVERFLOW
-	if (x < L'a')
-		x += ((unsigned)-1 - L'a') + 1u;
-	else
-#endif
-		x -= L'a';
+	const unsigned x = GT_UINT_DIFF(unsigned, (unsigned)c, L'a');
 	return x <= L'z' - L'a';
+}
+
+/* check that 'c' in [a-zA-Z] */
+static inline int is_latin_letter_w_(const wchar_t c)
+{
+	const unsigned x = GT_UINT_DIFF(unsigned, (unsigned)c, L'A');
+	return (x & ~32u) <= L'Z' - L'A';
 }
 
 /* convert [A-Z] -> [a-z] */
@@ -146,16 +134,18 @@ static inline wchar_t latin_letter_to_upper_w(const wchar_t c)
 	}
 }
 
+/* convert only [a-zA-Z] -> [a-z], don't change non-latin letters */
 static inline wchar_t latin_to_lower_w(const wchar_t c)
 {
 	const unsigned x = 32u | (unsigned)c;
-	return L'a' <= x && x <= L'z' ? (wchar_t)x : c;
+	return (L'a' <= x && x <= L'z') ? (wchar_t)x : c;
 }
 
+/* convert only [a-zA-Z] -> [A-Z], don't change non-latin letters */
 static inline wchar_t latin_to_upper_w(const wchar_t c)
 {
 	const unsigned x = ~32u & (unsigned)c;
-	return L'A' <= x && x <= L'Z' ? (wchar_t)x : c;
+	return (L'A' <= x && x <= L'Z') ? (wchar_t)x : c;
 }
 
 /* name must be started with a latin letter or '_' */
@@ -167,14 +157,7 @@ static inline int is_first_name_w_(const wchar_t c)
 /* returns decimal digit value or >9 if non-decimal digit char */
 static inline unsigned digit_value_w(const wchar_t c)
 {
-	unsigned x = (unsigned)c;
-#ifdef UBSAN_UNSIGNED_OVERFLOW
-	if (x < L'0')
-		x += ((unsigned)-1 - L'0') + 1u;
-	else
-#endif
-		x -= L'0';
-	return x;
+	return GT_UINT_DIFF(unsigned, (unsigned)c, L'0');
 }
 
 /* returns non-zero if c is a decimal digit */
@@ -198,17 +181,102 @@ static inline unsigned hex_char_value_w_(const wchar_t c)
 	unsigned x = digit_value_w(c);
 	if (x > 9) {
 		const unsigned d = L'A' - L'0';
-#ifdef UBSAN_UNSIGNED_OVERFLOW
-		if (x < d)
-			x += ((unsigned)-1 - d) + 1u;
-		else
-#endif
-			x -= d;
+		x = GT_UINT_DIFF(unsigned, x, d);
 		x &= ~32u;
 		x += 10; /* cannot overflow because 6-th bit was reset by the previous &= ~32u */
 	}
 	return x;
 }
+
+/* process many chars read into integer 'c' at once:
+  const wchar_t *str; // some string
+  unsigned c;
+  memcpy(&c, str, sizeof(c));
+  ... process 'c' */
+
+/* check that all chars in 'c' are in [A-Z] */
+static inline int is_latin_upper_letters_uint_w_(const unsigned c)
+{
+	int r;
+	GT_IS_LATIN_UINT_IN_RANGE(wchar_t, unsigned, L'A', L'Z', c, r);
+	return r;
+}
+
+/* check that all chars in 'c' are in [a-z] */
+static inline int is_latin_lower_letters_uint_w_(const unsigned c)
+{
+	int r;
+	GT_IS_LATIN_UINT_IN_RANGE(wchar_t, unsigned, L'a', L'z', c, r);
+	return r;
+}
+
+/* check that all chars in 'c' are in [a-zA-Z] */
+static inline int is_latin_letters_uint_w_(const unsigned c)
+{
+	return is_latin_upper_letters_uint_w_(c & ~(GT_ONE_ONE_CONST(wchar_t, unsigned)*32u));
+}
+
+/* convert [A-Z] -> [a-z] */
+static inline unsigned latin_letters_to_lower_uint_w(const unsigned c)
+{
+#ifdef ASSERT
+	ASSERT(is_latin_letters_uint_w_(c));
+#endif
+	return c | (GT_ONE_ONE_CONST(wchar_t, unsigned)*32u);
+}
+
+/* convert [a-z] -> [A-Z] */
+static inline unsigned latin_letters_to_upper_uint_w(const unsigned c)
+{
+#ifdef ASSERT
+	ASSERT(is_latin_letters_uint_w_(c));
+#endif
+	return c & ~(GT_ONE_ONE_CONST(wchar_t, unsigned)*32u);
+}
+
+#ifdef INT64_TYPE
+
+/* check that all chars in 'c' are in [A-Z] */
+static inline int is_latin_upper_letters_uint64_w_(const unsigned INT64_TYPE c)
+{
+	int r;
+	GT_IS_LATIN_UINT_IN_RANGE(wchar_t, unsigned INT64_TYPE, L'A', L'Z', c, r);
+	return r;
+}
+
+/* check that all chars in 'c' are in [a-z] */
+static inline int is_latin_lower_letters_uint64_w_(const unsigned INT64_TYPE c)
+{
+	int r;
+	GT_IS_LATIN_UINT_IN_RANGE(wchar_t, unsigned INT64_TYPE, L'a', L'z', c, r);
+	return r;
+}
+
+/* check that all chars in 'c' are in [a-zA-Z] */
+static inline int is_latin_letters_uint64_w_(const unsigned INT64_TYPE c)
+{
+	return is_latin_upper_letters_uint64_w_(c & ~(GT_ONE_ONE_CONST(wchar_t, unsigned INT64_TYPE)*32u));
+}
+
+/* convert [A-Z] -> [a-z] */
+static inline unsigned INT64_TYPE latin_letters_to_lower_uint64_w(const unsigned INT64_TYPE c)
+{
+#ifdef ASSERT
+	ASSERT(is_latin_letters_uint64_w_(c));
+#endif
+	return c | (GT_ONE_ONE_CONST(wchar_t, unsigned INT64_TYPE)*32u);
+}
+
+/* convert [a-z] -> [A-Z] */
+static inline unsigned INT64_TYPE latin_letters_to_upper_uint64_w(const unsigned INT64_TYPE c)
+{
+#ifdef ASSERT
+	ASSERT(is_latin_letters_uint64_w_(c));
+#endif
+	return c & ~(GT_ONE_ONE_CONST(wchar_t, unsigned INT64_TYPE)*32u);
+}
+
+#endif /* INT64_TYPE */
 
 #ifdef __cplusplus
 }
