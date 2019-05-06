@@ -869,6 +869,6 @@ int main(int argc, char *argv[])
 	TF64W(1, L"EFGHabCd", x64 = latin_letters_to_upper_uint64_w(x64); TR(is_latin_upper_letters_uint64_w_(x64)));
 	TF64W(1, L"EFGHabcD", x64 = latin_letters_to_upper_uint64_w(x64); TR(is_latin_upper_letters_uint64_w_(x64)));
 	TF64W(1, L"EFGHabcd", x64 = latin_letters_to_upper_uint64_w(x64); TR(is_latin_upper_letters_uint64_w_(x64)));
-	printf("result: %s, total: %u, passed:%u, skipped: %u\n", rr ? "fail" : "ok", t, t - k, k);
+	printf("result: %s, total: %u, passed: %u, skipped: %u\n", rr ? "fail" : "ok", t, t - k, k);
 	return rr;
 }
