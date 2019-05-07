@@ -20,7 +20,7 @@
   4-4: 0x00000001,
   4-8: 0x0000000100000001;
   8-8: 0x0000000000000001. */
-#define GT_ONE_ONE_CONST(char_type, int_type) ((int_type) \
+#define GT_ONE_ONE_CONST(char_type, int_type) \
 	(((int_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(int_type) > 1)*(sizeof(int_type) - 1)) | \
 	 ((int_type)!!(sizeof(char_type)&0x3) << 8*(sizeof(int_type) > 2)*(sizeof(int_type) - 2)) | \
 	 ((int_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(int_type) > 3)*(sizeof(int_type) - 3)) | \
@@ -28,7 +28,7 @@
 	 ((int_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(int_type) > 5)*(sizeof(int_type) - 5)) | \
 	 ((int_type)!!(sizeof(char_type)&0x3) << 8*(sizeof(int_type) > 6)*(sizeof(int_type) - 6)) | \
 	 ((int_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(int_type) > 7)*(sizeof(int_type) - 7)) | \
-	 ((int_type)0x01 + 0*sizeof(int[1-2*(sizeof(char_type) > 8 || sizeof(int_type) > 8)]))))
+	 ((int_type)0x01 + 0*sizeof(int[1-2*(sizeof(char_type) > 8 || sizeof(int_type) > 8)])))
 
 /* get difference of two unsigned integers: a - b */
 #ifdef UBSAN_UNSIGNED_OVERFLOW
