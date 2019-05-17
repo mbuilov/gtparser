@@ -197,7 +197,7 @@ static inline unsigned hex_char_value_w_(const wchar_t c)
 /* check that all chars in 'c' are in [A-Z] */
 static inline int is_latin_upper_letters_uint_w_(const unsigned c)
 {
-	int r;
+	int r = 0;
 	GT_IS_LATIN_UINT_IN_RANGE(wchar_t, unsigned, L'A', L'Z', c, r);
 	return r;
 }
@@ -205,7 +205,7 @@ static inline int is_latin_upper_letters_uint_w_(const unsigned c)
 /* check that all chars in 'c' are in [a-z] */
 static inline int is_latin_lower_letters_uint_w_(const unsigned c)
 {
-	int r;
+	int r = 0;
 	GT_IS_LATIN_UINT_IN_RANGE(wchar_t, unsigned, L'a', L'z', c, r);
 	return r;
 }
@@ -239,7 +239,7 @@ static inline unsigned latin_letters_to_upper_uint_w(const unsigned c)
 /* check that all chars in 'c' are in [A-Z] */
 static inline int is_latin_upper_letters_uint64_w_(const unsigned INT64_TYPE c)
 {
-	int r;
+	int r = 0;
 	GT_IS_LATIN_UINT_IN_RANGE(wchar_t, unsigned INT64_TYPE, L'A', L'Z', c, r);
 	return r;
 }
@@ -247,7 +247,7 @@ static inline int is_latin_upper_letters_uint64_w_(const unsigned INT64_TYPE c)
 /* check that all chars in 'c' are in [a-z] */
 static inline int is_latin_lower_letters_uint64_w_(const unsigned INT64_TYPE c)
 {
-	int r;
+	int r = 0;
 	GT_IS_LATIN_UINT_IN_RANGE(wchar_t, unsigned INT64_TYPE, L'a', L'z', c, r);
 	return r;
 }
