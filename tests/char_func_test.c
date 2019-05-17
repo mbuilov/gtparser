@@ -1,7 +1,7 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <memory.h>
 #include <wchar.h>
-
 
 /* compile with:
   gcc char_func_test.c
@@ -1004,6 +1004,7 @@ int main(int argc, char *argv[])
 	TF64W(1, L"EFGHabcD", x64 = latin_letters_to_upper_uint64_w(x64); TR(is_latin_upper_letters_uint64_w_(x64)));
 	TF64W(1, L"EFGHabcd", x64 = latin_letters_to_upper_uint64_w(x64); TR(is_latin_upper_letters_uint64_w_(x64)));
 	/* */
+#define GT_UINT_CONTAINS_ZERO(char_type, uint_type, c, r) do {GT_UINT_ALL_NOZERO(char_type, uint_type, c, r); r = !r;} while (0)
 	TF(1, "\x88t34", do {int r; GT_UINT_CONTAINS_ZERO(char, unsigned, x, r); TR(!r);} while (0));
 	TF(1, "1234", do {int r; GT_UINT_CONTAINS_ZERO(char, unsigned, x, r); TR(!r);} while (0));
 	TF(1, "abcd", do {int r; GT_UINT_CONTAINS_ZERO(char, unsigned, x, r); TR(!r);} while (0));
@@ -1567,6 +1568,136 @@ int main(int argc, char *argv[])
 	TF64W(7, L"ыmkztz\0z",        do {int r; GT_UINT_CONTAINS_ZERO(wchar_t, unsigned INT64_TYPE, x64, r); TR(r);} while (0));
 	TF64W(8, L"ыmkztzz\0",        do {int r; GT_UINT_CONTAINS_ZERO(wchar_t, unsigned INT64_TYPE, x64, r); TR(r);} while (0));
 	TF64W(1, L"ыmkztzzz",         do {int r; GT_UINT_CONTAINS_ZERO(wchar_t, unsigned INT64_TYPE, x64, r); TR(!r);} while (0));
+	/* */
+	{
+		unsigned n = 0;
+		unsigned f = 0;
+		while (n < 10 || f < 10) {
+			int r;
+			const char z = (char)((unsigned char)-1 & (unsigned)rand());
+			if (GT_CHAR_TO_UINT(char, z) & GT_CHAR_TYPE_TOP_BIT(char))
+				continue;
+			{
+				unsigned q = 0;
+				for (; q < sizeof(x); q++)
+					((unsigned char*)&x)[q] = (unsigned char)((unsigned char)-1 & (unsigned)rand());
+			}
+			GT_UINT_ALL_GE_(char, unsigned, z, x, r);
+			{
+				int r2 = 1; /* assume all chars are >= z */
+				unsigned q = 0;
+				for (; q < sizeof(x); q++) {
+					if ((unsigned char)((const char*)&x)[q] < (unsigned char)z)
+						r2 = 0;
+				}
+				TR(!r == !r2);
+			}
+			if (r)
+				n++;
+			else
+				f++;
+		}
+	}
+	/* */
+	{
+		unsigned n = 0;
+		unsigned f = 0;
+		while (n < 10 || f < 10) {
+			int r;
+			const char z = (char)((unsigned char)-1 & (unsigned)rand());
+			if (GT_CHAR_TO_UINT(char, z) & GT_CHAR_TYPE_TOP_BIT(char))
+				continue;
+			{
+				unsigned q = 0;
+				for (; q < sizeof(x64); q++)
+					((unsigned char*)&x64)[q] = (unsigned char)((unsigned char)-1 & (unsigned)rand());
+			}
+			GT_UINT_ALL_GE_(char, unsigned INT64_TYPE, z, x64, r);
+			{
+				int r2 = 1; /* assume all chars are >= z */
+				unsigned q = 0;
+				for (; q < sizeof(x64); q++) {
+					if ((unsigned char)((const char*)&x64)[q] < (unsigned char)z)
+						r2 = 0;
+				}
+				TR(!r == !r2);
+			}
+			if (r)
+				n++;
+			else
+				f++;
+		}
+	}
+	/* */
+	{
+		unsigned n = 0;
+		unsigned f = 0;
+		while (n < 10 || f < 10) {
+			int r;
+			wchar_t z;
+			{
+				unsigned q = 0;
+				for (; q < sizeof(z); q++)
+					((unsigned char*)&z)[q] = (unsigned char)((unsigned char)-1 & (unsigned)rand());
+			}
+			if (GT_CHAR_TO_UINT(wchar_t, z) & GT_CHAR_TYPE_TOP_BIT(wchar_t))
+				continue;
+			{
+				unsigned q = 0;
+				for (; q < sizeof(x); q++)
+					((unsigned char*)&x)[q] = (unsigned char)((unsigned char)-1 & (unsigned)rand());
+			}
+			GT_UINT_ALL_GE_(wchar_t, unsigned, z, x, r);
+			{
+				int r2 = 1; /* assume all chars are >= z */
+				unsigned q = 0;
+				for (; q < sizeof(x)/sizeof(wchar_t); q++) {
+					if (GT_CHAR_TO_UINT(wchar_t, ((const wchar_t*)&x)[q]) < GT_CHAR_TO_UINT(wchar_t, z))
+						r2 = 0;
+				}
+				TR(!r == !r2);
+			}
+			if (r)
+				n++;
+			else
+				f++;
+		}
+	}
+	/* */
+	{
+		unsigned n = 0;
+		unsigned f = 0;
+		while (n < 10 || f < 10) {
+			int r;
+			wchar_t z;
+			{
+				unsigned q = 0;
+				for (; q < sizeof(z); q++)
+					((unsigned char*)&z)[q] = (unsigned char)((unsigned char)-1 & (unsigned)rand());
+			}
+			if (GT_CHAR_TO_UINT(wchar_t, z) & GT_CHAR_TYPE_TOP_BIT(wchar_t))
+				continue;
+			{
+				unsigned q = 0;
+				for (; q < sizeof(x64); q++)
+					((unsigned char*)&x64)[q] = (unsigned char)((unsigned char)-1 & (unsigned)rand());
+			}
+			GT_UINT_ALL_GE_(wchar_t, unsigned INT64_TYPE, z, x64, r);
+			{
+				int r2 = 1; /* assume all chars are >= z */
+				unsigned q = 0;
+				for (; q < sizeof(x64)/sizeof(wchar_t); q++) {
+					if (GT_CHAR_TO_UINT(wchar_t, ((const wchar_t*)&x64)[q]) < GT_CHAR_TO_UINT(wchar_t, z))
+						r2 = 0;
+				}
+				TR(!r == !r2);
+			}
+			if (r)
+				n++;
+			else
+				f++;
+		}
+	}
 	printf("result: %s, total: %u, passed: %u, skipped: %u\n", rr ? "fail" : "ok", t, t - k, k);
 	return rr;
 }
