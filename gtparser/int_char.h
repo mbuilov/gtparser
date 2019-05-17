@@ -29,8 +29,8 @@
 	 ((uint_type)!!(sizeof(char_type)&0x3) << 8*(sizeof(uint_type) > 6)*(sizeof(uint_type) - 6)) | \
 	 ((uint_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(uint_type) > 7)*(sizeof(uint_type) - 7)) | \
 	 ((uint_type)0x01 +                                                                            \
-	 /*uint_type is unsigned*/0*(uint_type)sizeof(int[1-2*((uint_type)-1 <= 0)]) +                 \
-	 0*(uint_type)sizeof(int[1-2*(sizeof(char_type) > 8 || sizeof(uint_type) > 8)])))
+	 /*uint_type is unsigned*/0*(unsigned)(int)sizeof(int[1-2*((uint_type)-1 <= 0)]) +             \
+	 0*(unsigned)(int)sizeof(int[1-2*(sizeof(char_type) > 8 || sizeof(uint_type) > 8)])))
 
 /* get difference of two unsigned integers: a - b */
 /* note: 'a' and 'b' are expanded many times */
