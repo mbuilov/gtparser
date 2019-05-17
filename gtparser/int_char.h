@@ -9,28 +9,35 @@
 
 /* int_char.h */
 
-/* integer constant, for sizeof(char_type)/sizeof(uint_type):
+/* top-most bit for a given character type:
+  char    -> 0x80
+  wchar_t -> 0x8000 (windows) or 0x80000000 (unix) */
+#define GT_CHAR_TYPE_TOP_BIT(char_type) (1u << (sizeof(char_type)*8 - 1 +             \
+	/*char type is small*/0*sizeof(int[1-2*(sizeof(char_type) > sizeof(unsigned))]) + \
+	/*byte has 8 bits*/0*sizeof(int[1-2*(255 != (unsigned char)-1)])))
+
+/* maximum value of a character type:
+  char    -> 0xFF
+  wchar_t -> 0xFFFF (windows) or 0xFFFFFFFF (unix) */
+#define GT_CHAR_TYPE_MASK(char_type) \
+	((GT_CHAR_TYPE_TOP_BIT(char_type) - 1u) | GT_CHAR_TYPE_TOP_BIT(char_type))
+
+/* convert character to unsigned integer,
+  because char may be signed, need to mask-out sign-extended bits */
+#define GT_CHAR_TO_UINT(char_type, c) (GT_CHAR_TYPE_MASK(char_type) & (unsigned)(c))
+
+/* integer constant, for (uint_type)-1/(char_type)-1
   1/1: 0x01,
-  1/2: 0x0101,
-  1/4: 0x01010101,
-  1/8: 0x0101010101010101;
+  2/1: 0x0101,
+  4/1: 0x01010101,
+  8/1: 0x0101010101010101;
   2/2: 0x0001,
-  2/4: 0x00010001,
-  2/8: 0x0001000100010001;
+  4/2: 0x00010001,
+  8/2: 0x0001000100010001;
   4/4: 0x00000001,
-  4/8: 0x0000000100000001;
+  8/4: 0x0000000100000001;
   8/8: 0x0000000000000001. */
-#define GT_ONE_ONE_CONST(char_type, uint_type) \
-	(((uint_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(uint_type) > 1)*(sizeof(uint_type) - 1)) | \
-	 ((uint_type)!!(sizeof(char_type)&0x3) << 8*(sizeof(uint_type) > 2)*(sizeof(uint_type) - 2)) | \
-	 ((uint_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(uint_type) > 3)*(sizeof(uint_type) - 3)) | \
-	 ((uint_type)!!(sizeof(char_type)&0x7) << 8*(sizeof(uint_type) > 4)*(sizeof(uint_type) - 4)) | \
-	 ((uint_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(uint_type) > 5)*(sizeof(uint_type) - 5)) | \
-	 ((uint_type)!!(sizeof(char_type)&0x3) << 8*(sizeof(uint_type) > 6)*(sizeof(uint_type) - 6)) | \
-	 ((uint_type)!!(sizeof(char_type)&0x1) << 8*(sizeof(uint_type) > 7)*(sizeof(uint_type) - 7)) | \
-	 ((uint_type)0x01 +                                                                            \
-	 /*uint_type is unsigned*/0*(unsigned)(int)sizeof(int[1-2*((uint_type)-1 <= 0)]) +             \
-	 0*(unsigned)(int)sizeof(int[1-2*(sizeof(char_type) > 8 || sizeof(uint_type) > 8)])))
+#define GT_ONE_ONE_CONST(char_type, uint_type) ((uint_type)-1/GT_CHAR_TYPE_MASK(char_type))
 
 /* get difference of two unsigned integers: a - b */
 /* note: 'a' and 'b' are expanded many times */
@@ -47,18 +54,6 @@
 	0*sizeof(int[1-2*(sizeof(type) < sizeof(b))]))
 #endif
 
-/* top-most bit for a given character type:
-  char    -> 0x80
-  wchar_t -> 0x8000 (windows) or 0x80000000 (unix) */
-#define GT_CHAR_TYPE_TOP_BIT(char_type) (1u << (sizeof(char_type)*8 - 1))
-
-/* convert character to unsigned integer,
-  because char may be signed, need to mask-out sign-extended bits */
-#define GT_CHAR_TO_UINT(char_type, c) ((unsigned)(c) & /*mask-out sign-extended bits*/(           \
-	/*byte has 8 bits*/0*sizeof(int[1-2*(255 != (unsigned char)-1)]) +                            \
-	/*char type is small*/0*sizeof(int[1-2*(sizeof(char_type) > sizeof(unsigned))]) +             \
-	/*construct mask*/((GT_CHAR_TYPE_TOP_BIT(char_type) - 1u) | GT_CHAR_TYPE_TOP_BIT(char_type))))
-
 #define GT_IS_LATIN_UINT_IN_RANGE_(char_type, uint_type, l, u, c, r) do {                                  \
 	/* assume: (u - l) < 32,                                                                               \
 	  .............bbbbb.......                                                                            \
@@ -74,11 +69,11 @@
 	r = !((gt_x_ | gt_y_) & gt_zz_);                                                                       \
 } while (0)
 
-#define GT_UINT_ALL_GE_(char_type, uint_type, b, c, r) do {                                        \
-	const uint_type gt_cc_ = (c) + 0*sizeof(int[1-2*(sizeof(uint_type) != sizeof(c))]);            \
-	const uint_type gt_bb_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TO_UINT(char_type, b); \
-	r = !((gt_cc_ - gt_bb_) & ~gt_cc_ &                                                            \
-		GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TYPE_TOP_BIT(char_type));                   \
+#define GT_UINT_ALL_GE_(char_type, uint_type, b, c, r) do {                                          \
+	const uint_type gt_cc_ = (c) + 0*sizeof(int[1-2*(sizeof(uint_type) != sizeof(c))]);              \
+	const uint_type gt_bb_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TO_UINT(char_type, b);   \
+	const uint_type gt_x_ = GT_UINT_DIFF(uint_type, gt_cc_, gt_bb_);                                 \
+	r = !(gt_x_ & ~gt_cc_ & GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TYPE_TOP_BIT(char_type)); \
 } while (0)
 
 /* check that all chars read into an integer are latin letters (there are only 26 letters),
