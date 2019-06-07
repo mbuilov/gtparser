@@ -1577,7 +1577,7 @@ int main(int argc, char *argv[])
 		while (n < 10 || f < 10) {
 			int r;
 			const char z = (char)((unsigned char)-1 & (unsigned)rand());
-			if (GT_CHAR_TO_UINT(char, z) & GT_CHAR_TYPE_TOP_BIT(char))
+			if (GT_CHAR_TO_UINT(char, z) & GT_CHAR_TOP_BIT(char))
 				continue;
 			{
 				unsigned q = 0;
@@ -1607,7 +1607,7 @@ int main(int argc, char *argv[])
 		while (n < 10 || f < 10) {
 			int r;
 			const char z = (char)((unsigned char)-1 & (unsigned)rand());
-			if (GT_CHAR_TO_UINT(char, z) & GT_CHAR_TYPE_TOP_BIT(char))
+			if (GT_CHAR_TO_UINT(char, z) & GT_CHAR_TOP_BIT(char))
 				continue;
 			{
 				unsigned q = 0;
@@ -1642,7 +1642,7 @@ int main(int argc, char *argv[])
 				for (; q < sizeof(z); q++)
 					((unsigned char*)&z)[q] = (unsigned char)((unsigned char)-1 & (unsigned)rand());
 			}
-			if (GT_CHAR_TO_UINT(wchar_t, z) & GT_CHAR_TYPE_TOP_BIT(wchar_t))
+			if (GT_CHAR_TO_UINT(wchar_t, z) & GT_CHAR_TOP_BIT(wchar_t))
 				continue;
 			{
 				unsigned q = 0;
@@ -1677,7 +1677,7 @@ int main(int argc, char *argv[])
 				for (; q < sizeof(z); q++)
 					((unsigned char*)&z)[q] = (unsigned char)((unsigned char)-1 & (unsigned)rand());
 			}
-			if (GT_CHAR_TO_UINT(wchar_t, z) & GT_CHAR_TYPE_TOP_BIT(wchar_t))
+			if (GT_CHAR_TO_UINT(wchar_t, z) & GT_CHAR_TOP_BIT(wchar_t))
 				continue;
 			{
 				unsigned q = 0;
