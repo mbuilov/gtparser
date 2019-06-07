@@ -9,6 +9,8 @@
   cl char_func_test.c /utf-8
 */
 
+typedef int source_character_set_is_not_utf8[1-2*(0x044B != L'ы')];
+
 #ifndef _MSC_VER
 #define INT64_TYPE long long
 #else
