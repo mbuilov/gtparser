@@ -30,16 +30,16 @@
 /* top-most bit for a given character type:
   char    -> 0x80
   wchar_t -> 0x8000 (windows) or 0x80000000 (unix) */
-#define GT_CHAR_TOP_BIT(type) GT_TYPE_TOP_BIT(unsigned, type)
+#define GT_CHAR_TOP_BIT(char_type) GT_TYPE_TOP_BIT(unsigned, char_type)
 
 /* maximum value of a character type:
   char    -> 0xFF
   wchar_t -> 0xFFFF (windows) or 0xFFFFFFFF (unix) */
-#define GT_CHAR_MASK(type) GT_TYPE_MASK(unsigned, type)
+#define GT_CHAR_MASK(char_type) GT_TYPE_MASK(unsigned, char_type)
 
 /* convert character type to unsigned integer,
   because type may be signed, need to mask-out sign-extended bits */
-#define GT_CHAR_TO_UINT(type, c) GT_TYPE_TO_UINT(unsigned, type, c)
+#define GT_CHAR_TO_UINT(char_type, c) GT_TYPE_TO_UINT(unsigned, char_type, c)
 
 /* integer constant, for (uint_type)-1/(char_type)-1
   1/1: 0x01,
@@ -71,25 +71,15 @@
 
 /*=============================================================== */
 
-#define GT_IS_UINT_CHARS_IN_RANGE_(char_type, uint_type, l, u, c, r) do {                          \
-	/* assume: (u - l) <= 127,                                                                     \
-	 ..............bbbbb.......                                                                    \
-	   ^0  ^u-127  ^l  ^u                                                                          \
-	 1) check that all chars of int are >= l: (c - l) should not overflow                          \
-	 2) check that all chars of int are < u:  (c - (u-127)) should be <= 127 */                    \
-	const uint_type gt_ll_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TO_UINT(char_type, l); \
-	const uint_type gt_uu_ = GT_TYPE_TO_UINT(uint_type, char_type, u);                             \
-	uint_type gt_zz_ = GT_ONE_ONE_CONST(char_type, uint_type)*(                                    \
-		GT_TYPE_MASK(uint_type, char_type) & GT_UINT_DIFF(uint_type, gt_uu_,                       \
-			(uint_type)(GT_TYPE_TOP_BIT(uint_type, char_type) - 1))) -                             \
-		/* subtract remainder - to achieve the same effect as with multiplication                  \
-		  overflow - if not AND result of DIFF by GT_TYPE_MASK(uint_type, char_type) */            \
-		(gt_uu_ < (uint_type)(GT_TYPE_TOP_BIT(uint_type, char_type) - 1) ?                         \
-			GT_ONE_ONE_CONST(char_type, uint_type) - 1 : 0);                                       \
-	const uint_type gt_cc_ = (c);                                                                  \
-	const uint_type gt_x_ = GT_UINT_DIFF(uint_type, gt_cc_, gt_ll_);                               \
-	const uint_type gt_y_ = GT_UINT_DIFF(uint_type, gt_cc_, gt_zz_);                               \
-	r = !((gt_x_ | gt_y_) & (GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TOP_BIT(char_type)));  \
+#define GT_IS_UINT_CHARS_IN_RANGE_(char_type, uint_type, a, b, c, r) do {                           \
+	const uint_type gt_aa_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TO_UINT(char_type, a);  \
+	const uint_type gt_bb_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TO_UINT(char_type, b);  \
+	const uint_type gt_dd_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TOP_BIT(char_type) + 1; \
+	const uint_type gt_cc_ = c;                                                                     \
+	const uint_type gt_x_ = GT_UINT_DIFF(uint_type, gt_cc_, gt_aa_);                                \
+	const uint_type gt_y_ = GT_UINT_DIFF(uint_type, gt_cc_, gt_bb_);                                \
+	const uint_type gt_z_ = GT_UINT_DIFF(uint_type, gt_y_, gt_dd_);                                 \
+	r = !((gt_x_ | gt_z_) & (GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TOP_BIT(char_type)));   \
 } while (0)
 
 /* check that all chars read into an integer are in given (small) range,
