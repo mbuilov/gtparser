@@ -27,6 +27,32 @@ static void test_ge(void)
 	}
 }
 
+static void test_le(void)
+{
+	unsigned t = 0;
+	for (; t <= 255; t++) {
+		unsigned i = 0;
+		for (; i <= 65535; i++) {
+			char tt = (char)(unsigned char)t;
+			unsigned short ii = (unsigned short)i;
+			int x =
+				(i & 255) <= t &&
+				((i >> 8) & 255) <= t;
+			int y;
+			GT_UINT_ALL_LE_(char, unsigned short, tt, ii, y);
+			if (x != y) {
+				if (t < GT_TYPE_TOP_BIT(unsigned short, char)) {
+					printf("le unexpected fail: t=%u (%x), i=%u (%.4x), (x=%d, y=%d)\n", t, t, i, i, x, y);
+					return;
+				}
+				break; /* expected fail */
+			}
+		}
+		if (!(t & 15))
+			printf("le ok: t=%u\n", t);
+	}
+}
+
 static void test_range(void)
 {
 	unsigned l = 0;
@@ -86,6 +112,33 @@ static void test_ge_w(void)
 	}
 }
 
+static void test_le_w(void)
+{
+	unsigned long long i = 0;
+	unsigned t = 0;
+	for (; t <= 65535; t++) {
+		for (; i <= (unsigned)-1; i += WSTEP) {
+			short tt = (short)(unsigned short)t;
+			unsigned ii = (unsigned)i;
+			int x =
+				(i & 65535) <= t &&
+				((i >> 16) & 65535) <= t;
+			int y;
+			GT_UINT_ALL_LE_(short, unsigned, tt, ii, y);
+			if (x != y) {
+				if (t < GT_TYPE_TOP_BIT(unsigned, short)) {
+					printf("le_w unexpected fail: t=%u (%x), i=%llu (%.8llx), (x=%d, y=%d)\n", t, t, i, i, x, y);
+					return;
+				}
+				break; /* expected fail */
+			}
+		}
+		if (i > (unsigned)-1 && !(t & 1023))
+			printf("le_w ok: t=%u\n", t);
+		i &= (unsigned)-1;
+	}
+}
+
 #define RSTEP 500000
 #define LSTEP 15
 #define USTEP 20
@@ -124,8 +177,10 @@ static void test_range_w(void)
 int main(int argc, char *argv[])
 {
 	test_ge();
+	test_le();
 	test_range();
 	test_ge_w();
+	test_le_w();
 	test_range_w();
 	return 0;
 }
