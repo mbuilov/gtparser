@@ -75,7 +75,7 @@
 	const uint_type gt_aa_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TO_UINT(char_type, a);  \
 	const uint_type gt_bb_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TO_UINT(char_type, b);  \
 	const uint_type gt_dd_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TOP_BIT(char_type) + 1; \
-	const uint_type gt_cc_ = c;                                                                     \
+	const uint_type gt_cc_ = (c) + 0*sizeof(int[1-2*(sizeof(uint_type) != sizeof(c))]);             \
 	const uint_type gt_x_ = GT_UINT_DIFF(uint_type, gt_cc_, gt_aa_);                                \
 	const uint_type gt_y_ = GT_UINT_DIFF(uint_type, gt_cc_, gt_bb_);                                \
 	const uint_type gt_z_ = GT_UINT_DIFF(uint_type, gt_y_, gt_dd_);                                 \
@@ -130,5 +130,31 @@
 */
 #define GT_UINT_ALL_NOZERO(char_type, uint_type, c, r) \
 	GT_UINT_ALL_GE(char_type, uint_type, 1, c, r)
+
+/*=============================================================== */
+
+#define GT_UINT_ALL_LE_(char_type, uint_type, a, c, r) do {                                           \
+	const uint_type gt_cc_ = (c) + 0*sizeof(int[1-2*(sizeof(uint_type) != sizeof(c))]);               \
+	const uint_type gt_dd_ = GT_ONE_ONE_CONST(char_type, uint_type)*(GT_CHAR_TOP_BIT(char_type) - 1); \
+	const uint_type gt_aa_ = GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TO_UINT(char_type, a);    \
+	const uint_type gt_bb_ = GT_UINT_DIFF(uint_type, gt_dd_, gt_aa_);                                 \
+	const uint_type gt_x_ = gt_cc_ + gt_bb_;                                                          \
+	r = !((gt_x_ | gt_cc_) & (GT_ONE_ONE_CONST(char_type, uint_type)*GT_CHAR_TOP_BIT(char_type)));    \
+} while (0)
+
+/* check that all chars read into an integer are less or equal to some (small) char
+ e.g.:
+  int r;
+  unsigned c;
+  memcpy(&c, L"string", sizeof(c));
+  GT_UINT_ALL_LE(wchar_t, unsigned, L' ', c, r);
+*/
+/* note: "small" - a must be less than half of the character range:
+  < 128   - for 8-bit char,
+  < 32768 - for 16-bit char, etc. */
+#define GT_UINT_ALL_LE(char_type, uint_type, a, c, r)                                 \
+	GT_UINT_ALL_LE_(char_type, uint_type,                                             \
+		(/*check that a is small enough*/(void)sizeof(int[1-2*(                       \
+			GT_CHAR_TO_UINT(char_type, a) >= GT_CHAR_TOP_BIT(char_type))]),(a)), c, r)
 
 #endif /* INT_CHAR_H_INCLUDED */
